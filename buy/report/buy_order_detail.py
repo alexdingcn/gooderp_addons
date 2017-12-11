@@ -67,7 +67,7 @@ class BuyOrderDetail(models.Model):
                   AND wm.origin like 'buy.receipt%%'
                   AND wh.type = 'stock'
 
-                GROUP BY wm.date, wm.name, origin, partner_id,
+                GROUP BY wm.date, wm.name, wm.origin, partner_id,
                     goods_code, goods.id, attribute, wh.id, uom,
                     wml.price, wml.note
                 )

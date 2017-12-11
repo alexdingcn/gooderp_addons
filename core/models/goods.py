@@ -4,7 +4,7 @@ from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
 CORE_COST_METHOD = [('average', u'全月一次加权平均法'),
-                    ('std',u'定额成本'),
+                    ('std', u'定额成本'),
                     ('fifo', u'先进先出法'),
                     ]
 
@@ -28,7 +28,7 @@ class Goods(models.Model):
 
         for Goods in self:
             res.append((Goods.id, Goods.code and (
-                Goods.code + '_' + Goods.name) or Goods.name))
+                    Goods.code + '_' + Goods.name) or Goods.name))
         return res
 
     @api.model
@@ -44,8 +44,8 @@ class Goods(models.Model):
 
             args.remove(('code', 'ilike', name))
         search_goods = super(Goods, self).name_search(name=name, args=args,
-                                              operator=operator, limit=limit)
-        for good_tup in code_search_goods: # 去除重复产品
+                                                      operator=operator, limit=limit)
+        for good_tup in code_search_goods:  # 去除重复产品
             if good_tup not in search_goods:
                 search_goods.append(good_tup)
         return search_goods
@@ -65,41 +65,41 @@ class Goods(models.Model):
             default.update(name=_('%s (copy)') % (self.name))
         return super(Goods, self).copy(default=default)
 
-    code = fields.Char(u'编号')
-    name = fields.Char(u'名称', required=True, copy=False)
+    code = fields.Char(u'商品编号')
+    name = fields.Char(u'通用名称', required=True, copy=False)
     category_id = fields.Many2one('core.category', u'核算类别',
                                   ondelete='restrict',
                                   domain=[('type', '=', 'goods')],
                                   context={'type': 'goods'}, required=True,
                                   help=u'从会计科目角度划分的类别',
                                   )
-    uom_id = fields.Many2one('uom', ondelete='restrict',
-                             string=u'计量单位', required=True)
+    uom_id = fields.Many2one('uom', ondelete='restrict', string=u'计量单位', required=True)
+
     uos_id = fields.Many2one('uom', ondelete='restrict', string=u'辅助单位')
-    conversion = fields.Float(
-        string=u'转化率', default=1, digits=(16, 3),
-        help=u'1个辅助单位等于多少计量单位的数量，如1箱30个苹果，这里就输入30')
-    cost = fields.Float(u'成本',
-                        digits=dp.get_precision('Amount'))
+    conversion = fields.Float(string=u'大件装量', default=1, digits=(16, 3),
+                              help=u'1个辅助单位等于多少计量单位的数量，如1箱30盒药品，这里就输入30')
+
+    cost = fields.Float(u'成本', digits=dp.get_precision('Amount'))
     cost_method = fields.Selection(CORE_COST_METHOD, u'存货计价方法',
-                                   help=u'''GoodERP仓库模块使用先进先出规则匹配
-                                   每次出库对应的入库成本和数量，但不实时记账。
-                                   财务月结时使用此方法相应调整发出成本''')
-    tax_rate = fields.Float(u'税率(%)',
-                            help=u'商品税率')
+                                   help=u'仓库模块使用先进先出规则匹配, 每次出库对应的入库成本和数量，但不实时记账。财务月结时使用此方法相应调整发出成本')
+
+    tax_rate = fields.Float(u'税率(%)', help=u'商品税率')
     not_saleable = fields.Boolean(u'不可销售',
                                   default=_get_default_not_saleable,
                                   help=u'商品是否不可销售，勾选了就不可销售，未勾选可销售')
     active = fields.Boolean(u'启用', default=True)
+
     company_id = fields.Many2one(
         'res.company',
-        string=u'公司',
+        string=u'生产企业',
         change_default=True,
         default=lambda self: self.env['res.company']._company_default_get())
     brand = fields.Many2one('core.value', u'品牌',
                             ondelete='restrict',
                             domain=[('type', '=', 'brand')],
                             context={'type': 'brand'})
+
+    origin = fields.Text(u'产地', help=u'商品产地')
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', '商品不能重名'),

@@ -23,7 +23,7 @@ class Goods(models.Model):
     note = fields.Text(u'备注')
     goods_class_id = fields.Many2one(
         'goods.class', string=u'商品分类',
-        help="Those categories are used to group similar products for point of sale.")
+        help="选择商品分类")
 
     _sql_constraints = [
         ('barcode_uniq', 'unique(barcode)', u'条形码不能重复'),

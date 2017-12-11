@@ -74,7 +74,7 @@ class SellOrderDetail(models.Model):
                   AND wm.origin like 'sell.delivery%%'
                   AND wh.type = 'stock'
 
-                GROUP BY wm.date, wm.name, origin, wm.user_id, partner_id,
+                GROUP BY wm.date, wm.name, wm.origin, wm.user_id, partner_id,
                     goods_code, goods.id, attribute, wh.id, uom,
                     wml.price, wml.cost_unit, sd.money_state, sd.return_state, wml.note
                 )

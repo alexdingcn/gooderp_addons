@@ -37,7 +37,7 @@ msgstr "激活开发者模式 (assets)"
 #. module: app_odoo_customize
 #: model:ir.model,name:app_odoo_customize.model_app_theme_config_settings
 msgid "App Odoo Customize settings"
-msgstr "App Odoo 自定义设置"
+msgstr "个性化设置"
 
 #. module: app_odoo_customize
 #: model:ir.ui.view,arch_db:app_odoo_customize.view_app_theme_config_settings
@@ -292,17 +292,17 @@ msgstr "系统名称"
 #. module: app_odoo_customize
 #: model:ir.model.fields,help:app_odoo_customize.field_app_theme_config_settings_app_show_enterprise
 msgid "Uncheck to hide the Enterprise tag"
-msgstr "Uncheck to hide the Enterprise tag"
+msgstr "反选隐藏企业标签"
 
 #. module: app_odoo_customize
 #: model:ir.model.fields,help:app_odoo_customize.field_app_theme_config_settings_app_show_share
 msgid "Uncheck to hide the Odoo Share Dashboard"
-msgstr "Uncheck to hide the Odoo Share Dashboard"
+msgstr "反选隐藏仪表盘"
 
 #. module: app_odoo_customize
 #: model:ir.model.fields,help:app_odoo_customize.field_app_theme_config_settings_app_show_poweredby
 msgid "Uncheck to hide the Powered by text"
-msgstr "Uncheck to hide the Powered by text"
+msgstr "反选隐藏PoweredBy"
 
 #. module: app_odoo_customize
 #: model:ir.ui.view,arch_db:app_odoo_customize.view_app_theme_config_settings
@@ -317,7 +317,7 @@ msgstr "菜单项具体操作设置"
 #. module: app_odoo_customize
 #: model:ir.ui.view,arch_db:app_odoo_customize.view_app_theme_config_settings
 msgid "Visit our website for more apps and Support. http://www.sunpop.cn"
-msgstr "请访问我们的网站获取更多支持. http://www.sunpop.cn"
+msgstr "请访问我们的网站获取更多支持"
 
 #. module: app_odoo_customize
 #: model:ir.model.fields,help:app_odoo_customize.field_app_theme_config_settings_app_show_account
@@ -364,5 +364,5 @@ msgstr "ir.ui.view"
 #: model:ir.ui.menu,name:app_odoo_customize.menu_app_theme_config
 #: model:ir.ui.view,arch_db:app_odoo_customize.view_app_theme_config_settings
 msgid "odooApp Settings"
-msgstr "个性化odoo设置"
+msgstr "个性化设置"
 

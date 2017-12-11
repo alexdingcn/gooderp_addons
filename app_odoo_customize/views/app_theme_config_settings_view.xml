@@ -7,22 +7,18 @@
             <field name="arch" type="xml">
                 <form string="odooApp Customize Settings" class="oe_form_configuration">
                     <header>
-                        <button string="Apply" type="object" name="execute" class="oe_highlight"/>
-                        <button string="Cancel" type="object" name="cancel" class="oe_link" special="cancel"/>
+                        <button string="保存" type="object" name="execute" class="oe_highlight"/>
+                        <button string="取消" type="object" name="cancel" class="oe_link" special="cancel"/>
                     </header>
                     <separator string="White Label Setting"/>
-                    <group string="System Name">
+                    <group string="系统名称">
                         <label for="app_system_name"/>
                         <div>
                             <field name="app_system_name"/>
                         </div>
-                        <label string="Online Support"/>
-                        <div>
-                            <a href="http://www.sunpop.cn" target="_blank">Visit our website for more apps and Support. http://www.sunpop.cn</a>
-                        </div>
                     </group>
-                    <group string="User Menu">
-                        <label string="Item to Show"/>
+                    <group string="用户菜单">
+                        <label string="可配置选项"/>
                         <div name="user_menu_show_hide">
                             <div>
                                 <field name="app_show_lang"/>
@@ -62,7 +58,7 @@
                             </div>
                         </div>
                     </group>
-                    <group string="User Menu Content">
+                    <group string="用户菜单外部链接">
                         <label for="app_documentation_url"/>
                         <div>
                             <field name="app_documentation_url"/>

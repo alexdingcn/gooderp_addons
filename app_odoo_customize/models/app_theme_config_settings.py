@@ -34,7 +34,7 @@ class AppThemeConfigSettings(models.TransientModel):
     @api.model
     def get_default_all(self, fields):
         ir_config = self.env['ir.config_parameter']
-        app_system_name = ir_config.get_param('app_system_name', default='odooApp')
+        app_system_name = ir_config.get_param('app_system_name', default='医伴')
 
         app_show_lang = True if ir_config.get_param('app_show_lang') == "True" else False
         app_show_debug = True if ir_config.get_param('app_show_debug') == "True" else False
