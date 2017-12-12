@@ -304,7 +304,7 @@
 			<field name="name">supplier.address.form</field>
 			<field name="model">partner</field>
 			<field name="arch" type="xml">
-				<form string="GOODERP PARTNER FORM">
+				<form string="供应商">
 					<sheet>
 						<div class="oe_title">
 						    <label for='name' string='名称'/>

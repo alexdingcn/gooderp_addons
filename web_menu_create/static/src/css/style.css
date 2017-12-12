@@ -4,10 +4,10 @@ span.menu-create-tag {
     display: inline-block;
     max-width: 85%;
     margin-top: 1px;
-    margin-left: 12px; 
-    background-color: #00FFCC;
-    padding: 0px, 4px;
-    border-radius: 2.5px;
+    margin-left: 10px;
+    background-color: #00adff;
+    padding: 0 4px;
+    border-radius: 2px;
     color: white;
     font-size: 12px;
 }

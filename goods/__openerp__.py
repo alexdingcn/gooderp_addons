@@ -20,15 +20,15 @@
 ##############################################################################
 
 {
-    "name": "GOODERP商品管理",
+    "name": "商品管理",
     "version": '11.11',
-    "author": 'ZhengXiang',
-    "website": "http://www.osbzr.com",
+    "author": 'AlexDing',
+    "website": "http://www.yibanjf.com",
     "category": "gooderp",
     "depends": ['core'],
     "description":
     '''
-                     该模块继承自 core 模块，进一步扩展定义了商品及其相关的类。
+         该模块继承自 core 模块，进一步扩展定义了商品及其相关的类。
     ''',
     "data": [
         'security/groups.xml',

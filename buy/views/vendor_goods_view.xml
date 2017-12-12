@@ -2,11 +2,11 @@
 <openerp>
     <data>
         <!--供应商 菜单放在采购模块下-->
-		<record id="supplier_address_form_inherit" model="ir.ui.view">
-			<field name="name">supplier.address.form.inherit</field>
-			<field name="model">partner</field>
+        <record id="supplier_address_form_inherit" model="ir.ui.view">
+            <field name="name">supplier.address.form.inherit</field>
+            <field name="model">partner</field>
             <field name="inherit_id" ref="core.supplier_address_form"/>
-			<field name="arch" type="xml">
+            <field name="arch" type="xml">
                 <xpath expr='//div' position='before'>
                     <div class="oe_button_box" name="button_box">
                         <button type="object"
@@ -24,26 +24,26 @@
         <record id="partner_address_supplier_address_form_inherit" model="ir.ui.view">
             <field name="name">partner.address.supplier.address.form.inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='partner_address.supplier_address_form_inherit' />
+            <field name='inherit_id' ref='partner_address.supplier_address_form_inherit'/>
             <field name="arch" type="xml">
                 <field name="child_ids" position="replace">
                     <notebook>
                         <page string="联系人地址">
                             <field name="child_ids">
                                 <tree string="联系人地址" editable="bottom">
-	                    	        <field name="contact" required="1"/>
-	                    	        <field name="mobile" required="1"/>
-	                    	        <field name="phone"/>
-	                    	        <field name="qq"/>
+                                    <field name="contact" required="1"/>
+                                    <field name="mobile" required="1"/>
+                                    <field name="phone"/>
+                                    <field name="qq"/>
                                     <field name="email" widget="email"/>
-	                    	        <field name="province_id" />
-        			                <field name="city_id" />
-        			                <field name="county_id"  />
-        			                <field name="town" />
-        			                <field name="detail_address" />
-	                    	        <field name="is_default_add"/>
+                                    <field name="province_id"/>
+                                    <field name="city_id"/>
+                                    <field name="county_id"/>
+                                    <field name="town"/>
+                                    <field name="detail_address"/>
+                                    <field name="is_default_add"/>
                                 </tree>
-	                        </field>
+                            </field>
                         </page>
                         <page string="供货商品">
                             <field name="goods_ids" colspan="2" nolabel="1" groups='goods.view_cost_groups'>
@@ -65,18 +65,22 @@
             <field name="model">goods</field>
             <field name="inherit_id" ref="goods.goods_form"/>
             <field name="arch" type="xml">
-                <field name="attribute_ids" position="before">
-                    <field name="vendor_ids" colspan="2" nolabel="1" groups='goods.view_cost_groups'>
-                        <tree string="goods" editable="bottom">
-                            <field name="vendor_id"
-                            context="{'form_view_ref': 'core.supplier_address_form'}"/>
-                            <field name="price"/>
-                            <field name="code"/>
-                            <field name="name"/>
-                            <field name="min_qty"/>
-                        </tree>
-                    </field>
-                </field>
+                <page name="price_info" position="after">
+                    <page name="supplier_info" string='供应商'>
+                        <group>
+                            <field name="vendor_ids" colspan="2" nolabel="1" groups='goods.view_cost_groups'>
+                                <tree string="goods" editable="bottom">
+                                    <field name="vendor_id"
+                                           context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                                    <field name="price"/>
+                                    <field name="code"/>
+                                    <field name="name"/>
+                                    <field name="min_qty"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </page>
+                </page>
             </field>
         </record>
     </data>

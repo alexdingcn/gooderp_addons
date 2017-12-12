@@ -13,6 +13,12 @@
             <field name='view_mode'>tree</field>
             <field name='view_id' ref='attribute_value_value_tree' />
         </record>
+        <record id='goods_cert_info_action' model='ir.actions.act_window'>
+            <field name='name'>商品认证信息</field>
+            <field name='res_model'>goods.cert.info</field>
+            <field name='view_mode'>tree</field>
+            <field name='view_id' ref='goods_cert_info_tree' />
+        </record>
         <record id="goods_class_action" model="ir.actions.act_window">
             <field name="name">商品分类</field>
             <field name="type">ir.actions.act_window</field>

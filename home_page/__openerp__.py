@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'GoodErp 首页设置',
+    'name': '首页设置',
     'version': '11.11',
-    'author': "开阖静静<gilbert@osbzr.com>(开阖出品)",
+    'author': "医伴金服",
     'summary': '首页配置',
     'category': 'Tools',
     'description':
     '''
-                            该模块实现了 GoodERP 可配置的首页系统。
+                            该模块实现了可配置的首页系统。
     ''',
     'data': [
         'security/groups.xml',

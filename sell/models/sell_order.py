@@ -19,7 +19,7 @@ READONLY_STATES = {
 
 class SellOrder(models.Model):
     _name = 'sell.order'
-    _description = u'销货订单'
+    _description = u'销售订单'
     _inherit = ['mail.thread']
     _order = 'date desc, id desc'
 

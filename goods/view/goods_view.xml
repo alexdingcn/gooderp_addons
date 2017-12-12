@@ -29,18 +29,19 @@
                             <group name="general_info">
                                 <field name='code'/>
                                 <field name='name' required='1'/>
-                                <field name='not_saleable'/>
-                                <field name='brand'/>
+                                <field name='supplier_id'
+                                       context="{'form_view_ref': 'core.supplier_address_form'}"
+                                       groups='goods.view_cost_groups'/>
                                 <field name='goods_class_id'/>
-                                <field name='category_id'/>
+
                                 <field name='uom_id' required='1'/>
                                 <field name='uos_id' groups='goods.auxiliary_unit_groups' required='1'/>
                                 <field name='conversion' attrs="{'required': [('uos_id', '!=', False)]}"
                                        groups='goods.auxiliary_unit_groups'/>
-                                <field name='tax_rate'/>
                                 <field name='barcode'/>
+                                <field name='specs' required="1"/>
                                 <field name='origin'/>
-                                <field name='note'/>
+                                <field name='not_saleable'/>
                             </group>
                             <group name="image_info">
                                 <div>
@@ -50,64 +51,66 @@
                             </group>
                         </group>
                         <notebook>
-                            <page name="advanced_info" string='高级'>
+                            <page name="basic_info" string='基本信息'>
                                 <group>
-                                    <group name="price_info">
-                                        <field name='price'/>
-                                        <field name='cost' groups='goods.view_cost_groups'/>
-                                        <field name='cost_method' groups='goods.view_cost_groups'/>
-                                        <field name='supplier_id'
-                                               context="{'form_view_ref': 'core.supplier_address_form'}"
-                                               groups='goods.view_cost_groups'/>
+                                    <group name="goods_basic_info">
+                                        <field name='description'/>
+                                        <field name='english_name'/>
+                                        <field name='pinyin_abbr'/>
+                                        <field name='licence_number' required="1"/>
+                                        <field name='expire_date'/>
+                                        <field name='incoming_tax_rate'/>
+                                        <field name='outgoing_tax_rate'/>
+                                        <field name='is_superiority'/>
+                                        <field name='contact_info'/>
                                     </group>
-                                    <group name="warehouse_info">
-                                        <field name='no_stock' groups='goods.no_stock_groups'/>
-                                        <field name='using_batch' groups='goods.batch_groups'/>
-                                        <field name='force_batch_one'
-                                               attrs="{'invisible': [('using_batch', '=', False)]}"
-                                               groups='goods.batch_serial_groups'/>
+                                    <group string="仓库">
+                                        <field name='storage_condition' required="1"/>
+                                        <field name='storage_description'/>
+                                        <field name='storage_position'/>
+                                        <field name='check_first_documents'/>
+                                        <field name='need_quality_report'/>
+                                        <field name='special_managed'/>
+                                        <field name='need_maintained'/>
+                                        <field name='digital_audited' groups='goods.digital_audit_group'/>
+                                        <field name='digital_audit_code'
+                                               attrs="{'required': [('digital_audited', '==', True)]}"
+                                               groups='goods.digital_audit_group'/>
                                     </group>
-                                    <!--<field name='attribute_ids' colspan="2" nolabel='1' groups='goods.multi_attrs_groups'/>-->
                                 </group>
                             </page>
-                            <page name="extended_info" string='扩展信息'>
+                            <page name="advanced_info" string='扩展信息'>
                                 <group>
-                                    <group name="price_info">
-                                        <field name='price'/>
-                                        <field name='cost' groups='goods.view_cost_groups'/>
-                                        <field name='cost_method' groups='goods.view_cost_groups'/>
-                                        <field name='supplier_id'
-                                               context="{'form_view_ref': 'core.supplier_address_form'}"
-                                               groups='goods.view_cost_groups'/>
+                                    <group name="category_info">
+                                        <field name='brand'/>
+                                        <field name="brand_number"/>
+                                        <field name="main_function"/>
+                                        <field name="sale_policy"/>
+                                        <field name='category_id'/>
+                                        <field name='big_category'/>
+                                        <field name="special_manage_category"/>
+                                        <field name="prescription"/>
+                                        <field name="administration_route"/>
                                     </group>
-                                    <group name="warehouse_info">
-                                        <field name='no_stock' groups='goods.no_stock_groups'/>
-                                        <field name='using_batch' groups='goods.batch_groups'/>
-                                        <field name='force_batch_one'
-                                               attrs="{'invisible': [('using_batch', '=', False)]}"
-                                               groups='goods.batch_serial_groups'/>
+                                    <group name="other_info">
+                                        <field name='functional_category'/>
+                                        <field name='profit_prop'/>
+                                        <field name="social_security"/>
+                                        <field name="traditional_medicine"/>
+                                        <field name="maintenance_prop"/>
+                                        <field name='formulation' required="1"/>
+                                        <field name="business_scope" required="1"/>
+                                        <field name="abc_category"/>
+                                        <field name="essential_medicine"/>
+                                        <field name='gmp_certified'/>
                                     </group>
-                                    <field name='attribute_ids' colspan="2" nolabel='1'
-                                           groups='goods.multi_attrs_groups'/>
+                                    <field name='attribute_ids' colspan="2" nolabel='1'/>
+                                    groups='goods.multi_attrs_groups'/>
                                 </group>
                             </page>
-                            <page name="cert_info" string='证书信息'>
+                            <page name="goods_cert_info" string='证书信息'>
                                 <group>
-                                    <group name="price_info">
-                                        <field name='price'/>
-                                        <field name='cost' groups='goods.view_cost_groups'/>
-                                        <field name='cost_method' groups='goods.view_cost_groups'/>
-                                        <field name='supplier_id'
-                                               context="{'form_view_ref': 'core.supplier_address_form'}"
-                                               groups='goods.view_cost_groups'/>
-                                    </group>
-                                    <group name="warehouse_info">
-                                        <field name='no_stock' groups='goods.no_stock_groups'/>
-                                        <field name='using_batch' groups='goods.batch_groups'/>
-                                        <field name='force_batch_one'
-                                               attrs="{'invisible': [('using_batch', '=', False)]}"
-                                               groups='goods.batch_serial_groups'/>
-                                    </group>
+                                    <field name="cert_ids" nolabel="1" groups='goods.cert_info_groups'/>
                                 </group>
                             </page>
                             <page name="price_info" string='价格信息'>
@@ -116,13 +119,21 @@
                                         <field name='price'/>
                                         <field name='cost' groups='goods.view_cost_groups'/>
                                         <field name='cost_method' groups='goods.view_cost_groups'/>
-                                        <field name='supplier_id'
-                                               context="{'form_view_ref': 'core.supplier_address_form'}"
-                                               groups='goods.view_cost_groups'/>
                                     </group>
                                 </group>
                             </page>
                         </notebook>
+                        <group>
+                            <field name='note'/>
+                            <group>
+                                <field name="create_uid" readonly="1" string="制单人"/>
+                                <field name="create_date" readonly="1" string="录单时间"/>
+                            </group>
+                            <group>
+                                <field name="write_uid" readonly="1" string="修改者"/>
+                                <field name="write_date" readonly="1" string="最后修改时间"/>
+                            </group>
+                        </group>
                     </sheet>
                 </form>
             </field>
@@ -168,6 +179,20 @@
                 <tree string='属性值'>
                     <field name='name'/>
                     <field name='category_id'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id='goods_cert_info_tree' model='ir.ui.view'>
+            <field name='name'>goods.cert.info tree</field>
+            <field name='model'>goods.cert.info</field>
+            <field name='arch' type='xml'>
+                <tree string="商品认证信息" editable="bottom">
+                    <field name="cert_name"/>
+                    <field name="cert_number"/>
+                    <field name="cert_expire"/>
+                    <field name="cert_count"/>
+                    <field name="note"/>
                 </tree>
             </field>
         </record>

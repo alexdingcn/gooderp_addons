@@ -94,12 +94,12 @@ class Goods(models.Model):
         string=u'生产企业',
         change_default=True,
         default=lambda self: self.env['res.company']._company_default_get())
-    brand = fields.Many2one('core.value', u'品牌',
+    brand = fields.Many2one('core.value', u'品牌/注册商标',
                             ondelete='restrict',
                             domain=[('type', '=', 'brand')],
                             context={'type': 'brand'})
 
-    origin = fields.Text(u'产地', help=u'商品产地')
+    origin = fields.Char(u'产地', help=u'商品产地')
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', '商品不能重名'),

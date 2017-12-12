@@ -3,3 +3,4 @@ access_attribute,access_attribute,model_attribute,,1,1,1,1
 access_attribute_value,access_attribute_value,model_attribute_value,,1,1,1,1
 access_attribute_value_value,access_attribute_value_value,model_attribute_value_value,,1,1,1,1
 access_goods_class,access_goods_class,model_goods_class,,1,1,1,1
+access_goods_cert_info,access_goods_cert_info,model_goods_cert_info,,1,1,1,1

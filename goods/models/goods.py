@@ -9,13 +9,59 @@ class Goods(models.Model):
     """
     _inherit = 'goods'
 
+    english_name = fields.Char(u'外文名')
+    pinyin_abbr = fields.Char(u'拼音简码')
+    specs = fields.Char(u'规格')
+    description = fields.Char(u'商品名称')
+
+    check_first_documents = fields.Boolean(u'检查首营档案')
+    special_managed = fields.Boolean(u'特殊管理商品')
+    digital_audited = fields.Boolean(u'是否有电子监管码')
+    digital_audit_code = fields.Char(u'电子监管码')
+    need_maintained = fields.Boolean(u'是否需要养护')
+    need_quality_report = fields.Boolean(u'需要质检报告')
+    is_superiority = fields.Boolean(u'是否优势品种')
+
+    expire_date = fields.Date(u'有效期', default=fields.Date.context_today,
+                              help=u'药品有效期, 默认为当前天')
+    incoming_tax_rate = fields.Float(u'进项税率')
+    outgoing_tax_rate = fields.Float(u'销项税率')
+    licence_number = fields.Char(u'批准文号/进口注册证号')
+
+    storage_condition = fields.Char(u'储藏条件')
+    storage_description = fields.Char(u'储藏条件描述')
+    storage_position = fields.Char(u'货位号')
+    warehouse_comment = fields.Char(u'入库验收')
+
+    contact_info = fields.Char(u'联系方式')
+
+    brand_number = fields.Char(u'档案号')
+    main_function = fields.Text(u'主治功能')
+    sale_policy = fields.Char(u'销售政策')
+    big_category = fields.Char(u'大分类属性')
+    special_manage_category = fields.Char(u'特殊管理属性')
+    prescription = fields.Char(u'处方/非处方')
+    foreign_medicine = fields.Boolean(u'进口药')
+    administration_route = fields.Char(u'给药用途')
+    functional_category = fields.Char(u'功能分类')
+    profit_prop = fields.Char(u'利润属性')
+    social_security = fields.Char(u'社保属性')
+    traditional_medicine = fields.Char(u'中西药属性')
+    maintenance_prop = fields.Char(u'养护属性')
+    formulation = fields.Char(u'剂型')
+    gmp_certified = fields.Boolean(u'GMP认证')
+    business_scope = fields.Char(u'经营范围')
+    abc_category = fields.Char(u'ABC分类属性')
+    essential_medicine = fields.Char(u'基药属性')
+
     no_stock = fields.Boolean(u'虚拟商品')
     using_batch = fields.Boolean(u'管理批号')
     force_batch_one = fields.Boolean(u'管理序列号')
+
     attribute_ids = fields.One2many('attribute', 'goods_id', string=u'属性')
     image = fields.Binary(u'图片', attachment=True)
     supplier_id = fields.Many2one('partner',
-                                  u'供应商',
+                                  u'生产企业',
                                   ondelete='restrict',
                                   domain=[('s_category_id', '!=', False)])
     price = fields.Float(u'零售价')
@@ -24,6 +70,8 @@ class Goods(models.Model):
     goods_class_id = fields.Many2one(
         'goods.class', string=u'商品分类',
         help="选择商品分类")
+
+    cert_ids = fields.One2many('goods.cert.info', 'goods_id', string=u'商品认证信息')
 
     _sql_constraints = [
         ('barcode_uniq', 'unique(barcode)', u'条形码不能重复'),
@@ -59,6 +107,24 @@ class Goods(models.Model):
         """
         self.ensure_one()
         return self.conversion and qty / self.conversion or 0
+
+
+class GoodsCertInfo(models.Model):
+    _name = "goods.cert.info"
+    _description = u"商品认证信息"
+
+    goods_id = fields.Many2one('goods', u'商品', ondelete='cascade')
+
+    cert_name = fields.Char(u'证书名称')
+    cert_number = fields.Char(u'证书编号')
+    cert_expire = fields.Date(u'证书有效期', default=fields.Date.context_today,
+                              help=u'药品有效期, 默认为当前天')
+    cert_count = fields.Integer(u'张数')
+    note = fields.Text(u'备注')
+
+    _sql_constraints = [
+        ('cert_number_uniq', 'unique(cert_number)', u'证书编号不能重复'),
+    ]
 
 
 class Attribute(models.Model):

@@ -10,7 +10,7 @@
                         <button string="保存" type="object" name="execute" class="oe_highlight"/>
                         <button string="取消" type="object" name="cancel" class="oe_link" special="cancel"/>
                     </header>
-                    <separator string="White Label Setting"/>
+                    <separator string="个性化设置"/>
                     <group string="系统名称">
                         <label for="app_system_name"/>
                         <div>

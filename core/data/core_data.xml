@@ -21,7 +21,7 @@
         </record>
         <!-- 试用本系统的第一步就是修改公司名称 -->
         <record id="base.main_company" model="res.company">
-            <field name="name">GoodERP测试公司</field>
+            <field name="name">医伴金服</field>
             <field name="currency_id" ref="base.CNY" />
             <field name='cost_method'>average</field>
             <field name="logo" type="base64" file="core/static/description/logo.png"/>
