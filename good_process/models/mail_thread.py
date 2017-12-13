@@ -2,6 +2,9 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class MailThread(models.AbstractModel):
@@ -24,7 +27,7 @@ class MailThread(models.AbstractModel):
         else:
             self._approve_state = u'审批中'
 
-    _to_approver_ids = fields.One2many('good_process.approver',  'res_id', readonly='1',
+    _to_approver_ids = fields.One2many('good_process.approver', 'res_id', readonly='1',
                                        domain=lambda self: [('model', '=', self._name)], auto_join=True, string='待审批人')
     _approver_num = fields.Integer(string='总审批人数')
     _approve_state = fields.Char(u'审批状态',
@@ -183,7 +186,7 @@ class MailThread(models.AbstractModel):
 
             # 已提交，审核时报错
             if len(th._to_approver_ids) == th._approver_num and change_state:
-                raise ValidationError(u"审批后才能审核")
+                raise ValidationError(u"审批后才能提交审核")
             # 已审批
             if not len(th._to_approver_ids):
                 if not change_state:
@@ -195,7 +198,7 @@ class MailThread(models.AbstractModel):
             # 审批中，审核时报错，修改其他字段报错
             elif len(th._to_approver_ids) < th._approver_num:
                 if change_state:
-                    raise ValidationError(u"审批后才能审核")
+                    raise ValidationError(u"审批后才能提交审核")
                 raise ValidationError(u"审批中不可修改")
 
         thread_row = super(MailThread, self).write(vals)
@@ -212,7 +215,7 @@ class MailThread(models.AbstractModel):
                 Approver.unlink()
         return super(MailThread, self).unlink()
 
-    def __get_user_group__(self, active_id,  active_model, users, mode_row):
+    def __get_user_group__(self, active_id, active_model, users, mode_row):
         all_groups = []
         process_rows = self.env['good_process.process'].search([('model_id.model', '=', active_model),
                                                                 ('type', '=', getattr(mode_row, 'type', False))],
@@ -344,8 +347,7 @@ class Process(models.Model):
     model_id = fields.Many2one('ir.model', u'单据', required=True)
     type = fields.Char(u'类型', help=u'有些单据根据type字段区分具体流程')
     is_department_approve = fields.Boolean(string=u'部门经理审批')
-    line_ids = fields.One2many(
-        'good_process.process_line', 'process_id', string=u'审批组')
+    line_ids = fields.One2many('good_process.process_line', 'process_id', string=u'审批组')
     active = fields.Boolean(u'启用', default=True)
     applicable_domain = fields.Char(u'适用条件')
     sequence = fields.Integer(u'优先级')
@@ -359,7 +361,8 @@ class Process(models.Model):
             ('id', '!=', self.id),
             ('applicable_domain', '=', self.applicable_domain)])
         if records:
-            raise ValidationError(u'审批规则必须唯一')
+            _logger.error("Found existing processId=" + str(records[0].id))
+            raise ValidationError(u'该单据已有审批规则，必须唯一')
 
     @api.model
     def create(self, vals):

@@ -1,20 +1,29 @@
 # -*- coding: utf-8 -*-
 
+from odoo.exceptions import UserError
 from odoo import models, fields, api
 
 
 class Goods(models.Model):
-    """
+    '''
     继承了core里面定义的goods 模块，并定义了视图和添加字段。
-    """
-    _inherit = 'goods'
+    '''
+    _name = 'goods'
+    _inherit = ['goods', 'mail.thread']
+
+    state = fields.Selection([
+        ('draft', u'未审核'),
+        ('done', u'已审核')
+    ], string=u'首营审核', readonly=True,
+        default='draft', copy=False, index=True,
+        help=u'商品首营审核状态。新建时状态为未审核;审核后状态为已审核')
 
     english_name = fields.Char(u'外文名')
     pinyin_abbr = fields.Char(u'拼音简码')
     specs = fields.Char(u'规格')
     description = fields.Char(u'商品名称')
 
-    check_first_documents = fields.Boolean(u'检查首营档案')
+    check_first_documents = fields.Boolean(u'检查首营档案', default=True)
     special_managed = fields.Boolean(u'特殊管理商品')
     digital_audited = fields.Boolean(u'是否有电子监管码')
     digital_audit_code = fields.Char(u'电子监管码')
@@ -76,6 +85,28 @@ class Goods(models.Model):
     _sql_constraints = [
         ('barcode_uniq', 'unique(barcode)', u'条形码不能重复'),
     ]
+
+    @api.multi
+    def goods_done(self):
+        '''商品的审核按钮'''
+        self.ensure_one()
+
+        if self.check_first_documents:
+            if not self.licence_number or len(self.cert_ids) == 0:
+                raise UserError(u'请配置商品批准文号')
+
+        return self.write({
+            'state': 'done',
+        })
+
+    @api.multi
+    def goods_draft(self):
+        '''商品的反审核按钮'''
+        self.ensure_one()
+
+        return self.write({
+            'state': 'draft',
+        })
 
     @api.onchange('uom_id')
     def onchange_uom(self):

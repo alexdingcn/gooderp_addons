@@ -19,20 +19,26 @@
                     <sheet>
                         <field name="image_medium" widget="image" class="oe_avatar oe_left"/>
                         <div class="oe_title">
-                            <label for="user_id" string="用户名" class="oe_edit_only"/>
-                            <field name="user_id"/>
-
-                            <label for="name" string="姓名" class="oe_edit_only"/>
-                            <field name="name"/>
-
-                            <label for="work_mobile" class="oe_edit_only"/>
-                            <field name="work_mobile" required="1"/>
-
-                            <label for="work_email" class="oe_edit_only"/>
-                            <field name="work_email" widget="email"/>
-
-                            <label for="category_ids" class="oe_edit_only"/>
-                            <field name="category_ids" widget="many2many_tags"/>
+                            <div>
+                                <label for="user_id" string="用户名"/>
+                                <field name="user_id" required="1"/>
+                            </div>
+                            <div>
+                                <label for="name" string="姓名"/>
+                                <field name="name" required="1"/>
+                            </div>
+                            <div>
+                                <label for="work_mobile"/>
+                                <field name="work_mobile" required="1"/>
+                            </div>
+                            <div>
+                                <label for="work_email"/>
+                                <field name="work_email" widget="email"/>
+                            </div>
+                            <div>
+                                <label for="category_ids"/>
+                                <field name="category_ids" widget="many2many_tags"/>
+                            </div>
                         </div>
                         <notebook>
                             <page string="公开信息">

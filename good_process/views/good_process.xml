@@ -76,10 +76,11 @@
                     <t t-name="kanban-box">
                       <div>
                           <div class="oe_module_desc">
-							  <span><field name='creator'/> 申请 </span>
-							  <span><field name='group_id'/> 审批 </span>
-				              <span><field name='model_type'/> </span>
-				              <span><field name='record_name'/></span>
+							  <p><span><field name='creator'/></span></p>
+							  <p><span>申请<b><u><field name='group_id'/></u></b>审批 </span></p>
+				              <p>
+							  	<span><field name='model_type'/> : <field name='record_name'/></span>
+							  </p>
                           </div>
 						  <div>
 						      <button type="object" class="btn btn-primary pull-right btn-sm" name="goto">查看并处理</button>
@@ -92,7 +93,7 @@
 		</record>
 
         <record id='good_process_approver_action' model='ir.actions.act_window'>
-            <field name='name'>待审批单据</field>
+            <field name='name'>待审批事项</field>
             <field name='res_model'>good_process.approver</field>
             <field name='view_mode'>kanban</field>
 			<field name='domain'>[('user_id','=',uid)]</field>

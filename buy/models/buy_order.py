@@ -18,12 +18,15 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 ##############################################################################
+import logging
 
 from odoo import fields, models, api
 import odoo.addons.decimal_precision as dp
 from odoo.exceptions import UserError
 from datetime import datetime
 from odoo.tools import float_compare, float_is_zero
+
+_logger = logging.getLogger(__name__)
 
 # 购货订单审核状态可选值
 BUY_ORDER_STATES = [
@@ -79,8 +82,8 @@ class BuyOrder(models.Model):
         money_order_rows = self.env['money.order'].search([('buy_id', '=', self.id),
                                                            ('reconciled', '=', 0),
                                                            ('state', '=', 'done')])
-        self.paid_amount = sum([receipt.invoice_id.reconciled for receipt in receipts]) +\
-            sum([order_row.amount for order_row in money_order_rows])
+        self.paid_amount = sum([receipt.invoice_id.reconciled for receipt in receipts]) + \
+                           sum([order_row.amount for order_row in money_order_rows])
 
     @api.depends('receipt_ids')
     def _compute_receipt(self):
@@ -238,6 +241,8 @@ class BuyOrder(models.Model):
     def onchange_partner_id(self):
         if self.partner_id:
             for line in self.line_ids:
+                if line.goods_id.supplier_id != self.partner_id.id:
+                    raise UserError(u'变更供应商：商品[%s]不属于该供应商，请删除该商品' % line.goods_id.name)
                 if line.goods_id.tax_rate and self.partner_id.tax_rate:
                     if line.goods_id.tax_rate >= self.partner_id.tax_rate:
                         line.tax_rate = self.partner_id.tax_rate
@@ -265,7 +270,7 @@ class BuyOrder(models.Model):
             'bank_num': self.partner_id.bank_num,
             'date': fields.Date.context_today(self),
             'line_ids':
-            [(0, 0, line) for line in money_lines],
+                [(0, 0, line) for line in money_lines],
             'amount': amount,
             'reconciled': this_reconcile,
             'to_reconcile': amount,
@@ -371,7 +376,7 @@ class BuyOrder(models.Model):
             'date': self.planned_date,
             'date_due': self.planned_date,
             'order_id': self.id,
-            'ref':self.ref,
+            'ref': self.ref,
             'origin': 'buy.receipt',
             'note': self.note,
             'discount_rate': self.discount_rate,
@@ -445,12 +450,12 @@ class BuyOrder(models.Model):
             'target': 'current',
         }
 
-        #receipt_ids = sum([order.receipt_ids.ids for order in self], [])
+        # receipt_ids = sum([order.receipt_ids.ids for order in self], [])
         receipt_ids = self.receipt_ids.ids
         # choose the view_mode accordingly
         if len(receipt_ids) > 1:
             action['domain'] = "[('id','in',[" + \
-                ','.join(map(str, receipt_ids)) + "])]"
+                               ','.join(map(str, receipt_ids)) + "])]"
             action['view_mode'] = 'tree,form'
         elif len(receipt_ids) == 1:
             view_id = (self.type == 'buy'
@@ -483,7 +488,7 @@ class BuyOrder(models.Model):
         # choose the view_mode accordingly
         if len(invoice_ids) > 1:
             action['domain'] = "[('id','in',[" + \
-                ','.join(map(str, invoice_ids)) + "])]"
+                               ','.join(map(str, invoice_ids)) + "])]"
             action['view_mode'] = 'tree'
         elif len(invoice_ids) == 1:
             action['views'] = [(False, 'form')]
@@ -513,7 +518,7 @@ class BuyOrderLine(models.Model):
             # 单据上外币是公司本位币
             self.subtotal = self.price_taxed * self.quantity - self.discount_amount  # 价税合计
             self.tax_amount = self.subtotal / \
-                (100 + self.tax_rate) * self.tax_rate  # 税额
+                              (100 + self.tax_rate) * self.tax_rate  # 税额
             self.amount = self.subtotal - self.tax_amount  # 金额
         else:
             # 非公司本位币
@@ -524,7 +529,7 @@ class BuyOrderLine(models.Model):
             self.subtotal = (self.price_taxed * self.quantity -
                              self.discount_amount) * rate_silent  # 价税合计
             self.tax_amount = self.subtotal / \
-                (100 + self.tax_rate) * self.tax_rate  # 税额
+                              (100 + self.tax_rate) * self.tax_rate  # 税额
             self.amount = self.subtotal - self.tax_amount  # 本位币金额
             self.currency_amount = currency_amount  # 外币金额
 
@@ -682,13 +687,13 @@ class Payment(models.Model):
                 'bank_num': self.buy_id.partner_id.bank_num,
                 'date': fields.Date.context_today(self),
                 'source_ids':
-                [(0, 0, {'name': source_id.id,
-                         'category_id': categ.id,
-                         'date': source_id.date,
-                         'amount': self.amount_money,
-                         'reconciled': 0.0,
-                         'to_reconcile': self.amount_money,
-                         'this_reconcile': self.amount_money})],
+                    [(0, 0, {'name': source_id.id,
+                             'category_id': categ.id,
+                             'date': source_id.date,
+                             'amount': self.amount_money,
+                             'reconciled': 0.0,
+                             'to_reconcile': self.amount_money,
+                             'this_reconcile': self.amount_money})],
                 'type': 'pay',
                 'amount': self.amount_money,
                 'reconciled': 0,
