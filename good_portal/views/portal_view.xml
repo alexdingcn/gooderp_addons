@@ -15,7 +15,7 @@
 			</field>
 		</record>
 
-		<!-- 继承供应商 form -->
+		<!-- 继承供应商 form , disable by alex 供应商不需要创建
         <record id="portal_supplier_address_form_inherit" model="ir.ui.view">
             <field name="name">portal.supplier.address.form.inherit</field>
             <field name="model">partner</field>
@@ -28,5 +28,6 @@
                 </xpath>
             </field>
         </record>
+        -->
 	</data>
 </openerp>

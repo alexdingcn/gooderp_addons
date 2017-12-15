@@ -57,7 +57,7 @@
         </record>
         <record id="app_odoo_customize.app_account_title" model="ir.config_parameter">
             <field name="key">app_account_title</field>
-            <field name="value">GoodERP参考大全</field>
+            <field name="value">参考大全</field>
         </record>
         <record id="app_odoo_customize.app_account_url" model="ir.config_parameter">
             <field name="key">app_account_url</field>

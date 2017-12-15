@@ -8,7 +8,7 @@
             <field name="inherit_id" ref="core.supplier_address_form"/>
             <field name="arch" type="xml">
                 <xpath expr='//div' position='before'>
-                    <div class="oe_button_box" name="button_box">
+                    <div class="oe_button_box" name="button_box" attrs="{'invisible':[('name', '=', False)]}">
                         <button type="object"
                                 string="购货记录(最近1年)"
                                 name="action_view_buy_history"
@@ -66,11 +66,12 @@
             <field name="inherit_id" ref="goods.goods_form"/>
             <field name="arch" type="xml">
                 <page name="price_info" position="after">
-                    <page name="supplier_info" string='供应商'>
+                    <page name="supplier_info" string='供应商' icon="fa-users">
                         <group>
                             <field name="vendor_ids" colspan="2" nolabel="1" groups='goods.view_cost_groups'>
                                 <tree string="goods" editable="bottom">
                                     <field name="vendor_id"
+                                           domain="[('type', '=', 'SUP')]"
                                            context="{'form_view_ref': 'core.supplier_address_form'}"/>
                                     <field name="price"/>
                                     <field name="code"/>

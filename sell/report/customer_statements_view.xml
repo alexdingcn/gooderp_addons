@@ -51,6 +51,17 @@
                 </tree>
             </field>
         </record>
+
+        <record id="customer_form_add_approver" model="ir.ui.view">
+            <field name="name">customer.address.form.approver</field>
+            <field name="model">partner</field>
+            <field name='inherit_id' ref='core.customer_address_form'/>
+            <field name="arch" type="xml">
+                <field name="message_follower_ids" position="after">
+                    <field name="_to_approver_ids" widget="goodprocess" readonly="1"/>
+                </field>
+            </field>
+        </record>
 	</data>
 </openerp>
 	

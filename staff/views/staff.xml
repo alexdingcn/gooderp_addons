@@ -2,7 +2,7 @@
 <openerp>
     <data>
         <!--菜单-->
-        <menuitem id="menu_staff_root" name="人员管理" groups="staff.hr_groups"
+        <menuitem id="menu_staff_root" name="人员管理" groups="staff.hr_groups" sequence="80"
                   web_icon="staff,static/description/icon.png"/>
 
         <menuitem id="menu_staff_main" name="员工" groups="staff.hr_groups"
@@ -22,18 +22,10 @@
                             <div>
                                 <label for="user_id" string="用户名"/>
                                 <field name="user_id" required="1"/>
-                            </div>
-                            <div>
-                                <label for="name" string="姓名"/>
-                                <field name="name" required="1"/>
-                            </div>
-                            <div>
-                                <label for="work_mobile"/>
-                                <field name="work_mobile" required="1"/>
-                            </div>
-                            <div>
-                                <label for="work_email"/>
-                                <field name="work_email" widget="email"/>
+
+                                <field name="name" required="1" invisible="1" />
+                                <field name="work_mobile" required="1" invisible="1"/>
+                                <field name="work_email" widget="email" invisible="1"/>
                             </div>
                             <div>
                                 <label for="category_ids"/>
@@ -44,8 +36,8 @@
                             <page string="公开信息">
                                 <group>
                                     <group string="职位">
-                                        <field name="job_id" required="1"/>
                                         <field name="department_id" required="1"/>
+                                        <field name="job_id" required="1"/>
                                         <field name="parent_id"/>
                                     </group>
                                     <group string="联系信息">

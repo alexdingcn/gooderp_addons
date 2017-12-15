@@ -72,7 +72,7 @@ class Goods(models.Model):
     supplier_id = fields.Many2one('partner',
                                   u'生产企业',
                                   ondelete='restrict',
-                                  domain=[('s_category_id', '!=', False)])
+                                  domain=[('type', '=', 'MNF')])
     price = fields.Float(u'零售价')
     barcode = fields.Char(u'条形码')
     note = fields.Text(u'备注')
@@ -149,7 +149,7 @@ class GoodsCertInfo(models.Model):
     cert_name = fields.Char(u'证书名称')
     cert_number = fields.Char(u'证书编号')
     cert_expire = fields.Date(u'证书有效期', default=fields.Date.context_today,
-                              help=u'药品有效期, 默认为当前天')
+                              help=u'证书有效期, 默认为当前天')
     cert_count = fields.Integer(u'张数')
     note = fields.Text(u'备注')
 

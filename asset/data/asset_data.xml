@@ -149,5 +149,17 @@
             <field name='type'>other_pay</field>
             <field name='note'>由系统创建</field>
         </record>
+        <!--<record id="asset_clean_manufacturer" model='core.category'>-->
+            <!--<field name='name'>生产企业</field>-->
+            <!--<field name='account_id' ref='account_ap'/>-->
+            <!--<field name='type'>manufacturer</field>-->
+            <!--<field name='note'>由系统创建</field>-->
+        <!--</record>-->
+        <!--<record id="asset_clean_supplier" model='core.category'>-->
+            <!--<field name='name'>供应商</field>-->
+            <!--<field name='account_id' ref='account_ap'/>-->
+            <!--<field name='type'>supplier</field>-->
+            <!--<field name='note'>由系统创建</field>-->
+        <!--</record>-->
     </data>
 </openerp>

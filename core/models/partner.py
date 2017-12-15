@@ -14,9 +14,16 @@ class Partner(models.Model):
     _description = u'业务伙伴'
     _inherit = ['mail.thread']
 
+    state = fields.Selection([
+        ('draft', u'未审核'),
+        ('done', u'已审核')
+    ], string=u'首营审核', readonly=True,
+        default='draft', copy=False, index=True,
+        help=u'合作伙伴首营审核状态。新建时状态为未审核;审核后状态为已审核')
+
     code = fields.Char(u'编号')
-    name = fields.Char(u'名称', required=True,)
-    main_mobile = fields.Char(u'主要手机号', required=True,)
+    name = fields.Char(u'名称', required=True)
+    main_mobile = fields.Char(u'主要手机号', required=True)
     main_address = fields.Char(u'办公地址')
     c_category_id = fields.Many2one('core.category', u'客户类别',
                                     ondelete='restrict',
@@ -26,6 +33,12 @@ class Partner(models.Model):
                                     ondelete='restrict',
                                     domain=[('type', '=', 'supplier')],
                                     context={'type': 'supplier'})
+    type = fields.Selection([
+        ('MNF', u'生产企业'),
+        ('SUP', u'供应商'),
+        ('CUS', u'客户')
+    ], string=u'业务伙伴类型')
+
     receivable = fields.Float(u'应收余额', readonly=True,
                               digits=dp.get_precision('Amount'))
     payable = fields.Float(u'应付余额', readonly=True,
@@ -59,6 +72,37 @@ class Partner(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', '业务伙伴不能重名')
     ]
+
+    @api.multi
+    def partner_done(self):
+        '''合作伙伴的审核按钮'''
+        self.ensure_one()
+
+        return self.write({
+            'state': 'done',
+        })
+
+    @api.multi
+    def partner_draft(self):
+        '''合作伙伴的反审核按钮'''
+        self.ensure_one()
+
+        return self.write({
+            'state': 'draft',
+        })
+
+    @api.onchange('type')
+    def onchange_type(self):
+        """
+        :return: 根据type调整c_category_id 和 s_category_id
+        """
+        if self.type == 'MNF':
+            self.c_category_id = None
+            self.s_category_id = None
+        elif self.type == 'SUP':
+            self.c_category_id = None
+        elif self.type == 'CUS':
+            self.s_category_id = None
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):

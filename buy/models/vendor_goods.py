@@ -20,7 +20,7 @@ class VendorGoods(models.Model):
         string=u'供应商',
         required=True,
         comodel_name='partner',
-        domain=[('s_category_id', '!=', False)],
+        domain=[('type', '=', 'SUP')],
         ondelete='cascade',
         help=u'供应商',
     )

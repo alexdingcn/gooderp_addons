@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-    "name": "good_process",
+    "name": "流程审批",
     "version": '11.11',
-    "author": '上海开阖软件有限公司',
-    "website": "http://www.osbzr.com",
+    "author": '医伴金服',
+    "website": "http://www.yibanjf.com",
     "category": "gooderp",
     "description": """
     可配置的审批流程

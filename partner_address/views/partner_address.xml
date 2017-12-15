@@ -7,7 +7,7 @@
             <field name="model">partner</field>
             <field name='inherit_id' ref='core.customer_tree'/>
             <field name="arch" type="xml">
-                <field name="name" position="after">
+                <field name="main_mobile" position="after">
                 	<field name="contact"/>
                 	<field name="mobile"/>
                 	<field name="phone"/>
@@ -52,7 +52,7 @@
             <field name="model">partner</field>
             <field name='inherit_id' ref='core.vendor_tree'/>
             <field name="arch" type="xml">
-                <field name="name" position="after">
+                <field name="main_mobile" position="after">
                 	<field name="contact"/>
                 	<field name="mobile"/>
                 	<field name="phone"/>

@@ -58,7 +58,16 @@
             <field name="menu_type">amount_summary</field>
             <field name="note_one">应付余额</field>
             <field name="compute_field_one" ref="core.field_partner_payable"/>
-            <field name="domain" >[('s_category_id','!=',False)]</field>
+            <field name="domain" >[('type','=','SUP')]</field>
+            <field name="context" >{}</field>
+        </record>
+
+		<record id="home_page_amount_summary_manufacturer_action" model="home.page">
+			<field name="sequence">8</field>
+            <field name="action" ref="core.vendor_action"/>
+            <field name="menu_type">amount_summary</field>
+            <field name="note_one">生产者</field>
+            <field name="domain" >[('type','=','SUP')]</field>
             <field name="context" >{}</field>
         </record>
 

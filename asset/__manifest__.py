@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "GOODERP 固定资产模块",
-    'author': "德清武康开源软件工作室",
-    'website': "www.gooderp.org",
+    'name': "固定资产模块",
+    'author': "医伴金服",
+    'website': "www.yibanjf.com",
     'category': 'gooderp',
     'summary': '该模块实现了平均年限法的固定资产初始化，采购，变更，处理。',
     "description":

@@ -77,6 +77,8 @@ class MailThread(models.AbstractModel):
         if not process_row:
             return []
 
+        _logger.info(process_row.__dict__)
+
         groups = self.__get_groups__(process_row)
         department_manager = self.__get_user_manager__(
             thread_row, process_row)
@@ -186,7 +188,7 @@ class MailThread(models.AbstractModel):
 
             # 已提交，审核时报错
             if len(th._to_approver_ids) == th._approver_num and change_state:
-                raise ValidationError(u"审批后才能提交审核")
+                raise ValidationError(u"审批后才能修改审核状态")
             # 已审批
             if not len(th._to_approver_ids):
                 if not change_state:
@@ -198,7 +200,7 @@ class MailThread(models.AbstractModel):
             # 审批中，审核时报错，修改其他字段报错
             elif len(th._to_approver_ids) < th._approver_num:
                 if change_state:
-                    raise ValidationError(u"审批后才能提交审核")
+                    raise ValidationError(u"审批后才能修改审核状态")
                 raise ValidationError(u"审批中不可修改")
 
         thread_row = super(MailThread, self).write(vals)
@@ -344,8 +346,23 @@ class Process(models.Model):
     _name = 'good_process.process'
     _description = u'审批规则'
     _rec_name = 'model_id'
-    model_id = fields.Many2one('ir.model', u'单据', required=True)
-    type = fields.Char(u'类型', help=u'有些单据根据type字段区分具体流程')
+    model_id = fields.Many2one('ir.model', u'待审批对象', required=True)
+
+    type = fields.Char(u'类型', help=u'有些对象根据类型字段区分具体流程')
+
+    # @api.model
+    # @api.onchange('model_id')
+    # def _get_type_selection(self):
+    #     _logger.info(self.model_id.id)
+    #     type_obj = self.env['partner'].fields_get(['type'])
+    #     if type_obj:
+    #         return type_obj['type']['selection']
+    #     else:
+    #         return []
+    #
+    # type = fields.Selection(string=u'类型',
+    #                         selection=_get_type_selection,
+    #                         help=u'有些对象根据类型字段区分具体流程')
     is_department_approve = fields.Boolean(string=u'部门经理审批')
     line_ids = fields.One2many('good_process.process_line', 'process_id', string=u'审批组')
     active = fields.Boolean(u'启用', default=True)

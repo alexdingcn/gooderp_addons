@@ -579,7 +579,8 @@
                         <button name='cancel_approved_order' type='object' string='反审核' states='done' />
                         <button name="action_cancel" states="draft" string="作废"
                         type="object"/>
-                        <field name='state' widget='statusbar' readonly='1' />                    </header>
+                        <field name='state' widget='statusbar' readonly='1' />
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <label string="扫描条码"/>

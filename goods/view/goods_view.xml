@@ -25,7 +25,7 @@
             <field name='model'>goods</field>
             <field name='arch' type='xml'>
                 <form string='商品'>
-                    <header>
+                    <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="goods_done" states="draft" string="首营审核通过" type="object" class="oe_highlight"/>
                         <button name="goods_draft" states="done" string="重新提交首营审核" type="object"/>
                         <button name="action_cancel" states="draft" string="作废" type="object"/>
@@ -36,9 +36,9 @@
                             <group name="general_info">
                                 <field name='code'/>
                                 <field name='name' required='1'/>
-                                <field name='supplier_id'
-                                       context="{'form_view_ref': 'core.supplier_address_form'}"
-                                       groups='goods.view_cost_groups'/>
+                                <field name='supplier_id' required="1"
+                                       domain="[('type', '=', 'MNF'),('state','=','done')]"
+                                       context="{'form_view_ref': 'core.supplier_address_form'}"/>
                                 <field name='goods_class_id'/>
 
                                 <field name='uom_id' required='1'/>
@@ -58,7 +58,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page name="basic_info" string='基本信息'>
+                            <page name="basic_info" string='基本信息' icon="fa-info-circle">
                                 <group>
                                     <group name="goods_basic_info">
                                         <field name='description'/>
@@ -86,7 +86,7 @@
                                     </group>
                                 </group>
                             </page>
-                            <page name="advanced_info" string='扩展信息'>
+                            <page name="advanced_info" string='扩展信息' icon="fa-folder-o">
                                 <group>
                                     <group name="category_info">
                                         <field name='brand'/>
@@ -111,16 +111,15 @@
                                         <field name="essential_medicine"/>
                                         <field name='gmp_certified'/>
                                     </group>
-                                    <field name='attribute_ids' colspan="2" nolabel='1'/>
-                                    groups='goods.multi_attrs_groups'/>
+                                    <field name='attribute_ids' colspan="2" nolabel='1' groups='goods.multi_attrs_groups'/>
                                 </group>
                             </page>
-                            <page name="goods_cert_info" string='证书信息'>
+                            <page name="goods_cert_info" string='证书信息' icon="fa-certificate">
                                 <group>
                                     <field name="cert_ids" nolabel="1" groups='goods.cert_info_groups'/>
                                 </group>
                             </page>
-                            <page name="price_info" string='价格信息'>
+                            <page name="price_info" string='价格信息' icon="fa-cny">
                                 <group>
                                     <group name="price_info">
                                         <field name='price'/>
