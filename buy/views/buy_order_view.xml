@@ -31,7 +31,7 @@
             <field name="model">buy.order</field>
             <field name="arch" type="xml">
                 <form string="购货订单">
-                    <header>
+                    <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"/>
                         <button name="buy_order_draft" states="done" string="反审核" type="object"/>
                         <button name="action_cancel" states="draft" string="作废" type="object"/>
@@ -54,36 +54,39 @@
                                     class="oe_stat_button"
                                     icon="fa-pencil-square-o"
                                     attrs="{'invisible':['|', ('state', 'in', ('draft')),('invoice_count','=',0)]}">
-                                <field name="invoice_count" widget="statinfo" string="结算单" help="Vendor Invoice"/>
+                                <field name="invoice_count" widget="statinfo" string="结算单" help="结算单"/>
                                 <field name="invoice_ids" invisible="1"/>
                             </button>
                         </div>
                         <group>
                             <group>
                                 <field name="partner_id" required="1"
-                                       domain="[('type', '=', 'SUP')]"
-                                       context="{'form_view_ref': 'core.supplier_address_form'}"/>
-                                <field name='user_id'
+                                       domain="[('type', '=', 'SUP'),('state', '=', 'done')]"
+                                       context="{'form_view_ref': 'core.partner_sup_form'}"/>
+                                <field name='user_id' required="1"
                                        options="{'no_open': True, 'no_create': True}"/>
                                 <field name="date" required="1"/>
-                                <field name="warehouse_dest_id"/>
+                                <field name="warehouse_dest_id"
+                                       options="{'no_open': True, 'no_create': True}"/>
                                 <field name="invoice_by_receipt"></field>
                             </group>
                             <group>
                                 <field name="ref"/>
                                 <field name="planned_date" required="1"/>
                                 <field name="type" widget="radio"/>
-                                <field name="goods_state" readonly="1"/>
-                                <field name='currency_id' readonly='1'
-                                       groups='finance.group_multi_currency'/>
+                                <field name="goods_state" readonly="1"
+                                       attrs="{'invisible':[('state', 'in', ('draft'))]}"/>
+                                <!--<field name='currency_id' readonly='1' groups='finance.group_multi_currency'/>-->
                             </group>
                         </group>
                         <field name="line_ids">
                             <tree string="购货订单行" editable="bottom">
-                                <field name="goods_id" required='1' domain="[('state','=','done'),('supplier_id', '=', parent.partner_id)]"/>
-                                <field name="attribute_id"
-                                       groups='goods.multi_attrs_groups'
-                                       attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>
+                                <field name="goods_id" required='1'
+                                       domain="[('state','=','done'),('supplier_id', '=', parent.partner_id)]"
+                                       options="{'no_create': True}"/>
+                                <!--<field name="attribute_id"-->
+                                       <!--groups='goods.multi_attrs_groups'-->
+                                       <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
                                 <field name="quantity" sum="合计数量"/>
                                 <field name="quantity_in" readonly="1" sum="合计已入库数量"/>
                                 <field name="uom_id"/>
@@ -193,7 +196,7 @@
         <record id="supplier_form_add_approver" model="ir.ui.view">
             <field name="name">supplier.address.form.approver</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.supplier_address_form'/>
+            <field name='inherit_id' ref='core.partner_sup_form'/>
             <field name="arch" type="xml">
                 <field name="message_follower_ids" position="after">
                     <field name="_to_approver_ids" widget="goodprocess" readonly="1"/>

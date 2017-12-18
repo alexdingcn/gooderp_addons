@@ -55,8 +55,8 @@
                                 <field name='to_receipt_qty' readonly='1'/>
                                 <field name='min_stock_qty' readonly='1'/>
                                 <field name='supplier_id'
-                                    domain="[('s_category_id', '!=', False)]"
-                                    context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                                    domain="[('type', '=', 'SUP')]"
+                                    context="{'form_view_ref': 'core.partner_sup_form'}"/>
                                 <field name='request_qty' />
                                 <field name='uom_id' readonly='1'/>
                             </tree>

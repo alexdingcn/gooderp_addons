@@ -24,7 +24,7 @@
         <!-- 增加期初字段 -->
         <record id="customer_address_form" model="ir.ui.view">
             <field name="model">partner</field>
-			<field name='inherit_id' ref='core.customer_address_form'/>
+			<field name='inherit_id' ref='core.partner_cus_form'/>
             <field name="arch" type="xml">
                 <field name='receivable' position='after'>
                 	<field name='receivable_init' groups="base.group_erp_manager"/>
@@ -33,7 +33,7 @@
         </record>
         <record id="supplier_address_form" model="ir.ui.view">
             <field name="model">partner</field>
-			<field name='inherit_id' ref='core.supplier_address_form'/>
+			<field name='inherit_id' ref='core.partner_sup_form'/>
             <field name="arch" type="xml">
                 <field name='payable' position='after'>
                 	<field name='payable_init' groups="base.group_erp_manager"/>

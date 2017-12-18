@@ -15,7 +15,7 @@
 
         <menuitem id='customer_menu' action='core.customer_action' name="客户" 
             parent='menu_money_setting' sequence='4'/>
-        <menuitem id='vendor_menu' action='core.vendor_action' name="供应商" 
+        <menuitem id='vendor_menu' action='core.supplier_action' name="供应商"
             parent='menu_money_setting' sequence='5'/>
 
 		<!--收/付款单tree-->

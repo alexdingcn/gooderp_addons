@@ -3,6 +3,7 @@
 	<data>
         <template id="assets_backend" name="Core" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
+				<link href="/good_process/static/src/css/good_process.css" rel="stylesheet" type="text/css"/>
                 <script type="text/javascript" src="/good_process/static/src/js/good_process.js"></script>
             </xpath>
         </template>
@@ -49,7 +50,6 @@
         </record>
         <menuitem id='good_process_process_menu' name='审批设置' action='good_process_process_action'
                   parent='core.system_menu' sequence='20'/>
-
 
 
 		<record id='good_process_approver_kanban' model='ir.ui.view'>

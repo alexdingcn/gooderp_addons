@@ -206,9 +206,10 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree</field>
         </record>
+
         <!--客户， 菜单放在资金和销售模块下-->
-        <record id="customer_address_form" model="ir.ui.view">
-            <field name="name">customer.address.form</field>
+        <record id="partner_cus_form" model="ir.ui.view">
+            <field name="name">partner.cus.form</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <form string="业务伙伴">
@@ -258,8 +259,8 @@
                 </form>
             </field>
         </record>
-        <record id="customer_tree" model="ir.ui.view">
-            <field name="name">客户列表</field>
+        <record id="partner_cus_tree" model="ir.ui.view">
+            <field name="name">partner.cus.tree</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <tree string="客户">
@@ -272,8 +273,8 @@
                 </tree>
             </field>
         </record>
-        <record id="customer_search" model="ir.ui.view">
-            <field name="name">customer.search</field>
+        <record id="partner_cus_search" model="ir.ui.view">
+            <field name="name">partner.cus.search</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <search string="客户">
@@ -295,25 +296,25 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="customer_search"/>
+            <field name="search_view_id" ref="partner_cus_search"/>
             <field name="domain">[('type','=','CUS')]</field>
         </record>
         <record id="customer_address_action_tree" model="ir.actions.act_window.view">
             <field eval="5" name="sequence"/>
             <field name="view_mode">tree</field>
-            <field name="view_id" ref="customer_tree"/>
+            <field name="view_id" ref="partner_cus_tree"/>
             <field name="act_window_id" ref="customer_action"/>
         </record>
         <record id="customer_address_action_form" model="ir.actions.act_window.view">
             <field eval="6" name="sequence"/>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="customer_address_form"/>
+            <field name="view_id" ref="partner_cus_form"/>
             <field name="act_window_id" ref="customer_action"/>
         </record>
 
         <!--供应商表单 菜单放在采购模块下-->
-        <record id="supplier_address_form" model="ir.ui.view">
-            <field name="name">supplier.address.form</field>
+        <record id="partner_sup_form" model="ir.ui.view">
+            <field name="name">partner.sup.form</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <form string="供应商">
@@ -357,8 +358,8 @@
                 </form>
             </field>
         </record>
-        <record id="vendor_tree" model="ir.ui.view">
-            <field name="name">供应商列表</field>
+        <record id="partner_sup_tree" model="ir.ui.view">
+            <field name="name">partner.sup.tree</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <tree string="供应商">
@@ -372,8 +373,8 @@
                 </tree>
             </field>
         </record>
-        <record id="vendor_search" model="ir.ui.view">
-            <field name="name">vendor.search</field>
+        <record id="partner_sup_search" model="ir.ui.view">
+            <field name="name">partner.sup.search</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <search string="客户">
@@ -388,27 +389,27 @@
                 </search>
             </field>
         </record>
-        <record id="vendor_action" model="ir.actions.act_window">
+        <record id="supplier_action" model="ir.actions.act_window">
             <field name="name">供应商</field>
             <field name="res_model">partner</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="vendor_search"/>
+            <field name="search_view_id" ref="partner_sup_search"/>
             <field name="domain">[('type','=','SUP')]</field>
         </record>
 
-        <record id="supplier_address_action_tree" model="ir.actions.act_window.view">
+        <record id="supplier_action_tree" model="ir.actions.act_window.view">
             <field eval="3" name="sequence"/>
             <field name="view_mode">tree</field>
-            <field name="view_id" ref="vendor_tree"/>
-            <field name="act_window_id" ref="vendor_action"/>
+            <field name="view_id" ref="partner_sup_tree"/>
+            <field name="act_window_id" ref="supplier_action"/>
         </record>
-        <record id="supplier_address_action_form" model="ir.actions.act_window.view">
+        <record id="supplier_action_form" model="ir.actions.act_window.view">
             <field eval="4" name="sequence"/>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="supplier_address_form"/>
-            <field name="act_window_id" ref="vendor_action"/>
+            <field name="view_id" ref="partner_sup_form"/>
+            <field name="act_window_id" ref="supplier_action"/>
         </record>
 
         <!--用户-->

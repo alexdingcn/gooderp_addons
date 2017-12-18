@@ -38,7 +38,7 @@
                                 <field name='name' required='1'/>
                                 <field name='supplier_id' required="1"
                                        domain="[('type', '=', 'MNF'),('state','=','done')]"
-                                       context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                                       context="{'form_view_ref': 'core.partner_sup_form'}"/>
                                 <field name='goods_class_id'/>
 
                                 <field name='uom_id' required='1'/>

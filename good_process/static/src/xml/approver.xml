@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates>
     <t t-name="FieldGoodProcess">
-        <div class="process" style="background:lightblue;padding:2px;">
+        <div class="process">
            <span style="font-size:18px;" class="process_field_span"><t t-esc="filed_display_name"></t>:</span>
             <t t-foreach="elements" t-as="el">
                 <span t-attf-class="badge dropdown o_tag_color_#{el.color || 6}" style="font-size:18px;" t-att-data-color="el.color || 10" t-att-data-index="el_index" t-att-data-id="el.id">
@@ -11,10 +11,10 @@
             </t>
             <t t-if="button_invisible" >
                 <div class="good_approve_div">
-                     <button type="button" class="btn btn-sm btn-primary good_approve">
+                     <button type="button" class="btn btn-sm btn-success good_approve">
                          同意
                      </button>
-                    <button class="btn btn-sm btn-link good_refused" type="button" >
+                    <button class="btn btn-sm btn-danger good_refused" type="button" >
                          拒绝
                     </button>
                 </div>

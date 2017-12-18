@@ -57,7 +57,7 @@
                             <field name="chang_cost"/>
                             <field name="chang_depreciation_number"/>
                             <field name="chang_tax"/>
-                            <field name="chang_partner_id" domain="[('s_category_id', '!=', False)]" context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                            <field name="chang_partner_id" domain="[('type', '=', 'SUP')]" context="{'form_view_ref': 'core.partner_sup_form'}"/>
                         </group>
                         <group>
                             <field name="change_reason" required="1"/>
@@ -132,7 +132,7 @@
                                 <field name="date"/>
                                 <field name="tax"/>
                                 <field name="amount"/>
-                                <field name="partner_id" domain="[('s_category_id', '!=', False)]" context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                                <field name="partner_id" domain="[('type', '=', 'SUP')]" context="{'form_view_ref': 'core.partner_sup_form'}"/>
                                 <field name="bank_account"/>
                                 <field name="is_init" groups='core.master_groups'/>
                                 <field name="depreciation_previous" attrs="{'invisible': [('is_init', '=', False)]}" />

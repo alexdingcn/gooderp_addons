@@ -3,7 +3,7 @@
 	<record id="customer_address_form_inherit" model="ir.ui.view">
 		<field name="name">customer.address.form.inherit</field>
 		<field name="model">partner</field>
-		<field name="inherit_id" ref="core.customer_address_form"/>
+		<field name="inherit_id" ref="core.partner_cus_form"/>
 		<field name="arch" type="xml">
 			<xpath expr='//div' position='before'>
 				<div class="oe_button_box" name="button_box" attrs="{'invisible':[('name', '=', False)]}">

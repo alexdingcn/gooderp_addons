@@ -10,8 +10,8 @@
                 </header>
                 <sheet>
                     <group col="4" colspan="4" name="order_fields">
-                        <field name="partner_id" domain="[('c_category_id', '!=', False)]"
-                               context="{'form_view_ref': 'core.customer_address_form'}"/>
+                        <field name="partner_id" domain="[('type', '=', 'CUS')]"
+                               context="{'form_view_ref': 'core.partner_cus_form'}"/>
                         <field name="date"/>
                         <field name="warehouse_id"/>
                         <field name="session_id" />

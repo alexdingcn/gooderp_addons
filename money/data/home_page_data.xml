@@ -38,7 +38,7 @@
             <field name="menu_type">amount_summary</field>
             <field name="note_one">应收余额</field>
             <field name="compute_field_one" ref="core.field_partner_receivable"/>
-            <field name="domain" >[('c_category_id','!=',False)]</field>
+            <field name="domain" >[('type','=','CUS')]</field>
             <field name="context" >{}</field>
         </record>
 
@@ -54,19 +54,10 @@
 
         <record id="home_page_amount_summary_vendor_action" model="home.page">
 			<field name="sequence">3</field>
-            <field name="action" ref="core.vendor_action"/>
+            <field name="action" ref="core.supplier_action"/>
             <field name="menu_type">amount_summary</field>
             <field name="note_one">应付余额</field>
             <field name="compute_field_one" ref="core.field_partner_payable"/>
-            <field name="domain" >[('type','=','SUP')]</field>
-            <field name="context" >{}</field>
-        </record>
-
-		<record id="home_page_amount_summary_manufacturer_action" model="home.page">
-			<field name="sequence">8</field>
-            <field name="action" ref="core.vendor_action"/>
-            <field name="menu_type">amount_summary</field>
-            <field name="note_one">生产者</field>
             <field name="domain" >[('type','=','SUP')]</field>
             <field name="context" >{}</field>
         </record>

@@ -13,8 +13,8 @@
 							<group>
 								<field name="name"/>
 								<field name="partner_id"
-									   domain="[('c_category_id', '!=', False)]"
-									   context="{'form_view_ref': 'core.customer_address_form'}"
+									   domain="[('type', '!=', 'CUS')]"
+									   context="{'form_view_ref': 'core.partner_cus_form'}"
 									   options="{'no_create': True,'no_open': True}"
 								/>
 								<field name="user_id"

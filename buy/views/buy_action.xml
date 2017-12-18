@@ -69,8 +69,8 @@
         </record>
 
         <!-- 生产企业的Tree -->
-        <record id="manufacturer_tree" model="ir.ui.view">
-            <field name="name">生产企业</field>
+        <record id="partner_mnf_tree" model="ir.ui.view">
+            <field name="name">partner.mnf.tree</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <tree string="生产企业">
@@ -85,8 +85,8 @@
                 </tree>
             </field>
         </record>
-        <record id="manufacturer_address_form" model="ir.ui.view">
-            <field name="name">manufacturer.address.form</field>
+        <record id="partner_mnf_form" model="ir.ui.view">
+            <field name="name">partner.mnf.form</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
                 <form string="生产企业">
@@ -122,7 +122,9 @@
 
                         <notebook groups='goods.cert_info_groups'>
                             <page name="cert_info" string='认证信息' icon="fa-certificate">
-                                <field name="cert_ids" nolabel="1"/>
+                                <group>
+                                    <field name="cert_ids" nolabel="1"/>
+                                </group>
                             </page>
                         </notebook>
                     </sheet>
@@ -140,20 +142,34 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-            <field name="search_view_id" ref="core.vendor_search"/>
+            <field name="search_view_id" ref="core.partner_sup_search"/>
             <field name="domain">[('type','=','MNF')]</field>
         </record>
-        <record id="manufacturer_address_action_tree" model="ir.actions.act_window.view">
+        <record id="manufacturer_action_tree" model="ir.actions.act_window.view">
             <field eval="1" name="sequence"/>
             <field name="view_mode">tree</field>
-            <field name="view_id" ref="manufacturer_tree"/>
+            <field name="view_id" ref="partner_mnf_tree"/>
             <field name="act_window_id" ref="manufacturer_action"/>
         </record>
-        <record id="manufacturer_address_action_form" model="ir.actions.act_window.view">
+        <record id="manufacturer_action_form" model="ir.actions.act_window.view">
             <field eval="2" name="sequence"/>
             <field name="view_mode">form</field>
-            <field name="view_id" ref="manufacturer_address_form"/>
+            <field name="view_id" ref="partner_mnf_form"/>
             <field name="act_window_id" ref="manufacturer_action"/>
+        </record>
+
+        <record id='partner_cert_info_tree' model='ir.ui.view'>
+            <field name='name'>partner.cert.info tree</field>
+            <field name='model'>partner.cert.info</field>
+            <field name='arch' type='xml'>
+                <tree string="合作伙伴认证信息" editable="bottom">
+                    <field name="cert_name"/>
+                    <field name="cert_number"/>
+                    <field name="cert_expire"/>
+                    <field name="cert_count"/>
+                    <field name="note"/>
+                </tree>
+            </field>
         </record>
 
     </data>

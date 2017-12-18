@@ -77,8 +77,6 @@ class MailThread(models.AbstractModel):
         if not process_row:
             return []
 
-        _logger.info(process_row.__dict__)
-
         groups = self.__get_groups__(process_row)
         department_manager = self.__get_user_manager__(
             thread_row, process_row)
@@ -99,8 +97,7 @@ class MailThread(models.AbstractModel):
     def __good_approver_send_message__(self, active_id, active_model, message):
         mode_row = self.env[active_model].browse(active_id)
         user_row = self.env['res.users'].browse(self.env.uid)
-        message_text = u"%s %s %s %s" % (
-            user_row.name, message, mode_row._name, mode_row.name)
+        message_text = u"%s %s %s" % (message, mode_row._name, mode_row.name)
         return message_text
 
     def __is_departement_manager__(self, department_row):
@@ -138,26 +135,31 @@ class MailThread(models.AbstractModel):
                 return_vals = u'您不是这张单据的下一个审批者'
         else:
             return_vals = u'您不是这张单据的下一个审批者'
+
+        to_approver = len(model_row._to_approver_ids)
+        if not to_approver and hasattr(model_row, 'state'):
+            model_row.state = 'done'
+
         return return_vals, message or ''
 
     @api.model
     def good_process_refused(self, active_id, active_model):
         message = ''
-        mode_row = self.env[active_model].browse(active_id)
+        model_row = self.env[active_model].browse(active_id)
         users, groups = self.__get_user_group__(
-            active_id, active_model, [], mode_row)
+            active_id, active_model, [], model_row)
         approver_rows = self.env['good_process.approver'].search([('model', '=', active_model),
                                                                   ('res_id', '=', active_id)])
-        if mode_row._approver_num == len(mode_row._to_approver_ids):
-            return_vals = u'您是第一批需要审批的人，无需拒绝！'
+        if model_row._approver_num == len(model_row._to_approver_ids):
+            return_vals = u'您是首个需要审批的人无需拒绝, 请通知制单人重新提审或者作废！'
         elif approver_rows and users:
             approver_rows.unlink()
             message = self.__good_approver_send_message__(
                 active_id, active_model, u'拒绝')
-            return_vals = self.__add_approver__(mode_row, active_model, active_id)
-
+            return_vals = self.__add_approver__(model_row, active_model, active_id)
         else:
             return_vals = u'已经通过不能拒绝！'
+
         return return_vals, message or ''
 
     @api.model
@@ -217,10 +219,10 @@ class MailThread(models.AbstractModel):
                 Approver.unlink()
         return super(MailThread, self).unlink()
 
-    def __get_user_group__(self, active_id, active_model, users, mode_row):
+    def __get_user_group__(self, active_id, active_model, users, model_row):
         all_groups = []
         process_rows = self.env['good_process.process'].search([('model_id.model', '=', active_model),
-                                                                ('type', '=', getattr(mode_row, 'type', False))],
+                                                                ('type', '=', getattr(model_row, 'type', False))],
                                                                order='sequence')
         process_row = False
         for process in process_rows:
@@ -311,9 +313,18 @@ class Approver(models.Model):
         self.ensure_one()
         views = self.env['ir.ui.view'].search(
             [('model', '=', self.model), ('type', '=', 'form')])
-        if getattr(self.env[self.model].browse(self.res_id), 'is_return', False):
+        # 退货 专用view
+        model = self.env[self.model].browse(self.res_id)
+        if getattr(model, 'is_return', False):
             for v in views:
                 if '_return_' in v.xml_id:
+                    vid = v.id
+                    break
+        # partner 分为MNF/SUP/CUS
+        elif self.model == 'partner':
+            for v in views:
+                key = '_' + model.type.lower() + '_'
+                if key in v.xml_id:
                     vid = v.id
                     break
         else:

@@ -5,7 +5,7 @@
 		<record id="vendor_tree_inherit" model="ir.ui.view">
             <field name="name">vendor.tree.inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.vendor_tree' />
+            <field name='inherit_id' ref='core.partner_sup_tree' />
             <field name="arch" type="xml">
                 <field name="payable" position="after">
                     <button name="partner_statements" type="object" string="查看对账单" icon="fa-search" class="oe_highlight"/>

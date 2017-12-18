@@ -5,7 +5,7 @@
         <record id="customer_tree_inherit" model="ir.ui.view">
             <field name="name">customer.tree.inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.customer_tree'/>
+            <field name='inherit_id' ref='core.partner_cus_tree'/>
             <field name="arch" type="xml">
                 <field name="main_mobile" position="after">
                 	<field name="contact"/>
@@ -21,7 +21,7 @@
         <record id="customer_address_form_inherit" model="ir.ui.view">
             <field name="name">customer_address_form_inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.customer_address_form' />
+            <field name='inherit_id' ref='core.partner_cus_form' />
             <field name="arch" type="xml">
                 <field name="main_contact" position="after">
                     <field name="address"/>
@@ -50,7 +50,7 @@
         <record id="vendor_tree_inherit" model="ir.ui.view">
             <field name="name">vendor.tree.inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.vendor_tree'/>
+            <field name='inherit_id' ref='core.partner_sup_tree'/>
             <field name="arch" type="xml">
                 <field name="main_mobile" position="after">
                 	<field name="contact"/>
@@ -66,7 +66,7 @@
         <record id="supplier_address_form_inherit" model="ir.ui.view">
             <field name="name">supplier_address_form_inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.supplier_address_form' />
+            <field name='inherit_id' ref='core.partner_sup_form' />
             <field name="arch" type="xml">
                 <xpath expr="//group" position="after">
                     <field name="child_ids">

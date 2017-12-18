@@ -49,7 +49,7 @@
                             <field name="partner_id" required='1'
                             	attrs="{'readonly': [('state','!=','draft')]}"
                             	domain="[('type', '=', 'SUP')]"
-                            	context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                            	context="{'form_view_ref': 'core.partner_sup_form'}"/>
                             <field name='user_id'
                                    options="{'no_open': True, 'no_create': True}"/>
                             <field name="date" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
@@ -118,8 +118,8 @@
 		                	<field name="cost_line_ids" attrs="{'readonly': [('state','!=','draft')]}">
 		                		<tree string="Cost Lines" editable="bottom">
 		                			<field name="partner_id"
-		                				domain="[('s_category_id', '!=', False)]"
-		                				context="{'form_view_ref': 'core.supplier_address_form'}"/>
+		                				domain="[('type', '=', 'SUP')]"
+		                				context="{'form_view_ref': 'core.partner_sup_form'}"/>
 			                		<field name="category_id" domain="[('type', '=', 'expense')]"/>
 			                		<field name="amount"/>
 			                		<field name="tax_rate" groups="buy.in_tax_groups"/>
@@ -243,8 +243,8 @@
                         <group>
                             <field name="partner_id" required='1'
                             	attrs="{'readonly': [('state','!=','draft')]}"
-                            	domain="[('s_category_id', '!=', False)]"
-                            	context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                            	domain="[('type', '=', 'SUP')]"
+                            	context="{'form_view_ref': 'core.partner_sup_form'}"/>
                             <field name='user_id'
                                    options="{'no_open': True, 'no_create': True}"/>
                             <field name="date" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>

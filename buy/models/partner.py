@@ -33,6 +33,7 @@ class Partner(models.Model):
 class PartnerCertInfo(models.Model):
     _name = "partner.cert.info"
     _description = u"合作伙伴认证信息"
+    _sort = "id desc"
 
     partner_id = fields.Many2one('partner', u'合作伙伴', ondelete='cascade')
 
@@ -40,7 +41,7 @@ class PartnerCertInfo(models.Model):
     cert_number = fields.Char(u'证书编号')
     cert_expire = fields.Date(u'证书有效期', default=fields.Date.context_today,
                               help=u'证书有效期, 默认为当前天')
-    cert_count = fields.Integer(u'张数')
+    cert_count = fields.Integer(u'张数', default='1')
     note = fields.Text(u'备注')
 
     _sql_constraints = [

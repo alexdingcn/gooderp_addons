@@ -9,6 +9,7 @@ odoo.define('good.process', function (require) {
 
     var FieldGoodProcess = form_relational.FieldMany2ManyTags.extend({
         tag_template: "FieldGoodProcess",
+        className: 'form_good_process_view',
         events: {
             'click .good_approve': 'good_approve',
             'click .good_refused': 'good_refused',
@@ -22,6 +23,10 @@ odoo.define('good.process', function (require) {
             var self = this;
             var user_ids = _.filter(data, function (value) {
                 if (value.display_name == self.session.name) {
+                    // remove header button if approver
+                    $(".o_main_content .o_cp_left").remove();
+                    $(".o_main_content .o_cp_right").remove();
+                    $(".o_view_manager_content header").remove();
                     return value.id;
                 }
             })

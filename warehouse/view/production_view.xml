@@ -304,7 +304,7 @@
                     <sheet>
                         <group>
                             <group>
-                                <field name='outsource_partner_id' domain="[('s_category_id', '!=', False)]" context="{'form_view_ref': 'core.supplier_address_form'}"/>
+                                <field name='outsource_partner_id' domain="[('type', '=', 'SUP')]" context="{'form_view_ref': 'core.partner_sup_form'}"/>
                                 <field name='date' required='1' attrs="{'readonly': [('state', '=', 'done')]}"/>
                                 <field name='warehouse_id'/>
                                 <field name='bom_id' options="{'no_create': 1}"/>

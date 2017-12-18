@@ -34,8 +34,8 @@
             			<group>
             				<group>
             					<field name='partner_id' required='1'
-            						domain="[('c_category_id', '!=', False)]"
-            						context="{'form_view_ref': 'core.customer_address_form'}"/>
+            						domain="[('type', '=', 'CUS')]"
+            						context="{'form_view_ref': 'core.partner_cus_form'}"/>
             					<field name='partner_address_id' options="{'no_open': True, 'no_create': True}"/>
                                 <field name="contact"/>
             				    <field name='mobile'/>

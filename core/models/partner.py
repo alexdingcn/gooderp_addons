@@ -16,7 +16,8 @@ class Partner(models.Model):
 
     state = fields.Selection([
         ('draft', u'未审核'),
-        ('done', u'已审核')
+        ('done', u'已审核'),
+        ('cancel', u'已作废')
     ], string=u'首营审核', readonly=True,
         default='draft', copy=False, index=True,
         help=u'合作伙伴首营审核状态。新建时状态为未审核;审核后状态为已审核')
