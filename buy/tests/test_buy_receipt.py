@@ -189,7 +189,7 @@ class TestBuyReceipt(TransactionCase):
             self.assertTrue(line.using_attribute)
 
     def test_wrong_receipt_done_lot_unique_current(self):
-        '''审核时，当前入库单行之间同一商品批号不能相同'''
+        '''审核时，当前入库单明细之间同一商品批号不能相同'''
         receipt = self.env['buy.receipt'].create({
             'partner_id': self.env.ref('core.lenovo').id,
             'date': '2016-09-01',
@@ -210,7 +210,7 @@ class TestBuyReceipt(TransactionCase):
             receipt.buy_receipt_done()
 
     def test_wrong_receipt_done_lot_unique_wh(self):
-        '''审核时，当前入库单行与仓库里同一商品批号不能相同'''
+        '''审核时，当前入库单明细与仓库里同一商品批号不能相同'''
         receipt = self.env['buy.receipt'].create({
             'partner_id': self.env.ref('core.lenovo').id,
             'date': '2016-09-01',
@@ -298,24 +298,24 @@ class TestBuyReceipt(TransactionCase):
         warehouse.scan_barcode(model_name, barcode, buy_order_return.id)
 
     def test_onchange_partner_id(self):
-        ''' 测试 改变 partner, 入库单行商品税率变化 '''
-        # partner 无 税率，入库单行商品无税率
+        ''' 测试 改变 partner, 入库单明细商品税率变化 '''
+        # partner 无 税率，入库单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 0
         self.env.ref('goods.keyboard').tax_rate = 0
         self.receipt.onchange_partner_id()
-        # partner 有 税率，入库单行商品无税率
+        # partner 有 税率，入库单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 10
         self.env.ref('goods.keyboard').tax_rate = 0
         self.receipt.onchange_partner_id()
-        # partner 无税率，入库单行商品无税率
+        # partner 无税率，入库单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 0
         self.env.ref('goods.keyboard').tax_rate = 10
         self.receipt.onchange_partner_id()
-        # partner 税率 > 入库单行商品税率
+        # partner 税率 > 入库单明细商品税率
         self.env.ref('core.lenovo').tax_rate = 11
         self.env.ref('goods.keyboard').tax_rate = 10
         self.receipt.onchange_partner_id()
-        # partner 税率 =< 入库单行商品税率
+        # partner 税率 =< 入库单明细商品税率
         self.env.ref('core.lenovo').tax_rate = 11
         self.env.ref('goods.keyboard').tax_rate = 12
         self.receipt.onchange_partner_id()
@@ -375,30 +375,30 @@ class TestWhMoveLine(TransactionCase):
                                'default_partner': self.return_receipt.partner_id.id}).onchange_goods_id()
 
     def test_onchange_goods_id_tax_rate(self):
-        ''' 测试 修改商品时，入库单行税率变化 '''
+        ''' 测试 修改商品时，入库单明细税率变化 '''
         self.receipt.partner_id = self.env.ref('core.lenovo')
         for order_line in self.receipt.line_in_ids:
-            # partner 无 税率，入库单行商品无税率
+            # partner 无 税率，入库单明细商品无税率
             self.env.ref('core.lenovo').tax_rate = 0
             self.env.ref('goods.keyboard').tax_rate = 0
             order_line.with_context(
                 {'default_partner': self.receipt.partner_id.id}).onchange_goods_id()
-            # partner 有 税率，入库单行商品无税率
+            # partner 有 税率，入库单明细商品无税率
             self.env.ref('core.lenovo').tax_rate = 10
             self.env.ref('goods.keyboard').tax_rate = 0
             order_line.with_context(
                 {'default_partner': self.receipt.partner_id.id}).onchange_goods_id()
-            # partner 无税率，入库单行商品有税率
+            # partner 无税率，入库单明细商品有税率
             self.env.ref('core.lenovo').tax_rate = 0
             self.env.ref('goods.keyboard').tax_rate = 10
             order_line.with_context(
                 {'default_partner': self.receipt.partner_id.id}).onchange_goods_id()
-            # partner 税率 > 入库单行商品税率
+            # partner 税率 > 入库单明细商品税率
             self.env.ref('core.lenovo').tax_rate = 11
             self.env.ref('goods.keyboard').tax_rate = 10
             order_line.with_context(
                 {'default_partner': self.receipt.partner_id.id}).onchange_goods_id()
-            # partner 税率 =< 入库单行商品税率
+            # partner 税率 =< 入库单明细商品税率
             self.env.ref('core.lenovo').tax_rate = 9
             self.env.ref('goods.keyboard').tax_rate = 10
             order_line.with_context(

@@ -149,7 +149,7 @@ class SellQuotationLine(models.Model):
     @api.multi
     @api.onchange('goods_id')
     def onchange_goods_id(self):
-        ''' 当订单行的商品变化时，带出商品上的计量单位、含税价 '''
+        ''' 当订单明细的商品变化时，带出商品上的计量单位、含税价 '''
         if self.goods_id:
             self.uom_id = self.goods_id.uom_id
             self.price = self.goods_id.price
@@ -174,7 +174,7 @@ class SellOrderLine(models.Model):
     @api.multi
     @api.onchange('quantity')
     def onchange_quantity(self):
-        ''' 当订单行的商品变化时，带出报价单 '''
+        ''' 当订单明细的商品变化时，带出报价单 '''
         if self.quantity:
             rec = self.env['sell.quotation.line'].search([('goods_id', '=', self.goods_id.id),
                                                           ('partner_id', '=', self.order_id.partner_id.id),

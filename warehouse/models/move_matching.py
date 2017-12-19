@@ -14,7 +14,7 @@ class WhMoveMatching(models.Model):
     line_in_id = fields.Many2one(
         'wh.move.line', u'入库',
         ondelete='set null', index=True,
-        help=u'入库单行')
+        help=u'入库单明细')
     line_out_id = fields.Many2one(
         'wh.move.line', u'出库',
         ondelete='set null', index=True,
@@ -65,7 +65,7 @@ class WhMoveLine(models.Model):
 
     matching_in_ids = fields.One2many(
         'wh.move.matching', 'line_in_id', string=u'关联的入库',
-        help=u'关联的入库单行')
+        help=u'关联的入库单明细')
     matching_out_ids = fields.One2many(
         'wh.move.matching', 'line_out_id', string=u'关联的出库',
         help=u'关联的出库单行')

@@ -152,7 +152,7 @@ class TestSellOrder(TransactionCase):
             self.order.sell_order_done()
 
     def test_sell_order_done_no_line(self):
-        '''没有订单行时审核报错'''
+        '''没有订单明细时审核报错'''
         for line in self.order.line_ids:
             line.unlink()
         with self.assertRaises(UserError):
@@ -195,14 +195,14 @@ class TestSellOrderLine(TransactionCase):
         self.sell_order_line = self.env.ref('sell.sell_order_line_2_3')
 
     def test_compute_using_attribute(self):
-        '''返回订单行中商品是否使用属性'''
+        '''返回订单明细中商品是否使用属性'''
         for line in self.order.line_ids:
             self.assertTrue(not line.using_attribute)
             line.goods_id = self.env.ref('goods.keyboard')
             self.assertTrue(line.using_attribute)
 
     def test_compute_all_amount(self):
-        ''' 销售订单行计算字段的测试 '''
+        ''' 销售订单明细计算字段的测试 '''
         self.assertEqual(self.sell_order_line.amount,
                          107)  # tax_amount subtotal
         self.sell_order_line.onchange_goods_id()
@@ -214,7 +214,7 @@ class TestSellOrderLine(TransactionCase):
         self.assertEqual(self.sell_order_line.subtotal, 107)
 
     def test_compute_all_amount_foreign_currency(self):
-        '''外币测试：当订单行的数量、含税单价、折扣额、税率改变时，改变销售金额、税额、价税合计'''
+        '''外币测试：当订单明细的数量、含税单价、折扣额、税率改变时，改变销售金额、税额、价税合计'''
         self.order.currency_id = self.env.ref('base.EUR')
         for line in self.order.line_ids:
             line.price_taxed = 11.7
@@ -228,7 +228,7 @@ class TestSellOrderLine(TransactionCase):
                 line.tax_rate = 102
 
     def test_onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价'''
+        '''当订单明细的不含税单价改变时，改变含税单价'''
         for line in self.order.line_ids:
             line.price_taxed = 0
             line.price = 10
@@ -236,7 +236,7 @@ class TestSellOrderLine(TransactionCase):
             self.assertAlmostEqual(line.price_taxed, 11.7)
 
     def test_onchange_goods_id(self):
-        '''当销货订单行的商品变化时，带出商品上的单位、价格'''
+        '''当销货订单明细的商品变化时，带出商品上的单位、价格'''
         goods = self.env.ref('goods.keyboard')
         c_category_id = self.order.partner_id.c_category_id
 
@@ -284,7 +284,7 @@ class TestSellOrderLine(TransactionCase):
         order_line.onchange_warehouse_id()
 
     def test_onchange_discount_rate(self):
-        ''' 销售订单行 折扣率 on_change'''
+        ''' 销售订单明细 折扣率 on_change'''
         self.sell_order_line.discount_rate = 20
         self.sell_order_line.onchange_discount_rate()
         self.assertEqual(self.sell_order_line.amount, 93.6)

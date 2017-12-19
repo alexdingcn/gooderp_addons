@@ -3,30 +3,30 @@
     <data noupdate="1">
         <!-- 购货订单序列号 -->
         <record id="seq_buy_order" model="ir.sequence">
-            <field name="name">Buy Order</field>
+            <field name="name">采购单</field>
             <field name="code">buy.order</field>
-            <field name="prefix">BO</field>
+            <field name="prefix">BO%(y)s%(month)s%(day)s</field>
             <field name="padding">5</field>
         </record>
 		<!-- 采购入库单序列号 -->
         <record id="seq_buy_receipt" model="ir.sequence">
-            <field name="name">Buy Receipt</field>
+            <field name="name">入库单</field>
             <field name="code">buy.receipt</field>
-            <field name="prefix">WH/IN/</field>
+            <field name="prefix">WH/IN/%(y)s%(month)s%(day)s</field>
             <field name="padding">5</field>
         </record>
         <!-- 采购退货单序列号 -->
         <record id="seq_buy_return" model="ir.sequence">
-            <field name="name">Buy Return</field>
+            <field name="name">采购退货单</field>
             <field name="code">buy.return</field>
-            <field name="prefix">IN/RETURN/</field>
+            <field name="prefix">IN/RETURN/%(y)s%(month)s%(day)s</field>
             <field name="padding">5</field>
         </record>
         <!-- 采购变更单序列号 -->
         <record id="seq_buy_adjust" model="ir.sequence">
-            <field name="name">Buy Adjust</field>
+            <field name="name">采购变更单</field>
             <field name="code">buy.adjust</field>
-            <field name="prefix">BA</field>
+            <field name="prefix">BA%(y)s%(month)s%(day)s</field>
             <field name="padding">5</field>
         </record>
         <!-- 本模块的以下数据表可以清空 -->

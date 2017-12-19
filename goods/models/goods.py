@@ -65,7 +65,8 @@ class Goods(models.Model):
     essential_medicine = fields.Char(u'基药属性')
 
     no_stock = fields.Boolean(u'虚拟商品')
-    using_batch = fields.Boolean(u'管理批号')
+
+    using_batch = fields.Boolean(u'管理批号', default=True, help=u'默认医药商品都需要批号管理')
     force_batch_one = fields.Boolean(u'管理序列号')
 
     attribute_ids = fields.One2many('attribute', 'goods_id', string=u'属性')

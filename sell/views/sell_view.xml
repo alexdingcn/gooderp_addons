@@ -75,9 +75,9 @@
 							</group>
             			</group>
             			<notebook>
-            				<page string="销货订单行">    		
+            				<page string="销货订单明细">
             					<field name='line_ids'>
-                 					<tree string='销货订单行' editable='bottom'>
+                 					<tree string='销货订单明细' editable='bottom'>
                  						<field name='goods_id' domain="[('not_saleable','=',False)]"/>
                  						<field name='attribute_id'
                  							groups='goods.multi_attrs_groups'

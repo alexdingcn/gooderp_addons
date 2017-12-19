@@ -155,7 +155,7 @@ class SellDelivery(models.Model):
 
     @api.onchange('discount_rate', 'line_in_ids', 'line_out_ids')
     def onchange_discount_rate(self):
-        '''当优惠率或订单行发生变化时，单据优惠金额发生变化'''
+        '''当优惠率或订单明细发生变化时，单据优惠金额发生变化'''
         total = 0
         if self.line_out_ids:
             # 发货时优惠前总金额
@@ -443,7 +443,7 @@ class SellDelivery(models.Model):
                     return result_vals
             # 调用wh.move中审核方法，更新审核人和审核状态
             record.sell_move_id.approve_order()
-            # 将发货/退货数量写入销货订单行
+            # 将发货/退货数量写入销货订单明细
             if record.order_id:
                 record._line_qty_write()
             voucher = False
@@ -607,11 +607,11 @@ class WhMoveLine(models.Model):
 
     sell_line_id = fields.Many2one('sell.order.line', u'销货单行',
                                    ondelete='cascade',
-                                   help=u'对应的销货订单行')
+                                   help=u'对应的销货订单明细')
 
     @api.onchange('warehouse_id', 'goods_id')
     def onchange_warehouse_id(self):
-        '''当订单行的仓库变化时，带出定价策略中的折扣率'''
+        '''当订单明细的仓库变化时，带出定价策略中的折扣率'''
         if self.warehouse_id and self.goods_id:
             partner_id = self.env.context.get('default_partner')
             partner = self.env['partner'].browse(
@@ -635,7 +635,7 @@ class WhMoveLine(models.Model):
     @api.multi
     @api.onchange('goods_id')
     def onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的零售价，以及公司的销项税'''
+        '''当订单明细的商品变化时，带出商品上的零售价，以及公司的销项税'''
         self.ensure_one()
         is_return = self.env.context.get('default_is_return')
         if self.goods_id:

@@ -544,7 +544,7 @@ class MoneyOrderLine(models.Model):
 
     money_id = fields.Many2one('money.order', string=u'收付款单',
                                ondelete='cascade',
-                               help=u'订单行对应的收付款单')
+                               help=u'订单明细对应的收付款单')
     bank_id = fields.Many2one('bank.account', string=u'结算账户',
                               required=True, ondelete='restrict',
                               help=u'本次收款/付款所用的计算账户，审核收付款单会修改对应账户的金额')

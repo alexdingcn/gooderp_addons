@@ -61,7 +61,7 @@ class BuyReceipt(models.Model):
                                default=lambda self: self.env.context.get(
                                    'is_return'),
                                help=u'是否为退货类型')
-    order_id = fields.Many2one('buy.order', u'订单号',
+    order_id = fields.Many2one('buy.order', u'购货订单号',
                                copy=False, ondelete='cascade',
                                help=u'产生入库单/退货单的购货订单')
     invoice_id = fields.Many2one('money.invoice', u'发票号', copy=False,
@@ -114,7 +114,7 @@ class BuyReceipt(models.Model):
 
     @api.onchange('discount_rate', 'line_in_ids', 'line_out_ids')
     def onchange_discount_rate(self):
-        '''当优惠率或订单行发生变化时，单据优惠金额发生变化'''
+        '''当优惠率或订单明细发生变化时，单据优惠金额发生变化'''
         line = self.line_in_ids or self.line_out_ids
         total = self._compute_total(line)
         if self.discount_rate:
@@ -169,7 +169,7 @@ class BuyReceipt(models.Model):
         batch_one_list = []
         for line in self.line_in_ids:
             if line.amount < 0:
-                raise UserError(u'购货金额不能小于 0！请修改。')
+                raise UserError(u'购货金额不能小于0！请修改。')
             if line.goods_id.force_batch_one:
                 wh_move_lines = self.env['wh.move.line'].search(
                     [('state', '=', 'done'), ('type', '=', 'in'), ('goods_id', '=', line.goods_id.id)])
@@ -384,7 +384,7 @@ class BuyReceipt(models.Model):
         # 调用wh.move中审核方法，更新审核人和审核状态
         self.buy_move_id.approve_order()
 
-        # 将收货/退货数量写入订单行
+        # 将收货/退货数量写入订单明细
         self._line_qty_write()
 
         # 创建入库的会计凭证
@@ -435,7 +435,7 @@ class BuyReceipt(models.Model):
                 'modifying': True,
                 'state': 'draft',
             })
-        # 修改订单行中已执行数量
+        # 修改订单明细中已执行数量
         if self.order_id:
             line_ids = not self.is_return and self.line_in_ids or self.line_out_ids
             for line in line_ids:
@@ -547,8 +547,8 @@ class WhMoveLine(models.Model):
     _description = u"采购入库明细"
 
     buy_line_id = fields.Many2one('buy.order.line',
-                                  u'购货单行', ondelete='cascade',
-                                  help=u'对应的购货订单行')
+                                  u'购货单明细', ondelete='cascade',
+                                  help=u'对应的购货单明细')
     share_cost = fields.Float(u'采购费用',
                               digits=dp.get_precision('Amount'),
                               help=u'点击分摊按钮或审核时将采购费用进行分摊得出的费用')
@@ -560,11 +560,11 @@ class WhMoveLine(models.Model):
     @api.multi
     @api.onchange('goods_id')
     def onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的成本价，以及公司的进项税'''
+        '''当订单明细的商品变化时，带出商品上的成本价，以及公司的进项税'''
         self.ensure_one()
         if self.goods_id:
             is_return = self.env.context.get('default_is_return')
-            # 如果是采购入库单行 或 采购退货单行
+            # 如果是采购入库单明细 或 采购退货单行
             if is_return is not None and \
                     ((self.type == 'in' and not is_return) or (self.type == 'out' and is_return)):
                 self._buy_get_price_and_tax()

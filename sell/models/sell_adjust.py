@@ -142,13 +142,13 @@ class SellAdjustLine(models.Model):
     @api.one
     @api.depends('goods_id')
     def _compute_using_attribute(self):
-        '''返回订单行中商品是否使用属性'''
+        '''返回订单明细中商品是否使用属性'''
         self.using_attribute = self.goods_id.attribute_ids and True or False
 
     @api.one
     @api.depends('quantity', 'price_taxed', 'discount_amount', 'tax_rate')
     def _compute_all_amount(self):
-        '''当订单行的数量、单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
+        '''当订单明细的数量、单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
         if self.tax_rate > 100:
             raise UserError(u'税率不能输入超过100的数')
         if self.tax_rate < 0:
@@ -160,7 +160,7 @@ class SellAdjustLine(models.Model):
 
     @api.onchange('price', 'tax_rate')
     def onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价'''
+        '''当订单明细的不含税单价改变时，改变含税单价'''
         price = self.price_taxed / (1 + self.tax_rate * 0.01)  # 不含税单价
         decimal = self.env.ref('core.decimal_price')
         if float_compare(price, self.price, precision_digits=decimal.digits) != 0:
@@ -223,7 +223,7 @@ class SellAdjustLine(models.Model):
 
     @api.onchange('goods_id')
     def onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的单位、默认仓库、价格'''
+        '''当订单明细的商品变化时，带出商品上的单位、默认仓库、价格'''
         if self.goods_id:
             self.uom_id = self.goods_id.uom_id
             self.price_taxed = self.goods_id.price

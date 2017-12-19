@@ -233,7 +233,7 @@ class TestMoveLine(TransactionCase):
         self.env['wh.move.line'].onchange_goods_id()
 
     def test_onchange_goods_id_in_cost_unit(self):
-        ''' 测试  onchange_goods_id 入库单行默认带出入库成本 '''
+        ''' 测试  onchange_goods_id 入库单明细默认带出入库成本 '''
         self.mouse_in_line.goods_id = self.goods_cable
         self.mouse_in_line.with_context({'type': 'in'}).onchange_goods_id()
 

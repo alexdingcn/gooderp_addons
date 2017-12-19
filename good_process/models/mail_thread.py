@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import traceback
+
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools.safe_eval import safe_eval
@@ -173,6 +175,7 @@ class MailThread(models.AbstractModel):
     def write(self, vals):
         '''
         如果单据的审批流程已经开始（第一个人同意了才算开始） —— 至少一个审批人已经审批通过，不允许对此单据进行修改。
+        审核通过但是还是可以更改应付和应收
         '''
         for th in self:
             ignore_fields = ['_approver_num',
@@ -183,6 +186,8 @@ class MailThread(models.AbstractModel):
                              'message_channel_ids',
                              'approve_uid',
                              'approve_date',
+                             'payable',
+                             'receivable'
                              ]
             if any([vals.has_key(x) for x in ignore_fields]) or not th._approver_num:
                 continue
@@ -192,7 +197,7 @@ class MailThread(models.AbstractModel):
             if len(th._to_approver_ids) == th._approver_num and change_state:
                 raise ValidationError(u"审批后才能修改审核状态")
             # 已审批
-            if not len(th._to_approver_ids):
+            if not len(th._to_approver_ids) and th._approver_num > 0:
                 if not change_state:
                     raise ValidationError(u'已审批不可修改')
                 if change_state == 'draft':

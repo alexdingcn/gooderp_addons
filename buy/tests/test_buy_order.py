@@ -32,19 +32,19 @@ class TestBuyOrder(TransactionCase):
         '''返回收货状态'''
         # order商品总数量为10
         self.order.buy_order_done()
-        # 采购订单行的已入库数量为0时，将商品状态写为未入库
+        # 采购订单明细的已入库数量为0时，将商品状态写为未入库
         self.order._get_buy_goods_state()
         self.assertTrue(self.order.goods_state == u'未入库')
         receipt = self.env['buy.receipt'].search(
             [('order_id', '=', self.order.id)])
-        # 采购订单行的已入库数量等于商品数量时，将商品状态写为全部入库
+        # 采购订单明细的已入库数量等于商品数量时，将商品状态写为全部入库
         receipt.buy_receipt_done()
         self.order._get_buy_goods_state()
         self.assertTrue(self.order.goods_state == u'全部入库')
 
     def test_get_buy_goods_state_part_in(self):
         '''返回收货状态：部分入库'''
-        # 采购订单行的已入库数量小于商品数量时，将商品状态写为部分入库
+        # 采购订单明细的已入库数量小于商品数量时，将商品状态写为部分入库
         self.order.buy_order_done()
         receipt = self.env['buy.receipt'].search(
             [('order_id', '=', self.order.id)])
@@ -102,7 +102,7 @@ class TestBuyOrder(TransactionCase):
         with self.assertRaises(UserError):
             self.order.buy_order_done()
 
-        # 没有订单行时审核报错
+        # 没有订单明细时审核报错
         for line in self.order.line_ids:
             line.unlink()
         with self.assertRaises(UserError):
@@ -162,7 +162,7 @@ class TestBuyOrder(TransactionCase):
             [('order_id', '=', self.order.id)])
         receipt.buy_receipt_done()
         self.assertTrue(self.order.goods_state == u'全部入库')
-        # 批次管理拆分订单行
+        # 批次管理拆分订单明细
         new_order = self.order.copy()
         for line in new_order.line_ids:
             line.goods_id = self.env.ref('goods.mouse').id
@@ -180,23 +180,23 @@ class TestBuyOrder(TransactionCase):
         return_receipt.buy_generate_receipt()
 
     def test_onchange_partner_id(self):
-        # partner 无 税率，购货单行商品无税率
+        # partner 无 税率，购货单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 0
         self.env.ref('goods.keyboard').tax_rate = 0
         self.order.onchange_partner_id()
-        # partner 有 税率，购货单行商品无税率
+        # partner 有 税率，购货单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 10
         self.env.ref('goods.keyboard').tax_rate = 0
         self.order.onchange_partner_id()
-        # partner 无税率，购货单行商品无税率
+        # partner 无税率，购货单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 0
         self.env.ref('goods.keyboard').tax_rate = 10
         self.order.onchange_partner_id()
-        # partner 税率 > 购货单行商品税率
+        # partner 税率 > 购货单明细商品税率
         self.env.ref('core.lenovo').tax_rate = 11
         self.env.ref('goods.keyboard').tax_rate = 10
         self.order.onchange_partner_id()
-        # partner 税率 =< 购货单行商品税率
+        # partner 税率 =< 购货单明细商品税率
         self.env.ref('core.lenovo').tax_rate = 11
         self.env.ref('goods.keyboard').tax_rate = 12
         self.order.onchange_partner_id()
@@ -262,14 +262,14 @@ class TestBuyOrderLine(TransactionCase):
         self.cable = self.env.ref('goods.cable')
 
     def test_compute_using_attribute(self):
-        '''返回订单行中商品是否使用属性'''
+        '''返回订单明细中商品是否使用属性'''
         for line in self.order.line_ids:
             self.assertTrue(line.using_attribute)
             line.goods_id = self.env.ref('goods.mouse')
             self.assertTrue(not line.using_attribute)
 
     def test_compute_all_amount(self):
-        '''当订单行的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
+        '''当订单明细的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
         for line in self.order.line_ids:
             line.price_taxed = 11.7
             self.assertTrue(line.amount == 100)
@@ -278,7 +278,7 @@ class TestBuyOrderLine(TransactionCase):
             self.assertTrue(line.subtotal == 117)
 
     def test_compute_all_amount_foreign_currency(self):
-        '''外币测试：当订单行的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
+        '''外币测试：当订单明细的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
         self.order.currency_id = self.env.ref('base.EUR')
         for line in self.order.line_ids:
             line.price_taxed = 11.7
@@ -292,7 +292,7 @@ class TestBuyOrderLine(TransactionCase):
                 line.tax_rate = 102
 
     def test_onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价'''
+        '''当订单明细的不含税单价改变时，改变含税单价'''
         for line in self.order.line_ids:
             line.price_taxed = 0
             line.price = 10
@@ -300,7 +300,7 @@ class TestBuyOrderLine(TransactionCase):
             self.assertAlmostEqual(line.price_taxed, 11.7)
 
     def test_onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的单位、成本'''
+        '''当订单明细的商品变化时，带出商品上的单位、成本'''
         for line in self.order.line_ids:
             line.goods_id = self.cable
             line.onchange_goods_id()
@@ -310,31 +310,31 @@ class TestBuyOrderLine(TransactionCase):
             self.assertTrue(line.price_taxed == self.cable.cost)
 
     def test_onchange_goods_id_tax_rate(self):
-        ''' 测试 修改商品时，购货单行税率变化 '''
+        ''' 测试 修改商品时，购货单明细税率变化 '''
         self.order_line = self.env.ref('buy.buy_order_line_1')
-        # partner 无 税率，购货单行商品无税率
+        # partner 无 税率，购货单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 0
         self.env.ref('goods.keyboard').tax_rate = 0
         self.order_line.onchange_goods_id()
-        # partner 有 税率，购货单行商品无税率
+        # partner 有 税率，购货单明细商品无税率
         self.env.ref('core.lenovo').tax_rate = 10
         self.env.ref('goods.keyboard').tax_rate = 0
         self.order_line.onchange_goods_id()
-        # partner 无税率，购货单行商品有税率
+        # partner 无税率，购货单明细商品有税率
         self.env.ref('core.lenovo').tax_rate = 0
         self.env.ref('goods.keyboard').tax_rate = 10
         self.order_line.onchange_goods_id()
-        # partner 税率 > 购货单行商品税率
+        # partner 税率 > 购货单明细商品税率
         self.env.ref('core.lenovo').tax_rate = 11
         self.env.ref('goods.keyboard').tax_rate = 10
         self.order_line.onchange_goods_id()
-        # partner 税率 =< 购货单行商品税率
+        # partner 税率 =< 购货单明细商品税率
         self.env.ref('core.lenovo').tax_rate = 9
         self.env.ref('goods.keyboard').tax_rate = 10
         self.order_line.onchange_goods_id()
 
     def test_onchange_goods_id_vendor(self):
-        '''当订单行的商品变化时，带出商品上供应商价'''
+        '''当订单明细的商品变化时，带出商品上供应商价'''
         # 添加网线的供应商价
         self.cable.vendor_ids.create({
             'goods_id': self.cable.id,
@@ -353,7 +353,7 @@ class TestBuyOrderLine(TransactionCase):
             self.assertTrue(line.price_taxed == 2)
 
     def test_onchange_discount_rate(self):
-        ''' 订单行优惠率改变时，改变优惠金额'''
+        ''' 订单明细优惠率改变时，改变优惠金额'''
         for line in self.order.line_ids:
             line.price_taxed = 11.7
             line.discount_rate = 10

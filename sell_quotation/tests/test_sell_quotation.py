@@ -92,7 +92,7 @@ class TestSellOrderLine(TransactionCase):
         self.sell_quotation = self.env.ref('sell_quotation.sell_quotation_1')
 
     def test_onchange_quantity(self):
-        ''' 当销货订单行的商品变化时，带出报价单 '''
+        ''' 当销货订单明细的商品变化时，带出报价单 '''
         self.sell_line.quantity = 80
         # 报价单不存在，报错
         with self.assertRaises(UserError):

@@ -49,7 +49,7 @@ class BuyOrder(models.Model):
     @api.one
     @api.depends('line_ids.subtotal', 'discount_amount')
     def _compute_amount(self):
-        '''当订单行和优惠金额改变时，改变成交金额'''
+        '''当订单明细和优惠金额改变时，改变成交金额'''
         total = sum(line.subtotal for line in self.line_ids)
         self.amount = total - self.discount_amount
 
@@ -146,10 +146,10 @@ class BuyOrder(models.Model):
                                         help=u'如未勾选此项，可在资金行里输入付款金额，订单保存后，采购人员可以单击资金行上的【确认】按钮。')
     line_ids = fields.One2many('buy.order.line',
                                'order_id',
-                               u'购货订单行',
+                               u'购货订单明细',
                                states=READONLY_STATES,
                                copy=True,
-                               help=u'购货订单的明细行，不能为空')
+                               help=u'购货订单的明细项，不能为空')
     note = fields.Text(u'备注',
                        help=u'单据备注')
     discount_rate = fields.Float(u'优惠率(%)',
@@ -233,7 +233,7 @@ class BuyOrder(models.Model):
 
     @api.onchange('discount_rate', 'line_ids')
     def onchange_discount_rate(self):
-        '''当优惠率或购货订单行发生变化时，单据优惠金额发生变化'''
+        '''当优惠率或购货单明细发生变化时，单据优惠金额发生变化'''
         total = sum(line.subtotal for line in self.line_ids)
         self.discount_amount = total * self.discount_rate * 0.01
 
@@ -241,8 +241,9 @@ class BuyOrder(models.Model):
     def onchange_partner_id(self):
         if self.partner_id:
             for line in self.line_ids:
-                if line.goods_id.supplier_id != self.partner_id.id:
-                    raise UserError(u'变更供应商：商品[%s]不属于该供应商，请删除该商品' % line.goods_id.name)
+                for vendor in line.goods_id.vendor_ids:
+                    if vendor.vendor_id != self.partner_id:
+                        raise UserError(u'变更供应商：商品[%s]不属于该供应商，请删除该商品' % line.goods_id.name)
                 if line.goods_id.tax_rate and self.partner_id.tax_rate:
                     if line.goods_id.tax_rate >= self.partner_id.tax_rate:
                         line.tax_rate = self.partner_id.tax_rate
@@ -295,10 +296,10 @@ class BuyOrder(models.Model):
         if self.state == 'done':
             raise UserError(u'请不要重复审核')
         if not self.line_ids:
-            raise UserError(u'请输入商品明细行')
+            raise UserError(u'请输入采购明细')
         for line in self.line_ids:
             if line.quantity <= 0 or line.price_taxed < 0:
-                raise UserError(u'商品 %s 的数量和含税单价不能小于0' % line.goods_id.name)
+                raise UserError(u'商品[ %s ]的数量和含税单价不能小于0' % line.goods_id.name)
             if line.tax_amount > 0 and self.currency_id:
                 raise UserError(u'外贸免税')
         if not self.bank_account_id and self.prepayment:
@@ -503,13 +504,13 @@ class BuyOrderLine(models.Model):
     @api.one
     @api.depends('goods_id')
     def _compute_using_attribute(self):
-        '''返回订单行中商品是否使用属性'''
+        '''返回订单明细中商品是否使用属性'''
         self.using_attribute = self.goods_id.attribute_ids and True or False
 
     @api.one
     @api.depends('quantity', 'price_taxed', 'discount_amount', 'tax_rate')
     def _compute_all_amount(self):
-        '''当订单行的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
+        '''当订单明细的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
         if self.tax_rate > 100:
             raise UserError(u'税率不能输入超过100的数')
         if self.tax_rate < 0:
@@ -535,7 +536,7 @@ class BuyOrderLine(models.Model):
 
     @api.onchange('price', 'tax_rate')
     def onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价'''
+        '''当订单明细的不含税单价改变时，改变含税单价'''
         price = self.price_taxed / (1 + self.tax_rate * 0.01)  # 不含税单价
         decimal = self.env.ref('core.decimal_price')
         if float_compare(price, self.price, precision_digits=decimal.digits) != 0:
@@ -568,7 +569,7 @@ class BuyOrderLine(models.Model):
                             required=True,
                             digits=dp.get_precision('Quantity'),
                             help=u'下单数量')
-    quantity_in = fields.Float(u'已执行数量',
+    quantity_in = fields.Float(u'已入库数量',
                                copy=False,
                                digits=dp.get_precision('Quantity'),
                                help=u'购货订单产生的入库单/退货单已执行数量')
@@ -620,7 +621,7 @@ class BuyOrderLine(models.Model):
 
     @api.onchange('goods_id', 'quantity')
     def onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的单位、成本价。
+        '''当订单明细的商品变化时，带出商品上的单位、成本价。
         在采购订单上选择供应商，自动带出供货价格，没有设置供货价的取成本价格。'''
         if not self.order_id.partner_id:
             raise UserError(u'请先选择一个供应商！')

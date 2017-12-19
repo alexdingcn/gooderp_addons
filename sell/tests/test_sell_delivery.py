@@ -464,7 +464,7 @@ class TestWhMoveLine(TransactionCase):
             break
 
     def test_onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价'''
+        '''当订单明细的不含税单价改变时，改变含税单价'''
         for line in self.new_delivery.line_out_ids:
             line.price = 10
             line.onchange_price()

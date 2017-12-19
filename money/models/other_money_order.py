@@ -349,7 +349,7 @@ class OtherMoneyOrderLine(models.Model):
 
     @api.onchange('amount', 'tax_rate')
     def onchange_tax_amount(self):
-        '''当订单行的金额、税率改变时，改变税额'''
+        '''当订单明细的金额、税率改变时，改变税额'''
         self.tax_amount = self.amount * self.tax_rate * 0.01
 
     other_money_id = fields.Many2one('other.money.order',

@@ -14,7 +14,7 @@ class SellOrder(models.Model):
 
     website_order_line = fields.One2many('sell.order.line',
                                          'order_id',
-                                         string=u'显示在网页上的发货订单行',
+                                         string=u'显示在网页上的发货订单明细',
                                          readonly=True
                                          )
     cart_quantity = fields.Integer(compute='_compute_cart_info',
@@ -54,7 +54,7 @@ class SellOrder(models.Model):
 
     @api.multi
     def _website_product_id_change(self, order_id, product_id, qty=0):
-        # 获取创建订单行需要的数据
+        # 获取创建订单明细需要的数据
         order = self.sudo().browse(order_id)
         product_context = dict(self.env.context)
 
@@ -107,7 +107,7 @@ class SellOrder(models.Model):
 
     @api.multi
     def _get_line_description(self, order_id, product_id):
-        # 获取创建订单行需要的 描述
+        # 获取创建订单明细需要的 描述
         product_context = dict(self.env.context)
         product = self.env['goods'].with_context(
             product_context).browse(product_id)
@@ -136,12 +136,12 @@ class SellOrder(models.Model):
         # 不存在产品的销售明细行，则新建
         if not order_line:
             values = self._website_product_id_change(
-                self.id, product_id, qty=1)  # 获取创建订单行需要的数据
-            # 获取创建订单行的 属性
+                self.id, product_id, qty=1)  # 获取创建订单明细需要的数据
+            # 获取创建订单明细的 属性
             values['attribute_id'] = self._get_line_attribute(
                 self.id, product_id, attributes=attributes)
             values['note'] = self._get_line_description(
-                self.id, product_id)  # 获取创建订单行的 备注
+                self.id, product_id)  # 获取创建订单明细的 备注
             order_line = sell_order_line_sudo_obj.create(values)
 
             if add_qty:

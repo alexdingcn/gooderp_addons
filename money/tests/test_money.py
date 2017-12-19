@@ -499,7 +499,7 @@ class TestOtherMoneyOrderLine(TransactionCase):
             self.assertTrue(line.amount == 500)
 
     def test_onchange_tax_amount(self):
-        '''当订单行的金额、税率改变时，改变税额'''
+        '''当订单明细的金额、税率改变时，改变税额'''
         # 其他收入单
         for line in self.get_order.line_ids:
             line.service = self.service_1  # 咨询服务
@@ -509,7 +509,7 @@ class TestOtherMoneyOrderLine(TransactionCase):
             self.assertTrue(line.tax_amount == 170)
 
     def test_other_money_line_no_category_account(self):
-        ''' 其他收支单审核，订单行分类 的 account 不存在 '''
+        ''' 其他收支单审核，订单明细分类 的 account 不存在 '''
         other_pay = self.env['other.money.order'] \
             .with_context({'type': 'other_pay'}) \
             .create({

@@ -209,14 +209,14 @@ class TestBuyAdjustLine(TransactionCase):
         })
 
     def test_compute_using_attribute(self):
-        '''返回订单行中商品是否使用属性'''
+        '''返回订单明细中商品是否使用属性'''
         for line in self.adjust.line_ids:
             self.assertTrue(not line.using_attribute)
             line.goods_id = self.keyboard
             self.assertTrue(line.using_attribute)
 
     def test_compute_all_amount(self):
-        '''当订单行的数量、单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
+        '''当订单明细的数量、单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
         for line in self.adjust.line_ids:
             line.price_taxed = 11.7
             self.assertTrue(line.amount == 100)
@@ -232,7 +232,7 @@ class TestBuyAdjustLine(TransactionCase):
                 line.tax_rate = 102
 
     def test_onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价'''
+        '''当订单明细的不含税单价改变时，改变含税单价'''
         for line in self.adjust.line_ids:
             line.price_taxed = 0
             line.price = 10
@@ -240,7 +240,7 @@ class TestBuyAdjustLine(TransactionCase):
             self.assertAlmostEqual(line.price_taxed, 11.7)
 
     def test_onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的单位、成本'''
+        '''当订单明细的商品变化时，带出商品上的单位、成本'''
         for line in self.adjust.line_ids:
             line.goods_id = self.cable
             line.onchange_goods_id()
@@ -250,7 +250,7 @@ class TestBuyAdjustLine(TransactionCase):
             self.assertTrue(line.price_taxed == self.cable.cost)
 
     def test_onchange_discount_rate(self):
-        ''' 订单行优惠率改变时，改变优惠金额'''
+        ''' 订单明细优惠率改变时，改变优惠金额'''
         for line in self.adjust.line_ids:
             line.price_taxed = 11.7
             line.discount_rate = 10
@@ -276,7 +276,7 @@ class TestBuyAdjustLine(TransactionCase):
             self.env.ref('core.lenovo').tax_rate = 11
             self.env.ref('goods.cable').tax_rate = 10
             order_line.onchange_goods_id()
-            # partner 税率 =< 入库单行商品税率
+            # partner 税率 =< 入库单明细商品税率
             self.env.ref('core.lenovo').tax_rate = 9
             self.env.ref('goods.cable').tax_rate = 10
             order_line.onchange_goods_id()

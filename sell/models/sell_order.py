@@ -26,7 +26,7 @@ class SellOrder(models.Model):
     @api.one
     @api.depends('line_ids.subtotal', 'discount_amount')
     def _compute_amount(self):
-        '''当订单行和优惠金额改变时，改变成交金额'''
+        '''当订单明细和优惠金额改变时，改变成交金额'''
         total = sum(line.subtotal for line in self.line_ids)
         self.amount = total - self.discount_amount
 
@@ -118,7 +118,7 @@ class SellOrder(models.Model):
                                    help=u'商品将从该仓库调出')
     name = fields.Char(u'单据编号', index=True, copy=False,
                        default='/', help=u"创建时它会自动生成下一个编号")
-    line_ids = fields.One2many('sell.order.line', 'order_id', u'销货订单行',
+    line_ids = fields.One2many('sell.order.line', 'order_id', u'销货订单明细',
                                states=READONLY_STATES, copy=True,
                                help=u'销货订单的明细行，不能为空')
     note = fields.Text(u'备注', help=u'单据备注')
@@ -217,7 +217,7 @@ class SellOrder(models.Model):
 
     @api.onchange('discount_rate', 'line_ids')
     def onchange_discount_rate(self):
-        '''当优惠率或销货订单行发生变化时，单据优惠金额发生变化'''
+        '''当优惠率或销货订单明细发生变化时，单据优惠金额发生变化'''
         total = sum(line.subtotal for line in self.line_ids)
         self.discount_amount = total * self.discount_rate * 0.01
 
@@ -437,13 +437,13 @@ class SellOrderLine(models.Model):
     @api.one
     @api.depends('goods_id')
     def _compute_using_attribute(self):
-        '''返回订单行中商品是否使用属性'''
+        '''返回订单明细中商品是否使用属性'''
         self.using_attribute = self.goods_id.attribute_ids and True or False
 
     @api.one
     @api.depends('quantity', 'price_taxed', 'discount_amount', 'tax_rate')
     def _compute_all_amount(self):
-        '''当订单行的数量、含税单价、折扣额、税率改变时，改变销售金额、税额、价税合计'''
+        '''当订单明细的数量、含税单价、折扣额、税率改变时，改变销售金额、税额、价税合计'''
         if self.tax_rate > 100:
             raise UserError(u'税率不能输入超过100的数!\n输入税率:%s' % self.tax_rate)
         if self.tax_rate < 0:
@@ -466,7 +466,7 @@ class SellOrderLine(models.Model):
 
     @api.onchange('price', 'tax_rate')
     def onchange_price(self):
-        '''当订单行的不含税单价改变时，改变含税单价。
+        '''当订单明细的不含税单价改变时，改变含税单价。
         如果将含税价改为99,则self.price计算出来为84.62,price=99/1.17，
         跟84.62保留相同位数比较时是相等的，这种情况则保留含税价不变，
         这样处理是为了使得修改含税价时不再重新计算含税价。
@@ -542,7 +542,7 @@ class SellOrderLine(models.Model):
 
     @api.onchange('goods_id')
     def onchange_warehouse_id(self):
-        '''当订单行的仓库变化时，带出定价策略中的折扣率'''
+        '''当订单明细的仓库变化时，带出定价策略中的折扣率'''
         if self.order_id.warehouse_id and self.goods_id:
             partner = self.order_id.partner_id
             warehouse = self.order_id.warehouse_id
@@ -558,7 +558,7 @@ class SellOrderLine(models.Model):
     @api.multi
     @api.onchange('goods_id')
     def onchange_goods_id(self):
-        '''当订单行的商品变化时，带出商品上的单位、默认仓库、价格、税率'''
+        '''当订单明细的商品变化时，带出商品上的单位、默认仓库、价格、税率'''
         if self.goods_id:
             self.uom_id = self.goods_id.uom_id
             self.price_taxed = self.goods_id.price

@@ -70,7 +70,7 @@ class TestScm(TransactionCase):
 
         self.stock_request.stock_query()
 
-        # 保证不存在多条未审核购货订单行
+        # 保证不存在多条未审核购货单明细
         self.env.ref('buy.buy_order_line_1_same').attribute_id = False
         self.env.ref('buy.buy_return_order_line_1').order_id.partner_id = self.env.ref(
             'core.zt').id
@@ -83,7 +83,7 @@ class TestScm(TransactionCase):
         # 请输入补货申请行商品的供应商 存在
         self.goods_keyboard_mouse.min_stock_qty = 100
         self.stock_request.stock_query()
-        # 保证不存在多条未审核购货订单行
+        # 保证不存在多条未审核购货单明细
         self.env.ref('buy.buy_order_line_1_same').attribute_id = False
         self.env.ref('buy.buy_return_order_line_1').order_id.partner_id = self.env.ref(
             'core.zt').id
@@ -95,7 +95,7 @@ class TestScm(TransactionCase):
     def test_stock_request_done_no_same_supplier(self):
         ''' 测试 找不到相同供应商的购货订单 '''
         self.stock_request.stock_query()
-        # 保证不存在多条未审核购货订单行
+        # 保证不存在多条未审核购货单明细
         self.env.ref('buy.buy_order_line_1_same').attribute_id = False
         self.env.ref('buy.buy_return_order_1').buy_order_done()
 
@@ -105,12 +105,12 @@ class TestScm(TransactionCase):
         self.stock_request.stock_request_done()
 
     def test_stock_request_done_raise_multi_line(self):
-        ''' 测试 raise 供应商%s 商品%s%s 存在多条未审核购货订单行 '''
+        ''' 测试 raise 供应商%s 商品%s%s 存在多条未审核购货单明细 '''
         self.wh_move_in_1.approve_order()
         self.buy_order_keyboard_2 = self.buy_order_keyboard_1.copy()
 
         self.stock_request.stock_query()
-        # raise 供应商%s 商品%s%s 存在多条未审核购货订单行
+        # raise 供应商%s 商品%s%s 存在多条未审核购货单明细
         with self.assertRaises(UserError):
             self.stock_request.stock_request_done()
 
@@ -145,7 +145,7 @@ class TestScm(TransactionCase):
         self.goods_computer.min_stock_qty = 5
         self.stock_request.stock_query()
 
-        # 保证不存在多条未审核购货订单行
+        # 保证不存在多条未审核购货单明细
         self.env.ref('buy.buy_order_line_1_same').attribute_id = False
         self.env.ref('buy.buy_return_order_line_1').order_id.partner_id = self.env.ref(
             'core.zt').id

@@ -267,7 +267,7 @@ class StockRequest(models.Model):
                         else:
                             todo_produce_lines.append(request_line_ids)
 
-        # 处理待生成购货订单行
+        # 处理待生成购货单明细
         for line in todo_buy_lines:
             if not line.request_qty:
                 continue
@@ -294,16 +294,16 @@ class StockRequest(models.Model):
                                                                  line.goods_id.id),
                                                                 ('attribute_id', '=', line.attribute_id.id)])
             if len(buy_order_line) > 1:
-                raise UserError(u'供应商%s 商品%s%s 存在多条未审核购货订单行。请联系采购人员处理。'
+                raise UserError(u'供应商%s 商品%s%s 存在多条未审核购货单明细。请联系采购人员处理。'
                                 % (line.supplier_id.name, line.goods_id.name, line.attribute_id.name or ''))
 
             if buy_order_line:
-                # 增加原订单行的商品数量
+                # 增加原订单明细的商品数量
                 buy_order_line.quantity += line.request_qty
                 buy_order_line.note = buy_order_line.note or ''
                 buy_order_line.note += u' %s' % (line.request_id.name)
             else:
-                # 创建购货订单行
+                # 创建购货单明细
                 vals = self._get_buy_order_line_data(line, buy_order)
                 self.env['buy.order.line'].create(vals)
 

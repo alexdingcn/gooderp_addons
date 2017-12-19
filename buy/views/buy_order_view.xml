@@ -31,8 +31,13 @@
             <field name="model">buy.order</field>
             <field name="arch" type="xml">
                 <form string="购货订单">
+                    <!--confirm="审核和制单为同一人，确认？"-->
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
-                        <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"/>
+                        <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"
+                                confirm="制单人和审核人相同，请确认"
+                                attrs="{'invisible': ['|', ('create_uid', '!=', uid)]}" />
+                        <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"
+                                attrs="{'invisible': ['|', ('create_uid', '=', uid)]}" />
                         <button name="buy_order_draft" states="done" string="反审核" type="object"/>
                         <button name="action_cancel" states="draft" string="作废" type="object"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"
@@ -46,7 +51,7 @@
                                     icon="fa-truck"
                                     attrs="{'invisible':['|', ('state', 'in', ('draft')),('receipt_count','=',0)]}">
                                 <field name="receipt_count" widget="statinfo" string="入库/退货单"
-                                       help="Incoming Shipments"/>
+                                       help="入库单"/>
                                 <field name="receipt_ids" invisible="1"/>
                             </button>
                             <button type="object"
@@ -68,7 +73,7 @@
                                 <field name="date" required="1"/>
                                 <field name="warehouse_dest_id"
                                        options="{'no_open': True, 'no_create': True}"/>
-                                <field name="invoice_by_receipt"></field>
+                                <field name="invoice_by_receipt"/>
                             </group>
                             <group>
                                 <field name="ref"/>
@@ -80,16 +85,16 @@
                             </group>
                         </group>
                         <field name="line_ids">
-                            <tree string="购货订单行" editable="bottom">
+                            <tree string="购货单明细" editable="bottom">
                                 <field name="goods_id" required='1'
-                                       domain="[('state','=','done'),('supplier_id', '=', parent.partner_id)]"
+                                       domain="[('state','=','done'),('vendor_ids.vendor_id','=', parent.partner_id)]"
                                        options="{'no_create': True}"/>
                                 <!--<field name="attribute_id"-->
-                                       <!--groups='goods.multi_attrs_groups'-->
-                                       <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
+                                <!--groups='goods.multi_attrs_groups'-->
+                                <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
                                 <field name="quantity" sum="合计数量"/>
-                                <field name="quantity_in" readonly="1" sum="合计已入库数量"/>
-                                <field name="uom_id"/>
+                                <field name="quantity_in" readonly="1" sum="合计已入库数量" class="oe_edit_only"/>
+                                <field name="uom_id" options="{'no_open': True}"/>
                                 <field name="price"/>
                                 <field name="price_taxed" groups='buy.in_tax_groups'/>
                                 <field name="discount_rate" groups='buy.buy_line_discount_groups'/>
@@ -103,15 +108,16 @@
                                 <field name="note"/>
                                 <field name="origin" invisible="1"/>
                                 <field name='using_attribute' invisible='1'/>
+                                <field name='create_uid' invisible='1'/>
                             </tree>
                         </field>
                         <field name="pay_ids" attrs="{'invisible': [('invoice_by_receipt','=',True)]}">
                             <tree string="Payment Form" editable="bottom">
-                                <field name="name"></field>
-                                <field name="amount_money" sum="合计"></field>
-                                <field name="date_application"></field>
+                                <field name="name"/>
+                                <field name="amount_money" sum="合计"/>
+                                <field name="date_application"/>
                                 <button name="request_payment" type="object"
-                                        string="确认" attrs="{'invisible': [('date_application','!=',False)]}"></button>
+                                        string="确认" attrs="{'invisible': [('date_application','!=',False)]}"/>
                             </tree>
                         </field>
                         <field name="note" placeholder="暂无备注信息"/>
@@ -123,11 +129,13 @@
                             </group>
                             <group>
                                 <field name="prepayment" attrs="{'invisible': [('invoice_by_receipt','=',False)]}"/>
-                                <field name="bank_account_id"
+                                <field name="bank_account_id" required="1"
+                                       options="{'no_open': True, 'no_create': True}"
                                        attrs="{'invisible': [('invoice_by_receipt','=',False)]}"/>
                             </group>
                         </group>
-                        <group>
+                        <hr/>
+                        <group attrs="{'invisible': [('create_uid','=',False)]}">
                             <group>
                                 <field name="create_uid" readonly="1" string="制单人"/>
                                 <field name="approve_uid" readonly="1"/>

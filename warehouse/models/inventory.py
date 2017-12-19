@@ -466,7 +466,7 @@ class WhIn(models.Model):
     _inherit = 'wh.in'
 
     inventory_ids = fields.One2many('wh.inventory', 'in_id', u'盘点单',
-                                    help=u'其他入库单行对应的盘点单行，盘盈的情况')
+                                    help=u'其他入库单明细对应的盘点单行，盘盈的情况')
 
     @api.multi
     def approve_order(self):
