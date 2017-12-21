@@ -97,7 +97,7 @@ class SellOrderTrackWizard(models.TransientModel):
 
         sell_order_line = self.env['sell.order.line']
         for line in sell_order_line.search(self._get_domain(), order='goods_id'):
-            is_sell = line.order_id.type == 'sell' and 1 or -1  # 是否销货订单
+            is_sell = line.order_id.type == 'sell' and 1 or -1  # 是否销售订单
             # 以下分别为明细行上数量、销售额、未出库数量，退货时均取反
             qty = is_sell * line.quantity
             amount = is_sell * line.subtotal

@@ -157,7 +157,7 @@ class TestSellDelivery(TransactionCase):
         with self.assertRaises(UserError):
             self.delivery.unlink()
 
-        # 删除销售发货单时，测试能否删除发货单行
+        # 删除销售发货单时，测试能否删除发货单明细
         delivery = self.delivery.copy()
         move_id = delivery.sell_move_id.id
         delivery.unlink()

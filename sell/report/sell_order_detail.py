@@ -36,7 +36,7 @@ class SellOrderDetail(models.Model):
                 SELECT  MIN(wml.id) AS id,
                     wm.date AS date,
                     wm.name AS order_name,
-                    (CASE WHEN wm.origin = 'sell.delivery.sell' THEN '销货'
+                    (CASE WHEN wm.origin = 'sell.delivery.sell' THEN '销售'
                     ELSE '退货' END) AS type,
                     wm.user_id AS user_id,
                     wm.partner_id AS partner_id,

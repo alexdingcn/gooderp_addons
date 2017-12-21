@@ -3,7 +3,7 @@ import odoo.addons.decimal_precision as dp
 from utils import safe_division
 from jinja2 import Environment, PackageLoader
 from odoo import models, fields, api
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools import float_compare
 
 env = Environment(loader=PackageLoader(
@@ -55,7 +55,7 @@ class WhMoveLine(models.Model):
             raise UserError(u'税率不能输入负数')
         self.subtotal = self.price_taxed * self.goods_qty - self.discount_amount  # 价税合计
         self.tax_amount = self.subtotal / \
-            (100 + self.tax_rate) * self.tax_rate  # 税额
+                          (100 + self.tax_rate) * self.tax_rate  # 税额
         self.amount = self.subtotal - self.tax_amount  # 金额
 
     @api.onchange('price', 'tax_rate')
@@ -75,7 +75,8 @@ class WhMoveLine(models.Model):
     @api.depends('move_id.warehouse_id')
     def _get_line_warehouse(self):
         self.warehouse_id = self.move_id.warehouse_id.id
-        if (self.move_id.origin == 'wh.assembly' or self.move_id.origin == 'wh.disassembly' or self.move_id.origin == 'outsource') and self.type == 'in':
+        if (
+                self.move_id.origin == 'wh.assembly' or self.move_id.origin == 'wh.disassembly' or self.move_id.origin == 'outsource') and self.type == 'in':
             self.warehouse_id = self.env.ref(
                 'warehouse.warehouse_production').id
 
@@ -83,7 +84,8 @@ class WhMoveLine(models.Model):
     @api.depends('move_id.warehouse_dest_id')
     def _get_line_warehouse_dest(self):
         self.warehouse_dest_id = self.move_id.warehouse_dest_id.id
-        if (self.move_id.origin == 'wh.assembly' or self.move_id.origin == 'wh.disassembly' or self.move_id.origin == 'outsource') and self.type == 'out':
+        if (
+                self.move_id.origin == 'wh.assembly' or self.move_id.origin == 'wh.disassembly' or self.move_id.origin == 'outsource') and self.type == 'out':
             self.warehouse_dest_id = self.env.ref(
                 'warehouse.warehouse_production').id
 
@@ -148,14 +150,15 @@ class WhMoveLine(models.Model):
     lot = fields.Char(u'批号',
                       help=u'该单据行对应的商品的批号，一般是入库单明细')
     lot_id = fields.Many2one('wh.move.line', u'批号',
+                             track_visibility='onchange',
                              help=u'该单据行对应的商品的批号，一般是出库单行')
     lot_qty = fields.Float(related='lot_id.qty_remaining', string=u'批号数量',
                            digits=dp.get_precision('Quantity'),
                            help=u'该单据行对应的商品批号的商品剩余数量')
     lot_uos_qty = fields.Float(u'批号辅助数量',
-                               digits=dp.get_precision('Quantity'),
+                               digits=(16, 2),
                                help=u'该单据行对应的商品的批号辅助数量')
-    location_id = fields.Many2one('location', string='库位')
+    location_id = fields.Many2one('location', string='库位', track_visibility='onchange')
     production_date = fields.Date(u'生产日期', default=fields.Date.context_today,
                                   help=u'商品的生产日期')
     shelf_life = fields.Integer(u'保质期(天)',
@@ -165,7 +168,7 @@ class WhMoveLine(models.Model):
     uom_id = fields.Many2one('uom', string=u'单位', ondelete='restrict', compute=_compute_uom_uos,
                              help=u'商品的计量单位', store=True)
     uos_id = fields.Many2one('uom', string=u'辅助单位', ondelete='restrict', compute=_compute_uom_uos,
-                             readonly=True,  help=u'商品的辅助单位', store=True)
+                             readonly=True, help=u'商品的辅助单位', store=True)
     warehouse_id = fields.Many2one('warehouse', u'调出仓库',
                                    ondelete='restrict',
                                    store=True,
@@ -181,7 +184,7 @@ class WhMoveLine(models.Model):
                              default=1,
                              required=True,
                              help=u'商品的数量')
-    goods_uos_qty = fields.Float(u'辅助数量', digits=dp.get_precision('Quantity'),
+    goods_uos_qty = fields.Float(u'辅助数量', digits=(16, 2),
                                  compute=_get_goods_uos_qty, inverse=_inverse_goods_qty, store=True,
                                  help=u'商品的辅助数量')
 
@@ -218,6 +221,7 @@ class WhMoveLine(models.Model):
     line_net_weight = fields.Float(
         string=u'净重小计', compute=compute_line_net_weight, store=True)
     expiration_date = fields.Date(u'过保日',
+                                  track_visibility='onchange',
                                   help=u'商品保质期截止日期')
     company_id = fields.Many2one(
         'res.company',
@@ -298,10 +302,10 @@ class WhMoveLine(models.Model):
             domain = args
         if name:
             domain.append(('lot', operator, name))
-        records = self.search(domain, limit=limit)
+        records = self.search(domain, limit=limit, order='expiration_date, id')
         for line in records:
-            result.append((line.id, u'%s %s 余 %s' % (
-                line.lot, line.warehouse_dest_id.name, line.qty_remaining)))
+            result.append((line.id, u'[%s]%s 余 %s 过保日%s' %
+                           (line.warehouse_dest_id.name, line.lot, line.qty_remaining, line.expiration_date)))
         return result
 
     def check_availability(self):
@@ -451,6 +455,14 @@ class WhMoveLine(models.Model):
 
             if self.env.context.get('type') in ['internal', 'out']:
                 self.lot = self.lot_id.lot
+                self.expiration_date = self.lot_id.expiration_date
+
+            if self.lot_id.qty_remaining < self.goods_qty:
+                return {'warning': {
+                    'title': u'批次%s 余量不足' % self.lot_id.lot,
+                    'message': u'该批次余量不足以满足订单数量, 请复制商品后分配批次，注意总数量保持一致!\n订单需要:%s\n批次余量:%s' %
+                               (self.goods_qty, self.lot_id.qty_remaining),
+                }}
 
     @api.onchange('goods_qty', 'price_taxed', 'discount_rate')
     def onchange_discount_rate(self):

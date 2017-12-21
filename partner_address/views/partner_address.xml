@@ -23,7 +23,7 @@
             <field name="model">partner</field>
             <field name='inherit_id' ref='core.partner_cus_form' />
             <field name="arch" type="xml">
-                <field name="main_contact" position="after">
+                <field name="main_address" position="after">
                     <field name="address"/>
                 </field>
                 <xpath expr="//group" position="after">

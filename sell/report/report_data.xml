@@ -39,7 +39,7 @@
             </field>
         </record>
         <record id='report_sell_order' model='ir.actions.report.xml'>
-            <field name='name'>销货订单</field>
+            <field name='name'>销售订单</field>
             <field name='model'>sell.order</field>
             <field name='report_type'>docx</field>
             <field name='report_name'>sell.order</field>

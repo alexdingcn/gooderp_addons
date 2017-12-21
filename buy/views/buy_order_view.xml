@@ -31,15 +31,15 @@
             <field name="model">buy.order</field>
             <field name="arch" type="xml">
                 <form string="购货订单">
-                    <!--confirm="审核和制单为同一人，确认？"-->
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"
                                 confirm="制单人和审核人相同，请确认"
-                                attrs="{'invisible': ['|', ('create_uid', '!=', uid)]}" />
+                                attrs="{'invisible': ['|', ('create_uid', '!=', uid)]}"/>
                         <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"
-                                attrs="{'invisible': ['|', ('create_uid', '=', uid)]}" />
+                                attrs="{'invisible': ['|', ('create_uid', '=', uid)]}"/>
                         <button name="buy_order_draft" states="done" string="反审核" type="object"/>
-                        <button name="action_cancel" states="draft" string="作废" type="object"/>
+                        <button name="action_cancel" states="draft" string="作废" type="object"
+                                confirm="是否作废该采购单，请确认"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,done"
                                statusbar_colors='{"done":"blue"}' readonly="1"/>
                     </header>
@@ -92,9 +92,9 @@
                                 <!--<field name="attribute_id"-->
                                 <!--groups='goods.multi_attrs_groups'-->
                                 <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
+                                <!--<field name="quantity_in" readonly="1" sum="合计已入库数量" />-->
                                 <field name="quantity" sum="合计数量"/>
-                                <field name="quantity_in" readonly="1" sum="合计已入库数量" class="oe_edit_only"/>
-                                <field name="uom_id" options="{'no_open': True}"/>
+                                <field name="uom_id" readonly="1"/>
                                 <field name="price"/>
                                 <field name="price_taxed" groups='buy.in_tax_groups'/>
                                 <field name="discount_rate" groups='buy.buy_line_discount_groups'/>
@@ -120,7 +120,7 @@
                                         string="确认" attrs="{'invisible': [('date_application','!=',False)]}"/>
                             </tree>
                         </field>
-                        <field name="note" placeholder="暂无备注信息"/>
+
                         <group>
                             <group>
                                 <field name="discount_amount" groups='buy.buy_discount_groups'/>
@@ -132,6 +132,7 @@
                                 <field name="bank_account_id" required="1"
                                        options="{'no_open': True, 'no_create': True}"
                                        attrs="{'invisible': [('invoice_by_receipt','=',False)]}"/>
+                                <field name="note" placeholder="暂无备注信息"/>
                             </group>
                         </group>
                         <hr/>

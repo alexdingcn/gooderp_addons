@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
+import logging
 
 from odoo import fields, models, api
 import odoo.addons.decimal_precision as dp
 from odoo.exceptions import UserError
 import datetime
 from odoo.tools import float_compare, float_is_zero
+
+_logger = logging.getLogger(__name__)
 
 # 字段只读状态
 READONLY_STATES = {

@@ -65,10 +65,7 @@ class Partner(models.Model):
     source = fields.Char(u'来源')
     note = fields.Text(u'备注')
     main_contact = fields.Char(u'主联系人')
-    responsible_id = fields.Many2one('res.users',
-                                     u'负责人员')
-    share_id = fields.Many2one('res.users',
-                               u'共享人员')
+    responsible_id = fields.Many2one('res.users', u'负责人员')
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', '业务伙伴不能重名')

@@ -36,7 +36,7 @@ class VendorGoods(models.Model):
                        help=u'供应商提供的商品名称')
 
     min_qty = fields.Float(u'最低订购量',
-                           digits=dp.get_precision('Quantity'),
+                           digits=dp.get_precision('Quantity'), default=1,
                            help=u'采购商品时，大于或等于最低订购量时，商品的价格才取该行的供货价')
 
     company_id = fields.Many2one(

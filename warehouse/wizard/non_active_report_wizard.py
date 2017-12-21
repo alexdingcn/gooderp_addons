@@ -55,9 +55,9 @@ class NonActiveReportWizard(models.TransientModel):
     _description = u'呆滞料报表向导'
 
     warehouse_id = fields.Many2one('warehouse', string=u'仓库')
-    first_stage_day = fields.Integer(string=u'第一阶段天数', required=True)
-    second_stage_day = fields.Integer(string=u'第二阶段天数', required=True)
-    third_stage_day = fields.Integer(string=u'第三阶段天数', required=True)
+    first_stage_day = fields.Integer(string=u'第一阶段天数', required=True, default=30)
+    second_stage_day = fields.Integer(string=u'第二阶段天数', required=True, default=60)
+    third_stage_day = fields.Integer(string=u'第三阶段天数', required=True, default=90)
     company_id = fields.Many2one(
         'res.company',
         string=u'公司',

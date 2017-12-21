@@ -4,7 +4,7 @@ from odoo import models, fields, api
 from odoo.exceptions import UserError
 import odoo.addons.decimal_precision as dp
 
-# 销货订单审核状态可选值
+# 销售订单审核状态可选值
 SELL_QUOTATION_STATES = [
     ('draft', u'未审核'),
     ('done', u'已审核'),

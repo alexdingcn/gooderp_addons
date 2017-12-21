@@ -27,8 +27,9 @@ class Goods(models.Model):
         res = []
 
         for Goods in self:
-            res.append((Goods.id, Goods.code and (
-                    Goods.code + '_' + Goods.name) or Goods.name))
+            name = Goods.code and (Goods.code + '_' + Goods.name) or Goods.name
+            name += Goods.specs and ('[' + Goods.specs + ']')
+            res.append((Goods.id, name))
         return res
 
     @api.model

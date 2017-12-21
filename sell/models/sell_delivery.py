@@ -64,7 +64,7 @@ class SellDelivery(models.Model):
                                help=u'是否为退货类型')
     order_id = fields.Many2one('sell.order', u'订单号', copy=False,
                                ondelete='cascade',
-                               help=u'产生发货单/退货单的销货订单')
+                               help=u'产生发货单/退货单的销售订单')
     invoice_id = fields.Many2one('money.invoice', u'发票号',
                                  copy=False, ondelete='set null',
                                  help=u'产生的发票号')
@@ -92,7 +92,7 @@ class SellDelivery(models.Model):
                                       help=u'用来核算和监督企业与其他单位或个人之间的债权债务的结算情况')
     cost_line_ids = fields.One2many('cost.line', 'sell_id', u'销售费用',
                                     copy=False,
-                                    help=u'销售费用明细行')
+                                    help=u'销售费用明细')
     money_state = fields.Char(u'收款状态', compute=_get_sell_money_state,
                               store=True, default=u'未收款',
                               help=u"销售发货单的收款状态", index=True, copy=False)
@@ -435,7 +435,7 @@ class SellDelivery(models.Model):
         '''审核销售发货单/退货单，更新本单的收款状态/退款状态，并生成结算单和收款单'''
         for record in self:
             record._wrong_delivery_done()
-            # 库存不足 生成零的
+            # 允许负库存：库存不足 生成零的,
             if self.env.user.company_id.is_enable_negative_stock:
                 result_vals = self.env['wh.move'].create_zero_wh_in(
                     record, record._name)
@@ -443,7 +443,7 @@ class SellDelivery(models.Model):
                     return result_vals
             # 调用wh.move中审核方法，更新审核人和审核状态
             record.sell_move_id.approve_order()
-            # 将发货/退货数量写入销货订单明细
+            # 将发货/退货数量写入销售订单明细
             if record.order_id:
                 record._line_qty_write()
             voucher = False
@@ -587,7 +587,7 @@ class SellDelivery(models.Model):
                 }
         delivery_return = self.with_context(is_return=True).create(vals)
         view_id = self.env.ref('sell.sell_return_form').id
-        name = u'销货退货单'
+        name = u'销售退货单'
         return {
             'name': name,
             'view_type': 'form',
@@ -603,11 +603,12 @@ class SellDelivery(models.Model):
 
 class WhMoveLine(models.Model):
     _inherit = 'wh.move.line'
-    _description = u'销售发货单行'
+    _description = u'销售发货单明细'
 
-    sell_line_id = fields.Many2one('sell.order.line', u'销货单行',
+    sell_line_id = fields.Many2one('sell.order.line', u'销售单行',
+                                   copy=True,
                                    ondelete='cascade',
-                                   help=u'对应的销货订单明细')
+                                   help=u'对应的销售订单明细')
 
     @api.onchange('warehouse_id', 'goods_id')
     def onchange_warehouse_id(self):
@@ -639,7 +640,7 @@ class WhMoveLine(models.Model):
         self.ensure_one()
         is_return = self.env.context.get('default_is_return')
         if self.goods_id:
-            # 如果是销售发货单行 或 销售退货单行
+            # 如果是销售发货单明细 或 销售退货单行
             if is_return is not None and \
                     ((self.type == 'out' and not is_return) or (self.type == 'in' and is_return)):
                 self._delivery_get_price_and_tax()

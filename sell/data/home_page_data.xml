@@ -3,7 +3,7 @@
     <data noupdate="1">
         <record id="home_report_type_1" model="home.report.type">
 			<field name="sequence">2</field>
-		    <field name="name" >销货</field>
+		    <field name="name" >销售</field>
 		</record>
         <record id="amount_summary_sell_delivery_action" model="home.page">
 			<field name="sequence">7</field>

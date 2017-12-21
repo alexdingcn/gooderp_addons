@@ -55,7 +55,7 @@ class StockRequest(models.Model):
             qty = 0  # 当前数量
             to_delivery_qty = 0  # 未发货数量
             to_receipt_qty = 0  # 未到货数量
-            to_sell_qty = 0  # 未审核销货数量
+            to_sell_qty = 0  # 未审核销售数量
             to_buy_qty = 0  # 未审核购货数量
 
             wh_move_lines = self.env['wh.move.line'].search(
@@ -98,7 +98,7 @@ class StockRequest(models.Model):
                                 to_receipt_dict[wh_move_line.attribute_id] += wh_move_line.goods_qty
                         else:  # 商品不存在属性
                             to_receipt_qty += wh_move_line.goods_qty
-            # 计算未销货数量
+            # 计算未销售数量
             sell_order_lines = self.env['sell.order.line'].search([('goods_id', '=', good.id),
                                                                    ('order_id.state', '=', 'draft')])
             for line in sell_order_lines:
@@ -318,7 +318,7 @@ class StockRequestLine(models.Model):
     goods_id = fields.Many2one('goods', u'商品')
     attribute_id = fields.Many2one('attribute', u'属性')
     qty = fields.Float(u'当前数量', digits=dp.get_precision('Quantity'))
-    to_sell_qty = fields.Float(u'未审核销货数量', digits=dp.get_precision('Quantity'))
+    to_sell_qty = fields.Float(u'未审核销售数量', digits=dp.get_precision('Quantity'))
     to_delivery_qty = fields.Float(
         u'未发货数量', digits=dp.get_precision('Quantity'))
     to_buy_qty = fields.Float(u'未审核购货数量', digits=dp.get_precision('Quantity'))

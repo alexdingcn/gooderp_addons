@@ -84,7 +84,7 @@ class WaveLine(models.Model):
                                         'wave_line_id', string=u'库位')
     picking_qty = fields.Integer(u'拣货数量')
     move_line_ids = fields.Many2many('wh.move.line', 'wave_move_rel',
-                                     'wave_line_id', 'move_line_id', string=u'发货单行')
+                                     'wave_line_id', 'move_line_id', string=u'发货单明细')
     location_text = fields.Char(u'库位序列')
 
 

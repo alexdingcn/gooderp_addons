@@ -27,7 +27,7 @@ class SellAdjust(models.Model):
                        help=u'变更单编号，保存时可自动生成')
     order_id = fields.Many2one('sell.order', u'原始单据', states=READONLY_STATES,
                                copy=False, ondelete='restrict',
-                               help=u'要调整的原始销货订单，只能调整已审核且没有全部出库的销货订单')
+                               help=u'要调整的原始销售订单，只能调整已审核且没有全部出库的销售订单')
     date = fields.Date(u'单据日期', states=READONLY_STATES,
                        default=lambda self: fields.Date.context_today(self),
                        index=True, copy=False,
@@ -91,7 +91,7 @@ class SellAdjust(models.Model):
                     raise UserError(u' %s 调整后数量不能小于原订单已出库数量' %
                                     line.goods_id.name)
                 elif origin_line.quantity > origin_line.quantity_out:
-                    # 查找出原销货订单产生的草稿状态的发货单明细行，并更新它
+                    # 查找出原销售订单产生的草稿状态的发货单明细行，并更新它
                     move_line = self.env['wh.move.line'].search(
                         [('sell_line_id', '=', origin_line.id),
                          ('state', '=', 'draft')])

@@ -125,7 +125,7 @@ class TestTrackWizard(TransactionCase):
             [('order_id', '=', order_2.id), ('state', '=', 'draft')])
         delivery_3.sell_delivery_done()
 
-        # 销货订单产生退货单
+        # 销售订单产生退货单
         sell_return = self.env.ref('sell.sell_order_return')
         sell_return.sell_order_done()
 
@@ -177,7 +177,7 @@ class TestDetailWizard(TransactionCase):
         # 补足商品网线的数量
         warehouse_obj = self.env.ref('warehouse.wh_in_whin0')
         warehouse_obj.approve_order()
-        # 复制一张销货订单并审核
+        # 复制一张销售订单并审核
         self.order = self.env.ref('sell.sell_order_2')
         order_2 = self.order.copy()
         order_2.sell_order_done()
@@ -187,7 +187,7 @@ class TestDetailWizard(TransactionCase):
             [('order_id', '=', order_2.id)])
         delivery_2.sell_delivery_done()
 
-        # 销货订单产生退货单，并审核退货单
+        # 销售订单产生退货单，并审核退货单
         sell_return = self.env.ref('sell.sell_order_return')
         sell_return.sell_order_done()
         delivery_return = self.env['sell.delivery'].search(
@@ -419,7 +419,7 @@ class TestReceiptWizard(TransactionCase):
         warehouse_obj = self.env.ref('warehouse.wh_in_whin0')
         warehouse_obj.approve_order()
 
-        # 销货订单产生发货单，并审核发货单产生收款单
+        # 销售订单产生发货单，并审核发货单产生收款单
         self.order = self.env.ref('sell.sell_order_2')
         self.order.sell_order_done()
         self.delivery = self.env['sell.delivery'].search(
@@ -434,7 +434,7 @@ class TestReceiptWizard(TransactionCase):
         for line in source_line:
             line.money_id.money_order_done()
 
-        # 销货订单产生发货单，并审核发货单，成交金额和本次收款均为0
+        # 销售订单产生发货单，并审核发货单，成交金额和本次收款均为0
         new_delivery = self.delivery.copy()
 #         new_delivery.discount_amount = (new_delivery.amount
 #                                         + new_delivery.discount_amount)
@@ -442,7 +442,7 @@ class TestReceiptWizard(TransactionCase):
         new_delivery.bank_account_id = False
         new_delivery.sell_delivery_done()
 
-        # 销货订单产生退货单，并审核退货单
+        # 销售订单产生退货单，并审核退货单
         self.order_return = self.env.ref('sell.sell_order_return')
         self.order_return.sell_order_done()
         self.delivery_return = self.env['sell.delivery'].search(

@@ -230,18 +230,17 @@
                         <group>
                             <group>
                                 <field name="code"/>
-                                <field name="main_mobile"/>
+                                <field name="main_contact" required="1"/>
+                                <field name="main_mobile" required="1"/>
                                 <field name="main_address"/>
                                 <field name="tax_num"/>
                                 <field name="credit_limit"/>
                                 <field name="responsible_id"/>
-                                <field name="share_id"/>
-                                <field name="main_contact"/>
                             </group>
                             <group>
                                 <field name="type"/>
-                                <field name="c_category_id" required="1"/>
-                                <field name="s_category_id"/>
+                                <field name="s_category_id" attrs="{'invisible':[('type', '!=', 'SUP')]}"/>
+                                <field name="c_category_id" attrs="{'invisible':[('type', '!=', 'CUS')]}"/>
                                 <field name="bank_name"/>
                                 <field name="bank_num"/>
                                 <field name="receivable"/>
@@ -263,11 +262,12 @@
             <field name="name">partner.cus.tree</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
-                <tree string="客户">
+                <tree string="客户" colors='blue:state == "draft";lightgray:state == "cancel"'>
                     <field name="name"/>
                     <field name="c_category_id" required="1"/>
                     <field name="code"/>
                     <field name="main_mobile"/>
+                    <field name="state"/>
                     <field name='active' invisible='1'/>
                     <field name="receivable" sum='sum'/>
                 </tree>
@@ -362,7 +362,7 @@
             <field name="name">partner.sup.tree</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
-                <tree string="供应商">
+                <tree string="供应商" colors='blue:state == "draft";lightgray:state == "cancel"'>
                     <field name="name"/>
                     <field name="code"/>
                     <field name="s_category_id" required="1"/>

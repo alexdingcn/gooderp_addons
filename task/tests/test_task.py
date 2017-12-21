@@ -56,7 +56,7 @@ class TestTimeline(TransactionCase):
         '''创建工作记录时应更新对应task的status等字段'''
         timeline = self.env['timeline'].create({
             'task_id': self.task.id,
-            'just_done': u'创建一个销货订单',
+            'just_done': u'创建一个销售订单',
             'next_action': u'测试其他内容',
             'next_datetime': (datetime.now()).strftime('%Y-%m-%d %H:%M:%S'),
             'set_status': self.status_doing.id,

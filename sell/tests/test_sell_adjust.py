@@ -13,7 +13,7 @@ class TestSellAdjust(TransactionCase):
             'finance.account_goods').id
         self.env.ref('warehouse.wh_in_whin0').date = '2016-02-06'
 
-        # 销货订单 10个 网线
+        # 销售订单 10个 网线
         self.order = self.env.ref('sell.sell_order_2')
         self.order.sell_order_done()
         self.keyboard = self.env.ref('goods.keyboard')
@@ -71,7 +71,7 @@ class TestSellAdjust(TransactionCase):
             adjust.sell_adjust_done()
 
     def test_sell_adjust_done_all_in(self):
-        '''审核销售变更单：销货订单生成的发货单已全部出库，审核时报错'''
+        '''审核销售变更单：销售订单生成的发货单已全部出库，审核时报错'''
         new_order = self.order.copy()
         new_order.sell_order_done()
         delivery = self.env['sell.delivery'].search(
@@ -89,7 +89,7 @@ class TestSellAdjust(TransactionCase):
             adjust.sell_adjust_done()
 
     def test_sell_adjust_done_more_same_line(self):
-        '''审核销售变更单：查找到销货订单中多行同一商品，不能调整'''
+        '''审核销售变更单：查找到销售订单中多行同一商品，不能调整'''
         new_order = self.order.copy()
         new_order.line_ids.create({'order_id': new_order.id,
                                    'goods_id': self.cable.id,
@@ -182,7 +182,7 @@ class TestSellAdjustLine(TransactionCase):
     def setUp(self):
         '''销售变更单明细基本数据'''
         super(TestSellAdjustLine, self).setUp()
-        # 销货订单 10个 网线
+        # 销售订单 10个 网线
         self.order = self.env.ref('sell.sell_order_2')
         self.order.sell_order_done()
         self.keyboard = self.env.ref('goods.keyboard')
@@ -202,7 +202,7 @@ class TestSellAdjustLine(TransactionCase):
             self.assertTrue(line.using_attribute)
 
     def test_compute_all_amount(self):
-        '''当订单明细的数量、单价、折扣额、税率改变时，改变销货金额、税额、价税合计'''
+        '''当订单明细的数量、单价、折扣额、税率改变时，改变销售金额、税额、价税合计'''
         for line in self.adjust.line_ids:
             line.price_taxed = 117
             self.assertTrue(line.amount == 100)
@@ -227,7 +227,7 @@ class TestSellAdjustLine(TransactionCase):
                 line.tax_rate = 102
 
     def test_onchange_goods_id(self):
-        '''当销货订单明细的商品变化时，带出商品上的单位、价格'''
+        '''当销售订单明细的商品变化时，带出商品上的单位、价格'''
         for line in self.adjust.line_ids:
             line.goods_id = self.keyboard
             line.onchange_goods_id()

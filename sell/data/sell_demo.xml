@@ -138,7 +138,7 @@
         	<field name="discount_rate">90</field>
         </record>
         <record id='report_sell_order_1' model='ir.actions.report.xml'>
-            <field name='name'>销货订单</field>
+            <field name='name'>销售订单</field>
             <field name='model'>sell.order</field>
             <field name='report_type'>docx</field>
             <field name='report_name'>sell.order</field>
@@ -146,7 +146,7 @@
             <field name='output_type'>docx</field>
         </record>
         <record id='report_sell_order_2' model='ir.actions.report.xml'>
-            <field name='name'>销货订单</field>
+            <field name='name'>销售订单</field>
             <field name='model'>sell.order</field>
             <field name='report_type'>docx</field>
             <field name='report_name'>sell.order.pdf</field>

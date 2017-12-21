@@ -47,6 +47,12 @@ class WhMove(models.Model):
         '''获取调入仓库'''
         return self._get_default_warehouse_dest_impl()
 
+    @api.one
+    @api.depends('line_in_ids')
+    def _get_qc_status(self):
+        if self.line_in_ids:
+            self.need_quality_control = any([line.goods_id.need_quality_report for line in self.line_in_ids])
+
     origin = fields.Char(u'移库类型', required=True,
                          help=u'移库类型')
     name = fields.Char(u'单据编号', copy=False, default='/',
@@ -103,15 +109,14 @@ class WhMove(models.Model):
         help=u'单据经办人',
         track_visibility='onchange'
     )
-    express_type = fields.Char(string='承运商')
-    express_code = fields.Char(u'快递单号', copy=False)
+    express_type = fields.Char(string='承运商', track_visibility='onchange')
+    express_code = fields.Char(u'快递单号', copy=False, track_visibility='onchange')
     company_id = fields.Many2one(
         'res.company',
         string=u'公司',
         change_default=True,
         default=lambda self: self.env['res.company']._company_default_get())
-    qc_result = fields.Binary(u'质检报告',
-                              help=u'点击上传质检报告')
+    qc_result = fields.Binary(u'质检报告', help=u'点击上传质检报告')
     finance_category_id = fields.Many2one(
         'core.category',
         string=u'收发类别',
@@ -122,9 +127,12 @@ class WhMove(models.Model):
         help=u'生成凭证时从此字段上取商品科目的对方科目',
     )
 
+    need_quality_control = fields.Boolean(u'需要质检', compute=_get_qc_status, store=True,
+                                          help=u"是否含有需要质检的商品", default=False)
+
     def scan_barcode_move_line_operation(self, line, conversion):
         """
-        在原移库明细行中更新数量和辅助数量，不创建新行
+        在原移库明细项中更新数量和辅助数量，不创建新行
         :return:
         """
         line.goods_qty += 1
@@ -303,12 +311,13 @@ class WhMove(models.Model):
         检验质检报告是否上传
         :return:
         """
-        qc_rule = self.env['qc.rule'].search([
-            ('move_type', '=', self.origin),
-            ('warehouse_id', '=', self.warehouse_id.id),
-            ('warehouse_dest_id', '=', self.warehouse_dest_id.id)])
-        if qc_rule and not self.qc_result:
-            raise UserError(u'请先上传质检报告')
+        if self.need_quality_control:
+            qc_rule = self.env['qc.rule'].search([
+                ('move_type', '=', self.origin),
+                ('warehouse_id', '=', self.warehouse_id.id),
+                ('warehouse_dest_id', '=', self.warehouse_dest_id.id)])
+            if qc_rule and not self.qc_result:
+                raise UserError(u'请先上传质检报告')
 
     def prev_approve_order(self):
         """
@@ -317,7 +326,7 @@ class WhMove(models.Model):
         """
         for order in self:
             if not order.line_out_ids and not order.line_in_ids:
-                raise UserError(u'单据的明细行不可以为空')
+                raise UserError(u'单据的明细项不可以为空')
             order.check_qc_result()
 
     @api.multi

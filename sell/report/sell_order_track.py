@@ -24,7 +24,7 @@ class SellOrderTrack(models.TransientModel):
     delivery_date = fields.Date(u'要求交货日期')
     wh_out_date = fields.Date(u'出库日期')
     note = fields.Char(u'备注')
-    type = fields.Selection([('sell', u'销货'), ('return', u'退货')], string=u'单据类型')
+    type = fields.Selection([('sell', u'销售'), ('return', u'退货')], string=u'单据类型')
 
     @api.multi
     def view_detail(self):
@@ -34,7 +34,7 @@ class SellOrderTrack(models.TransientModel):
         if order:
             view = self.env.ref('sell.sell_order_form')
             return {
-                'name': u'销货订单',
+                'name': u'销售订单',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'view_id': False,

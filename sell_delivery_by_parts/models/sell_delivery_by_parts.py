@@ -15,7 +15,7 @@ class WhMoveLine(models.Model):
 
     @api.model
     def create(self, vals):
-        ''' 组合产品生成子产品的发货单行 '''
+        ''' 组合产品生成子产品的发货单明细 '''
         goods = self.env['goods'].search([('id', '=', vals['goods_id'])])
         bom_line_obj = self.env['wh.bom.line']
 

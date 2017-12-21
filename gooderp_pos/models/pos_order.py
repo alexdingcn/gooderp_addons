@@ -248,7 +248,7 @@ class PosOrder(models.Model):
         """由pos订单生成销售发货单"""
         for order in self:
             records = []
-            delivery_line = []  # 销售发货单行
+            delivery_line = []  # 销售发货单明细
             return_line = []  # 销售退货单行
             for line in order.line_ids:
                 if line.qty < 0:

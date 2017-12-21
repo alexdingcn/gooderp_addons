@@ -42,7 +42,7 @@ class TestSellOrder(TransactionCase):
                 self.order.sell_order_draft()
 
     def test_default_warehouse(self):
-        '''新建销货订单时调出仓库的默认值'''
+        '''新建销售订单时调出仓库的默认值'''
         order = self.env['sell.order'].with_context({
             'warehouse_type': 'stock'
         }).create({})
@@ -52,23 +52,23 @@ class TestSellOrder(TransactionCase):
         '''选择客户带出其默认地址信息'''
         self.order.onchange_partner_id()
 
-        # partner 无 税率，销货单行商品无税率
+        # partner 无 税率，销售单行商品无税率
         self.env.ref('core.jd').tax_rate = 0
         self.env.ref('goods.mouse').tax_rate = 0
         self.order.onchange_partner_id()
-        # partner 有 税率，销货单行商品无税率
+        # partner 有 税率，销售单行商品无税率
         self.env.ref('core.jd').tax_rate = 10
         self.env.ref('goods.mouse').tax_rate = 0
         self.order.onchange_partner_id()
-        # partner 无税率，销货单行商品无税率
+        # partner 无税率，销售单行商品无税率
         self.env.ref('core.jd').tax_rate = 0
         self.env.ref('goods.mouse').tax_rate = 10
         self.order.onchange_partner_id()
-        # partner 税率 > 销货单行商品税率
+        # partner 税率 > 销售单行商品税率
         self.env.ref('core.jd').tax_rate = 11
         self.env.ref('goods.mouse').tax_rate = 10
         self.order.onchange_partner_id()
-        # partner 税率 =< 销货单行商品税率
+        # partner 税率 =< 销售单行商品税率
         self.env.ref('core.jd').tax_rate = 9
         self.env.ref('goods.mouse').tax_rate = 10
         self.order.onchange_partner_id()
@@ -111,19 +111,19 @@ class TestSellOrder(TransactionCase):
         self.assertEqual(self.order.discount_amount, 15408.0)
 
     def test_unlink(self):
-        '''测试删除已审核的销货订单'''
+        '''测试删除已审核的销售订单'''
         self.env.ref('sell.sell_order_line_1').tax_rate = 0
         self.order.sell_order_done()
         with self.assertRaises(UserError):
             self.order.unlink()
-        # 删除草稿状态的销货订单
+        # 删除草稿状态的销售订单
         self.order.copy()
         self.order.sell_order_draft()
         self.order.unlink()
 
     def test_sell_order_done(self):
-        '''测试审核销货订单'''
-        # 审核销货订单
+        '''测试审核销售订单'''
+        # 审核销售订单
         self.order.sell_order_done()
         with self.assertRaises(UserError):
             self.order.sell_order_done()
@@ -159,7 +159,7 @@ class TestSellOrder(TransactionCase):
             self.order.sell_order_done()
 
     def test_sell_order_done_foreign_currency(self):
-        '''测试审核销货订单，外币免税'''
+        '''测试审核销售订单，外币免税'''
         self.order.currency_id = self.env.ref('base.USD')
         for line in self.order.line_ids:
             line.price_taxed = 1170
@@ -168,7 +168,7 @@ class TestSellOrder(TransactionCase):
             self.order.sell_order_done()
 
     def test_sell_order_draft(self):
-        ''' 测试反审核销货订单  '''
+        ''' 测试反审核销售订单  '''
         self.order.sell_order_done()
         self.order.sell_order_draft()
         with self.assertRaises(UserError):
@@ -236,7 +236,7 @@ class TestSellOrderLine(TransactionCase):
             self.assertAlmostEqual(line.price_taxed, 11.7)
 
     def test_onchange_goods_id(self):
-        '''当销货订单明细的商品变化时，带出商品上的单位、价格'''
+        '''当销售订单明细的商品变化时，带出商品上的单位、价格'''
         goods = self.env.ref('goods.keyboard')
         c_category_id = self.order.partner_id.c_category_id
 
@@ -250,23 +250,23 @@ class TestSellOrderLine(TransactionCase):
     def test_onchange_goods_id_tax_rate(self):
         ''' 测试 修改商品时，商品行税率变化 '''
         self.order_line = self.env.ref('sell.sell_order_line_1')
-        # partner 无 税率，销货单行商品无税率
+        # partner 无 税率，销售单行商品无税率
         self.env.ref('core.jd').tax_rate = 0
         self.env.ref('goods.mouse').tax_rate = 0
         self.order_line.onchange_goods_id()
-        # partner 有 税率，销货单行商品无税率
+        # partner 有 税率，销售单行商品无税率
         self.env.ref('core.jd').tax_rate = 10
         self.env.ref('goods.mouse').tax_rate = 0
         self.order_line.onchange_goods_id()
-        # partner 无税率，销货单行商品有税率
+        # partner 无税率，销售单行商品有税率
         self.env.ref('core.jd').tax_rate = 0
         self.env.ref('goods.mouse').tax_rate = 10
         self.order_line.onchange_goods_id()
-        # partner 税率 > 销货单行商品税率
+        # partner 税率 > 销售单行商品税率
         self.env.ref('core.jd').tax_rate = 11
         self.env.ref('goods.mouse').tax_rate = 10
         self.order_line.onchange_goods_id()
-        # partner 税率 =< 销货单行商品税率
+        # partner 税率 =< 销售单行商品税率
         self.env.ref('core.jd').tax_rate = 9
         self.env.ref('goods.mouse').tax_rate = 10
         self.order_line.onchange_goods_id()
