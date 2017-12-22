@@ -28,6 +28,17 @@
             <field name="arch" type="xml">
                 <field name="child_ids" position="replace">
                     <notebook>
+                        <page string="首营认证资料" groups='goods.cert_info_groups'>
+                            <field name="cert_ids" >
+                                <tree string="合作伙伴认证信息" editable="bottom">
+                                    <field name="cert_name"/>
+                                    <field name="cert_number"/>
+                                    <field name="cert_expire"/>
+                                    <field name="cert_count"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="联系人地址">
                             <field name="child_ids">
                                 <tree string="联系人地址" editable="bottom">
@@ -45,8 +56,8 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="供货商品">
-                            <field name="goods_ids" colspan="2" nolabel="1" groups='goods.view_cost_groups'>
+                        <page string="供货商品" groups='goods.view_cost_groups'>
+                            <field name="goods_ids" colspan="2" nolabel="1" >
                                 <tree string="goods" editable="bottom">
                                     <field name="goods_id"/>
                                     <field name="price"/>

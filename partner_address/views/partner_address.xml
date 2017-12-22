@@ -1,99 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-		<!--继承客户tree,添加地址信息-->
+        <!--继承客户tree,添加地址信息-->
         <record id="customer_tree_inherit" model="ir.ui.view">
             <field name="name">customer.tree.inherit</field>
             <field name="model">partner</field>
             <field name='inherit_id' ref='core.partner_cus_tree'/>
             <field name="arch" type="xml">
                 <field name="main_mobile" position="after">
-                	<field name="contact"/>
-                	<field name="mobile"/>
-                	<field name="phone"/>
-                	<field name="qq"/>
-                	<field name="address"/>
-				</field>
+                    <field name="contact"/>
+                    <field name="mobile"/>
+                    <field name="phone"/>
+                    <field name="qq"/>
+                    <field name="address"/>
+                </field>
             </field>
         </record>
 
-		<!--继承客户form,添加地址信息-->
+        <!--继承客户form,添加地址信息-->
         <record id="customer_address_form_inherit" model="ir.ui.view">
             <field name="name">customer_address_form_inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.partner_cus_form' />
+            <field name='inherit_id' ref='core.partner_cus_form'/>
             <field name="arch" type="xml">
                 <field name="main_address" position="after">
                     <field name="address"/>
                 </field>
                 <xpath expr="//group" position="after">
-                    <field name="child_ids">
-                    	<tree string="联系人地址" editable="bottom">
-	                    	<field name="contact"/>
-	                    	<field name="mobile"/>
-	                    	<field name="phone"/>
-	                    	<field name="qq"/>
-                            <field name="email" widget="email"/>
-	                    	<field name="province_id" required="1"/>
-        					<field name="city_id" required="1"/>
-        					<field name="county_id"/>
-        					<field name="town"/>
-        					<field name="detail_address" required='1'/>
-	                    	<field name="is_default_add"/>
-	                    </tree>
-	                </field>
-				</xpath>
+                    <notebook>
+                        <page string="首营认证资料" groups="goods.cert_info_groups">
+                            <field name="cert_ids">
+                                <tree string="合作伙伴认证信息" editable="bottom">
+                                    <field name="cert_name"/>
+                                    <field name="cert_number"/>
+                                    <field name="cert_expire"/>
+                                    <field name="cert_count"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="联系人">
+                            <field name="child_ids">
+                                <tree string="联系人地址" editable="bottom">
+                                    <field name="contact"/>
+                                    <field name="mobile"/>
+                                    <field name="phone"/>
+                                    <field name="qq"/>
+                                    <field name="email" widget="email"/>
+                                    <field name="province_id" required="1"/>
+                                    <field name="city_id" required="1"/>
+                                    <field name="county_id"/>
+                                    <field name="town"/>
+                                    <field name="detail_address" required='1'/>
+                                    <field name="is_default_add"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
             </field>
         </record>
 
-		<!--继承供应商tree,添加地址信息-->
-        <record id="vendor_tree_inherit" model="ir.ui.view">
-            <field name="name">vendor.tree.inherit</field>
+        <!--继承供应商tree,添加地址信息-->
+        <record id="vendor_tree_address_inherit" model="ir.ui.view">
+            <field name="name">vendor.tree.address.inherit</field>
             <field name="model">partner</field>
             <field name='inherit_id' ref='core.partner_sup_tree'/>
             <field name="arch" type="xml">
                 <field name="main_mobile" position="after">
-                	<field name="contact"/>
-                	<field name="mobile"/>
-                	<field name="phone"/>
-                	<field name="qq"/>
-                	<field name="address"/>
-				</field>
+                    <field name="contact"/>
+                    <field name="mobile"/>
+                    <field name="phone"/>
+                    <field name="qq"/>
+                    <field name="address"/>
+                </field>
             </field>
         </record>
 
-		<!--继承供应商form,添加地址信息-->
+        <!--继承供应商form,添加地址信息-->
         <record id="supplier_address_form_inherit" model="ir.ui.view">
             <field name="name">supplier_address_form_inherit</field>
             <field name="model">partner</field>
-            <field name='inherit_id' ref='core.partner_sup_form' />
+            <field name='inherit_id' ref='core.partner_sup_form'/>
             <field name="arch" type="xml">
                 <xpath expr="//group" position="after">
                     <field name="child_ids">
-                    	<tree string="联系人地址" editable="bottom">
-	                    	<field name="contact" required="1"/>
-	                    	<field name="mobile" required="1"/>
-	                    	<field name="phone"/>
-	                    	<field name="qq"/>
+                        <tree string="联系人地址" editable="bottom">
+                            <field name="contact" required="1"/>
+                            <field name="mobile" required="1"/>
+                            <field name="phone"/>
+                            <field name="qq"/>
                             <field name="email" widget="email"/>
-	                    	<field name="province_id" />
-        			<field name="city_id" />
-        			<field name="county_id"  />
-        			<field name="town" />
-        			<field name="detail_address" />
-	                    	<field name="is_default_add"/>
-	                    </tree>
-	                </field>
-				</xpath>
+                            <field name="province_id"/>
+                            <field name="city_id"/>
+                            <field name="county_id"/>
+                            <field name="town"/>
+                            <field name="detail_address"/>
+                            <field name="is_default_add"/>
+                        </tree>
+                    </field>
+                </xpath>
             </field>
         </record>
 
-		 <record id="all_state_one_tree" model="ir.ui.view">
+        <record id="all_state_one_tree" model="ir.ui.view">
             <field name="name">country.state.tree</field>
             <field name="model">country.state</field>
             <field name='type'>tree</field>
             <field name="arch" type="xml">
-                <tree string='省'  editable="top">
+                <tree string='省' editable="top">
                     <!--<field name='country_id'/>-->
                     <field name='name'/>
                     <field name='code'/>
@@ -108,12 +123,12 @@
         </record>
 
 
-		 <record id="all_city_one_tree" model="ir.ui.view">
+        <record id="all_city_one_tree" model="ir.ui.view">
             <field name="name">all.city.tree</field>
             <field name="model">all.city</field>
             <field name='type'>tree</field>
             <field name="arch" type="xml">
-                <tree string='市'  editable="top">
+                <tree string='市' editable="top">
                     <field name='city_name'/>
                     <field name='province_id'/>
                 </tree>
@@ -130,7 +145,7 @@
             <field name="model">all.county</field>
             <field name='type'>tree</field>
             <field name="arch" type="xml">
-                <tree string='县'  editable="top">
+                <tree string='县' editable="top">
                     <field name='city_id'/>
                     <field name='county_name'/>
                     <field name='description'/>
@@ -143,8 +158,11 @@
             <field name='view_type'>form</field>
             <field name='view_mode'>tree</field>
         </record>
-		<menuitem id="customer_state_menu" name="省" parent="core.system_menu" action="all_state_one_action" sequence='20' />
-		<menuitem id="customer_city_menu" name="市" parent="core.system_menu" action="all_city_one_action" sequence='30' />
-        <menuitem id="customer_country_menu" name="县" parent="core.system_menu" action="all_country_one_action" sequence='40' />
+        <menuitem id="customer_state_menu" name="省" parent="core.system_menu" action="all_state_one_action"
+                  sequence='20'/>
+        <menuitem id="customer_city_menu" name="市" parent="core.system_menu" action="all_city_one_action"
+                  sequence='30'/>
+        <menuitem id="customer_country_menu" name="县" parent="core.system_menu" action="all_country_one_action"
+                  sequence='40'/>
     </data>
 </openerp>

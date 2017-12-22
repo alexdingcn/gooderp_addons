@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		<!--添加允许查看GSP-->
+        <record id='group_gsp' model='res.groups'>
+            <field name='name'>查看GSP管理</field>
+            <field name='category_id' ref="core.good_warehouse"/>
+			<field name="users" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+
+        <!--添加管理GSP采购-->
+		<record id='gsp.buy_groups' model='res.groups'>
+			<field name='name'>管理GSP采购</field>
+			<field name='category_id' ref="core.good_warehouse"/>
+			<field name="users" eval="[(4, ref('base.user_root'))]"/>
+		</record>
+	</data>
+</openerp>

@@ -153,7 +153,7 @@ class MailThread(models.AbstractModel):
         approver_rows = self.env['good_process.approver'].search([('model', '=', active_model),
                                                                   ('res_id', '=', active_id)])
         if model_row._approver_num == len(model_row._to_approver_ids):
-            return_vals = u'您是首个需要审批的人无需拒绝, 请通知制单人重新提审或者作废！'
+            return_vals = u'您是首个需要审批的人无需拒绝, 请通知填表人重新提审或者作废！'
         elif approver_rows and users:
             approver_rows.unlink()
             message = self.__good_approver_send_message__(

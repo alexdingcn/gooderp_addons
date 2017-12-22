@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "GOODERP 核心模块",
-    'author': "开阖软件",
+    'name': "核心模块",
+    'author': "医伴",
     'summary': '隐藏Odoo内置技术复杂性，增加基本权限组',
     'website': "http://www.osbzr.com",
     'category': 'gooderp',
     "description":
     '''
-                          该模块是 gooderp 的核心模块，完成了基本表的定义和配置。
+                          该模块是核心模块，完成了基本表的定义和配置。
 
                            定义了基本类，如 partner,bank_account,goods,staff,uom等；
                            定义了基本配置： 用户、类别等；

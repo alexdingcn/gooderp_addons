@@ -254,6 +254,6 @@ class PartnerStatementsReportWizard(models.TransientModel):
         :return: domain
         """
         if self.env.context.get('default_customer'):
-            return {'domain': {'partner_id': [('c_category_id', '!=', False)]}}
+            return {'domain': {'partner_id': [('type', '=', 'CUS')]}}
         else:
-            return {'domain': {'partner_id': [('s_category_id', '!=', False)]}}
+            return {'domain': {'partner_id': [('type', '=', 'SUP')]}}

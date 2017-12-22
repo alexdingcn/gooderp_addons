@@ -58,7 +58,7 @@
                 					</tr>
                 				    <tr>
                 				    	<td>
-                				    		<p>制单人:<span t-field='user.name'/></p>
+                				    		<p>填表人:<span t-field='user.name'/></p>
                 				    	</td>
                 				    </tr>
                 				</tbody>

@@ -114,9 +114,9 @@ class OtherMoneyOrder(models.Model):
     @api.onchange('date')
     def onchange_date(self):
         if self._context.get('type') == 'other_get':
-            return {'domain': {'partner_id': [('c_category_id', '!=', False)]}}
+            return {'domain': {'partner_id': [('type', '=', 'CUS')]}}
         else:
-            return {'domain': {'partner_id': [('s_category_id', '!=', False)]}}
+            return {'domain': {'partner_id': [('type', '=', 'SUP')]}}
 
     @api.onchange('partner_id')
     def onchange_partner_id(self):

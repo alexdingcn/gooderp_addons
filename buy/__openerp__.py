@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "GOODERP 采购模块",
-    'author': "flora@osbzr.com",
+    'name': "ERP采购模块",
+    'author': "dingxiaodong@yibanjf.com",
     'website': "http://www.osbzr.com",
     'category': 'gooderp',
     "description":

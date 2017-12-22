@@ -206,7 +206,7 @@ class BuyAdjustLine(models.Model):
     amount = fields.Float(u'金额', compute=_compute_all_amount,
                           store=True, readonly=True,
                           digits=dp.get_precision('Amount'),
-                          help=u'金额  = 价税合计  - 税额')
+                          help=u'金额 = 价税合计 - 税额')
     tax_rate = fields.Float(u'税率(%)', default=lambda self: self.env.user.company_id.import_tax_rate,
                             help=u'默认值取公司进项税率')
     tax_amount = fields.Float(u'税额', compute=_compute_all_amount,

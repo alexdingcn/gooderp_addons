@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta, date
+
 import odoo.addons.decimal_precision as dp
 from odoo import api, fields, models
 from odoo.exceptions import UserError
@@ -8,7 +10,6 @@ from odoo.exceptions import UserError
 class Partner(models.Model):
     '''
     业务伙伴可能是客户： c_category_id 非空
-
     '''
     _name = 'partner'
     _description = u'业务伙伴'
@@ -23,9 +24,13 @@ class Partner(models.Model):
         help=u'合作伙伴首营审核状态。新建时状态为未审核;审核后状态为已审核')
 
     code = fields.Char(u'编号')
-    name = fields.Char(u'名称', required=True)
-    main_mobile = fields.Char(u'主要手机号', required=True)
-    main_address = fields.Char(u'办公地址')
+    name = fields.Char(u'名称', required=True, copy=False)
+
+    main_mobile = fields.Char(u'联系电话', required=True)
+    main_address = fields.Char(u'详细地址')
+    fax = fields.Char(u'传真')
+    postcode = fields.Char(u'邮编')
+
     c_category_id = fields.Many2one('core.category', u'客户类别',
                                     ondelete='restrict',
                                     domain=[('type', '=', 'customer')],
@@ -66,6 +71,10 @@ class Partner(models.Model):
     note = fields.Text(u'备注')
     main_contact = fields.Char(u'主联系人')
     responsible_id = fields.Many2one('res.users', u'负责人员')
+
+    onsite_check = fields.Boolean(u'需要实地考察')
+
+    cert_ids = fields.One2many('partner.cert.info', 'partner_id', string=u'合作伙伴认证信息')
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', '业务伙伴不能重名')
@@ -121,10 +130,78 @@ class Partner(models.Model):
                                                 limit=limit)
 
     @api.multi
+    def action_view_buy_history(self):
+        '''
+        This function returns an action that display buy history of given sells order ids.
+        Date range [180 days ago, now]
+        '''
+        self.ensure_one()
+        date_end = datetime.today()
+        date_start = datetime.strptime(self.env.user.company_id.start_date, '%Y-%m-%d')
+
+        if (date_end - date_start).days > 365:
+            date_start = date_end - timedelta(days=365)
+
+        buy_order_track_wizard_obj = self.env['buy.order.track.wizard'].create({'date_start': date_start,
+                                                                                'date_end': date_end,
+                                                                                'partner_id': self.id})
+
+        return buy_order_track_wizard_obj.button_ok()
+
+    @api.multi
     def write(self, vals):
         # 业务伙伴应收/应付余额不为0时，不允许取消对应的客户/供应商身份
-        if self.c_category_id and vals.get('c_category_id') == False and self.receivable != 0:
+        if self.type == 'CUS' and vals.get('type') == False and self.receivable != 0:
             raise UserError(u'该客户应收余额不为0，不能取消客户类型')
-        if self.s_category_id and vals.get('s_category_id') == False and self.payable != 0:
+        if self.type == 'SUP' and vals.get('type') == False and self.payable != 0:
             raise UserError(u'该供应商应付余额不为0，不能取消供应商类型')
         return super(Partner, self).write(vals)
+
+
+class PartnerCertInfo(models.Model):
+    _name = "partner.cert.info"
+    _description = u"合作伙伴认证信息"
+    _sort = "id desc"
+
+    @api.one
+    @api.depends('cert_expire')
+    def _get_expire_status(self):
+        res = 0
+        if self.cert_expire:
+            exp_date = datetime.strptime(self.cert_expire, '%Y-%m-%d')
+            res = (date.today() - exp_date.date()).days
+        self.days_to_expire = res
+
+    partner_id = fields.Many2one('partner', u'合作伙伴', ondelete='cascade')
+    partner_type = fields.Selection(
+        related='partner_id.type',
+        string='合作伙伴类型',
+        readonly=True,
+        store=False,
+    )
+
+    cert_name = fields.Many2one('core.value', u'证书名称',
+                                ondelete='restrict',
+                                domain=[('type', '=', 'cert_name')],
+                                context={'type': 'cert_name'})
+    cert_number = fields.Char(u'证书编号', required=True)
+    cert_company_name = fields.Char(u'证书企业名称', required=True)
+    cert_company_address = fields.Char(u'证书企业地址')
+    cert_issue_date = fields.Date(u'证书发证日期', required=True)
+    cert_expire = fields.Date(u'证书有效期', default=fields.Date.context_today, required=True,
+                              help=u'证书有效期, 默认为当前天')
+    cert_scope = fields.Char(u'许可范围')
+    cert_count = fields.Integer(u'张数', default='1')
+
+    economics_type = fields.Char(u'经济性质')
+    business_type = fields.Char(u'经营方式')
+    registration_amount = fields.Integer(u'注册资金')
+    legal_person = fields.Char(u'法人')
+
+    note = fields.Text(u'备注')
+
+    days_to_expire = fields.Integer(u'过期天数', compute=_get_expire_status, readonly=True)
+
+    _sql_constraints = [
+        ('cert_number_uniq', 'unique(cert_number)', u'证书编号不能重复'),
+    ]

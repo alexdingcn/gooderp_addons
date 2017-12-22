@@ -133,8 +133,8 @@
                         <group>
                             <field name='note'/>
                             <group>
-                                <field name="create_uid" readonly="1" string="制单人"/>
-                                <field name="create_date" readonly="1" string="录单时间"/>
+                                <field name="create_uid" readonly="1" string="填表人"/>
+                                <field name="create_date" readonly="1" string="填报日期"/>
                             </group>
                             <group>
                                 <field name="write_uid" readonly="1" string="修改者"/>
@@ -196,7 +196,7 @@
         </record>
 
         <record id='goods_cert_info_tree' model='ir.ui.view'>
-            <field name='name'>goods.cert.info tree</field>
+            <field name='name'>goods.cert.info.tree</field>
             <field name='model'>goods.cert.info</field>
             <field name='arch' type='xml'>
                 <tree string="商品认证信息" editable="bottom">

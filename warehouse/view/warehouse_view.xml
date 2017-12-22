@@ -379,8 +379,8 @@
 
                         <group col='6'>
                             <group colspan='2'>
-                                <field name='create_uid' string='制单人' readonly='1' />
-                                <field name='create_date' string='录单时间' readonly='1' />
+                                <field name='create_uid' string='填表人' readonly='1' />
+                                <field name='create_date' string='填报日期' readonly='1' />
                             </group>
                             <group colspan='2'>
                                 <field name='write_uid' string='最后修改人' readonly='1' />
@@ -412,7 +412,7 @@
                     <field name='warehouse_id'/>
                     <field name='amount_total' />
                     <field name='partner_id' string='客户' />
-                    <field name='create_uid' string='制单人' />
+                    <field name='create_uid' string='填表人' />
                     <field name='approve_uid' />
                     <field name='note' />
                     <field name='state' />
@@ -429,7 +429,7 @@
                     <field name='name'/>
                     <field name='warehouse_id'/>
                     <field name='partner_id' string='客户'/>
-                    <field name='create_uid' string='制单人'/>
+                    <field name='create_uid' string='填表人'/>
                     <field name='approve_uid'/>
                     <field name='amount_total'/>
                     <field name='state'/>
@@ -501,8 +501,8 @@
 
                         <group col='6'>
                             <group colspan='2'>
-                                <field name='create_uid' string='制单人' readonly='1' />
-                                <field name='create_date' string='录单时间' readonly='1' />
+                                <field name='create_uid' string='填表人' readonly='1' />
+                                <field name='create_date' string='填报日期' readonly='1' />
                             </group>
                             <group colspan='2'>
                                 <field name='write_uid' string='最后修改人' readonly='1' />
@@ -534,7 +534,7 @@
                     <field name='type' />
                     <field name='amount_total' />
                     <field name='partner_id' string='供应商' />
-                    <field name='create_uid' string='制单人' />
+                    <field name='create_uid' string='填表人' />
                     <field name='approve_uid' />
                     <field name='note' />
                     <field name='state' />
@@ -551,7 +551,7 @@
                     <field name='name'/>
                     <field name='warehouse_dest_id'/>
                     <field name='partner_id' string='供应商'/>
-                    <field name='create_uid' string='制单人'/>
+                    <field name='create_uid' string='填表人'/>
                     <field name='approve_uid'/>
                     <field name='amount_total'/>
                     <field name='state'/>
@@ -620,8 +620,8 @@
 
                         <group col='6'>
                             <group colspan='2'>
-                                <field name='create_uid' string='制单人' readonly='1' />
-                                <field name='create_date' string='录单时间' readonly='1' />
+                                <field name='create_uid' string='填表人' readonly='1' />
+                                <field name='create_date' string='填报日期' readonly='1' />
                             </group>
                             <group colspan='2'>
                                 <field name='write_uid' string='最后修改人' readonly='1' />
@@ -653,7 +653,7 @@
                     <field name='warehouse_dest_id'/>
 					<field name='total_qty'/>
                     <field name='amount_total' />
-                    <field name='create_uid' string='制单人' />
+                    <field name='create_uid' string='填表人' />
                     <field name='approve_uid' />
                     <field name='note' />
                     <field name='state' />
@@ -672,7 +672,7 @@
                     <field name='warehouse_dest_id'/>
 					<field name='total_qty'/>
                     <field name='amount_total'/>
-                    <field name='create_uid' string='制单人' />
+                    <field name='create_uid' string='填表人' />
                     <field name='approve_uid'/>
                     <field name='state'/>
                     <filter name='draft' string='草稿' domain="[('state', '=', 'draft')]"/>

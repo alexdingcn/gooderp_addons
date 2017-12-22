@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="partner_cert_search" model="ir.ui.view">
+            <field name="name">partner.cert.search</field>
+            <field name="model">partner.cert.info</field>
+            <field name="arch" type="xml">
+                <search string="证件类型">
+                    <field name="cert_name"/>
+                    <field name="cert_number"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="goods_cert_search" model="ir.ui.view">
+            <field name="name">goods.cert.search</field>
+            <field name="model">goods.cert.info</field>
+            <field name="arch" type="xml">
+                <search string="证件类型">
+                    <field name="cert_name"/>
+                    <field name="cert_number"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="gsp_supplier_cert_tree" model="ir.ui.view">
+            <field name="name">partner.cert.tree</field>
+            <field name="model">partner.cert.info</field>
+            <field name="arch" type="xml">
+                <tree string="供应商资格审查" create="false" colors="red: days_to_expire >= 0">
+                    <field name="partner_id"/>
+                    <field name="cert_name"/>
+                    <field name="cert_number"/>
+                    <field name="cert_expire"/>
+                    <field name="days_to_expire"/>
+                    <field name="cert_count"/>
+                    <field name='note'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="gsp_goods_cert_tree" model="ir.ui.view">
+            <field name="name">goods.cert.tree</field>
+            <field name="model">goods.cert.info</field>
+            <field name="arch" type="xml">
+                <tree string="首营商品审查" create="false" colors="red: days_to_expire >= 0">
+                    <field name="goods_id"/>
+                    <field name="cert_name"/>
+                    <field name="cert_number"/>
+                    <field name="cert_expire"/>
+                    <field name="days_to_expire"/>
+                    <field name="cert_count"/>
+                    <field name='note'/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="gsp_supplier_cert_action" model="ir.actions.act_window">
+            <field name="name">供应商资格审查</field>
+            <field name="res_model">partner.cert.info</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="partner_cert_search"/>
+            <field name="domain">[('partner_type','=', 'SUP')]</field>
+        </record>
+
+        <record id="gsp_manufacturer_cert_action" model="ir.actions.act_window">
+            <field name="name">生产企业首营管理</field>
+            <field name="res_model">partner.cert.info</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="partner_cert_search"/>
+            <field name="domain">[('partner_type','=', 'MNF')]</field>
+        </record>
+
+        <record id="gsp_customer_cert_action" model="ir.actions.act_window">
+            <field name="name">首营客户管理</field>
+            <field name="res_model">partner.cert.info</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="partner_cert_search"/>
+            <field name="domain">[('partner_type','=', 'CUS')]</field>
+        </record>
+
+        <record id="gsp_goods_cert_action" model="ir.actions.act_window">
+            <field name="name">首营品种管理</field>
+            <field name="res_model">goods.cert.info</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="goods_cert_search"/>
+        </record>
+
+        <record id="gsp_supplier_cert_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="gsp_supplier_cert_tree"/>
+            <field name="act_window_id" ref="gsp_supplier_cert_action"/>
+        </record>
+
+        <record id="gsp_manufacturer_cert_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="gsp_supplier_cert_tree"/>
+            <field name="act_window_id" ref="gsp_manufacturer_cert_action"/>
+        </record>
+
+        <record id="gsp_customer_cert_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="gsp_supplier_cert_tree"/>
+            <field name="act_window_id" ref="gsp_customer_cert_action"/>
+        </record>
+
+        <record id="gsp_goods_cert_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="gsp_goods_cert_tree"/>
+            <field name="act_window_id" ref="gsp_goods_cert_action"/>
+        </record>
+
+        <!-- 药品供应企业一览表 -->
+        <record id="vendor_goods_search" model="ir.ui.view">
+            <field name="name">vendor.goods.search</field>
+            <field name="model">vendor.goods</field>
+            <field name="arch" type="xml">
+                <search string="供应商">
+                    <field name="vendor_id"/>
+                    <field name="goods_id"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="gsp_vendor_goods_tree" model="ir.ui.view">
+            <field name="name">vendor.goods.tree</field>
+            <field name="model">vendor.goods</field>
+            <field name="arch" type="xml">
+                <tree string="药品供应企业一览表" create="false">
+                    <field name="vendor_id"/>
+                    <field name="goods_id"/>
+                    <field name="price"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="min_qty"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="gsp_vendor_goods_action" model="ir.actions.act_window">
+            <field name="name">药品供应企业一览表</field>
+            <field name="res_model">vendor.goods</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="vendor_goods_search"/>
+        </record>
+
+        <record id="gsp_vendor_goods_action_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="gsp_vendor_goods_tree"/>
+            <field name="act_window_id" ref="gsp_vendor_goods_action"/>
+        </record>
+
+
+
+    </data>
+</openerp>

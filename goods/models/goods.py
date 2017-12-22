@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from datetime import datetime, timedelta, date
 from odoo.exceptions import UserError
 from odoo import models, fields, api
 
@@ -146,6 +146,15 @@ class GoodsCertInfo(models.Model):
     _name = "goods.cert.info"
     _description = u"商品认证信息"
 
+    @api.one
+    @api.depends('cert_expire')
+    def _get_expire_status(self):
+        res = 0
+        if self.cert_expire:
+            exp_date = datetime.strptime(self.cert_expire, '%Y-%m-%d')
+            res = (date.today() - exp_date.date()).days
+        self.days_to_expire = res
+
     goods_id = fields.Many2one('goods', u'商品', ondelete='cascade')
 
     cert_name = fields.Char(u'证书名称')
@@ -154,6 +163,8 @@ class GoodsCertInfo(models.Model):
                               help=u'证书有效期, 默认为当前天')
     cert_count = fields.Integer(u'张数')
     note = fields.Text(u'备注')
+
+    days_to_expire = fields.Integer(u'过期天数', compute=_get_expire_status, readonly=True)
 
     _sql_constraints = [
         ('cert_number_uniq', 'unique(cert_number)', u'证书编号不能重复'),

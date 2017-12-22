@@ -14,7 +14,7 @@
                     <field name='partner_id'/>
                     <field name="amount" sum="合计"/>
                     <field name='delivery_date'/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <field name='state'/>
                     <field name="_approve_state"/>
@@ -35,7 +35,7 @@
                 <form string='销售订单'>
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="sell_order_done" states="draft" string="审核" type="object" class="oe_highlight"
-                                confirm="制单人和审核人相同，请确认"
+                                confirm="填表人和审核人相同，请确认"
                                 attrs="{'invisible': ['|', ('create_uid', '!=', uid)]}"/>
                         <button name="sell_order_done" states="draft" string="审核" type="object" class="oe_highlight"
                                 attrs="{'invisible': ['|', ('create_uid', '=', uid)]}"/>
@@ -125,11 +125,11 @@
                                 <hr/>
                                 <group attrs="{'invisible': [('create_uid','=',False)]}">
                                     <group>
-                                        <field name="create_uid" readonly="1" string="制单人"/>
+                                        <field name="create_uid" readonly="1" string="填表人"/>
                                         <field name="approve_uid" readonly="1"/>
                                     </group>
                                     <group>
-                                        <field name="create_date" readonly="1" string="录单时间"/>
+                                        <field name="create_date" readonly="1" string="填报日期"/>
                                         <field name="write_date" readonly="1" string="最后修改时间"/>
                                     </group>
                                 </group>
@@ -155,7 +155,7 @@
                     <field name="partner_id"/>
                     <field name="state"/>
                     <field name="goods_state"/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <filter name="draft" string="草稿" domain="[('state','=','draft')]"/>
                     <filter name="done" string="已审核" domain="[('state','=','done')]"/>
@@ -190,7 +190,7 @@
                     <field name='partner_id'/>
                     <field name='total_qty'/>
                     <field name="amount" sum="总金额"/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <field name='currency_id'
                            groups='finance.group_multi_currency'/>
@@ -338,11 +338,11 @@
                         </group>
                         <group>
                             <group>
-                                <field name="create_uid" readonly="1" string="制单人"/>
+                                <field name="create_uid" readonly="1" string="填表人"/>
                                 <field name="approve_uid" readonly="1"/>
                             </group>
                             <group>
-                                <field name="create_date" readonly="1" string="录单时间"/>
+                                <field name="create_date" readonly="1" string="填报日期"/>
                                 <field name="write_date" readonly="1" string="最后修改时间"/>
                             </group>
                         </group>
@@ -366,7 +366,7 @@
                     <field name="partner_id"/>
                     <field name="state"/>
                     <field name="money_state"/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <field name="warehouse_id"/>
                     <filter name="draft" string="草稿" domain="[('state','=','draft')]"/>
@@ -401,7 +401,7 @@
                     <field name="amount" sum="总金额"/>
                     <field name='receipt'/>
                     <field name='date_due'/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <field name='currency_id'
                            groups='finance.group_multi_currency'/>
@@ -529,13 +529,13 @@
                                 <field name="discount_amount" groups='sell.sell_discount_groups'/>
                                 <field name="amount"/>
                                 <field name="partner_cost" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                <field name="create_uid" readonly="1" string="制单人"/>
+                                <field name="create_uid" readonly="1" string="填表人"/>
                                 <field name="approve_uid" readonly="1"/>
                             </group>
                             <group>
                                 <field name="receipt" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="bank_account_id" attrs="{'readonly': [('state','!=','draft')]}"/>
-                                <field name="create_date" readonly="1" string="录单时间"/>
+                                <field name="create_date" readonly="1" string="填报日期"/>
                                 <field name="write_date" readonly="1" string="最后修改时间"/>
                             </group>
                         </group>
@@ -559,7 +559,7 @@
                     <field name="partner_id"/>
                     <field name="state"/>
                     <field name="return_state"/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <filter name="draft" string="草稿" domain="[('state','=','draft')]"/>
                     <filter name="done" string="已审核" domain="[('state','=','done')]"/>
@@ -586,7 +586,7 @@
                     <field name="date"/>
                     <field name="name"/>
                     <field name="order_id"/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <field name="state"/>
                     <field name="_approve_state"/>
@@ -641,11 +641,11 @@
                         <field name="note" placeholder="暂无备注信息"/>
                         <group>
                             <group>
-                                <field name="create_uid" readonly="1" string="制单人"/>
+                                <field name="create_uid" readonly="1" string="填表人"/>
                                 <field name="approve_uid" readonly="1"/>
                             </group>
                             <group>
-                                <field name="create_date" readonly="1" string="录单时间"/>
+                                <field name="create_date" readonly="1" string="填报日期"/>
                                 <field name="write_date" readonly="1" string="最后修改时间"/>
                             </group>
                         </group>
@@ -667,7 +667,7 @@
                     <field name="name"/>
                     <field name="order_id"/>
                     <field name="state"/>
-                    <field name="create_uid" string="制单人"/>
+                    <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <filter name="draft" string="草稿" domain="[('state','=','draft')]"/>
                     <filter name="done" string="已审核" domain="[('state','=','done')]"/>
