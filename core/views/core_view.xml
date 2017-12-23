@@ -232,23 +232,28 @@
                                 <field name="code"/>
                                 <field name="main_contact" required="1"/>
                                 <field name="main_mobile" required="1"/>
+                                <field name="fax"/>
                                 <field name="main_address"/>
+                                <field name="postcode"/>
                                 <field name="tax_num"/>
-                                <field name="credit_limit"/>
+
                                 <field name="responsible_id"/>
+                                <field name="note" placeholder="暂无备注信息"/>
                             </group>
                             <group>
                                 <field name="type"/>
                                 <field name="s_category_id" attrs="{'invisible':[('type', '!=', 'SUP')]}"/>
                                 <field name="c_category_id" attrs="{'invisible':[('type', '!=', 'CUS')]}"/>
+                                <field name="onsite_check"/>
                                 <field name="bank_name"/>
                                 <field name="bank_num"/>
+                                <field name="credit_limit"/>
                                 <field name="receivable"/>
                                 <field name="tax_rate"/>
                                 <field name="tag_ids" widget="many2many_tags"/>
                                 <field name="source"/>
                             </group>
-                            <field name="note" placeholder="暂无备注信息"/>
+
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -336,7 +341,9 @@
                             <group>
                                 <field name="code"/>
                                 <field name="main_mobile"/>
+                                <field name="fax"/>
                                 <field name="main_address"/>
+                                <field name="postcode"/>
                                 <field name="tax_rate"/>
                             </group>
                             <group>

@@ -131,6 +131,14 @@
             <field name='view_mode'>tree</field>
             <field name='view_id' ref='non_active_report_tree' />
         </record>
+
+        <!-- 温湿度记录单-->
+        <record id='wh_temperature_action' model='ir.actions.act_window' >
+            <field name='name'>温湿度记录单</field>
+            <field name='res_model'>wh.temperature</field>
+            <field name='view_mode'>tree,form</field>
+            <field name='view_id' ref='wh_temperature_tree' />
+        </record>
         <!-- 委外加工单  -->
         <record id="outsource_action" model="ir.actions.act_window">
             <field name="name">委外加工单</field>

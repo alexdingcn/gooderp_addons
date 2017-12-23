@@ -22,7 +22,7 @@ class Goods(models.Model):
     english_name = fields.Char(u'外文名')
     pinyin_abbr = fields.Char(u'拼音简码')
     specs = fields.Char(u'规格')
-    description = fields.Char(u'商品名称')
+    description = fields.Char(u'商品名称', required=True)
 
     check_first_documents = fields.Boolean(u'检查首营档案', default=True)
     special_managed = fields.Boolean(u'特殊管理商品')
@@ -38,9 +38,12 @@ class Goods(models.Model):
     outgoing_tax_rate = fields.Float(u'销项税率')
     licence_number = fields.Char(u'批准文号/进口注册证号')
 
-    storage_condition = fields.Char(u'储藏条件')
+    storage_condition = fields.Many2one('core.value', u'储藏条件', required=True,
+                                        ondelete='restrict',
+                                        domain=[('type', '=', 'storage_type')],
+                                        context={'type': 'storage_type'})
     storage_description = fields.Char(u'储藏条件描述')
-    storage_position = fields.Char(u'货位号')
+    storage_position = fields.Char(u'默认货位号')
     warehouse_comment = fields.Char(u'入库验收')
 
     contact_info = fields.Char(u'联系方式')
@@ -157,11 +160,14 @@ class GoodsCertInfo(models.Model):
 
     goods_id = fields.Many2one('goods', u'商品', ondelete='cascade')
 
-    cert_name = fields.Char(u'证书名称')
-    cert_number = fields.Char(u'证书编号')
+    cert_name = fields.Many2one('core.value', u'证书名称', required=True,
+                                ondelete='restrict',
+                                domain=[('type', '=', 'goods_cert_name')],
+                                context={'type': 'goods_cert_name'})
+    cert_number = fields.Char(u'证书编号', required=True)
     cert_expire = fields.Date(u'证书有效期', default=fields.Date.context_today,
                               help=u'证书有效期, 默认为当前天')
-    cert_count = fields.Integer(u'张数')
+    cert_count = fields.Integer(u'张数', default=1)
     note = fields.Text(u'备注')
 
     days_to_expire = fields.Integer(u'过期天数', compute=_get_expire_status, readonly=True)

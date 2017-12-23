@@ -33,7 +33,18 @@
                                 <tree string="合作伙伴认证信息" editable="bottom">
                                     <field name="cert_name"/>
                                     <field name="cert_number"/>
+
+                                    <field name="cert_issue_date"/>
                                     <field name="cert_expire"/>
+
+                                    <field name="cert_company_name"/>
+                                    <field name="cert_scope"/>
+                                    <field name="legal_person"/>
+                                    <field name="registration_amount"/>
+                                    <field name="economics_type"/>
+                                    <field name="business_type"/>
+                                    <field name="cert_company_address"/>
+
                                     <field name="cert_count"/>
                                     <field name="note"/>
                                 </tree>
