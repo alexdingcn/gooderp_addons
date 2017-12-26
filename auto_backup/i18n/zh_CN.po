@@ -104,7 +104,7 @@ msgstr "帮助"
 #. module: auto_backup
 #: model:ir.model.fields,field_description:auto_backup.field_db_backup_host
 msgid "Host"
-msgstr "Odoo主机"
+msgstr "主机"
 
 #. module: auto_backup
 #: model:ir.model.fields,field_description:auto_backup.field_db_backup_id
@@ -124,7 +124,7 @@ msgstr "最后修改日期"
 #. module: auto_backup
 #: model:ir.model.fields,field_description:auto_backup.field_db_backup_write_uid
 msgid "Last Updated by"
-msgstr "最近更新被"
+msgstr "最近更新"
 
 #. module: auto_backup
 #: model:ir.model.fields,field_description:auto_backup.field_db_backup_write_date
@@ -134,7 +134,7 @@ msgstr "最后更新在"
 #. module: auto_backup
 #: model:ir.model.fields,field_description:auto_backup.field_db_backup_port
 msgid "Port"
-msgstr "Odoo端口"
+msgstr "端口"
 
 #. module: auto_backup
 #: model:ir.ui.view,arch_db:auto_backup.view_db_backup_form

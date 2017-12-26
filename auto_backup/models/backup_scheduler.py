@@ -144,20 +144,18 @@ class DbBackup(models.Model):
                 datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
             res_user_res = res_user_obj.browse()
             # user's partner timezone
-            tz = pytz.timezone(
-                res_user_res.tz) if res_user_res.tz else pytz.utc
+            tz = pytz.timezone(res_user_res.tz) if res_user_res.tz else pytz.utc
             # Set to usre's localtime
             curtime = pytz.utc.localize(curtime).astimezone(tz)
             #curtime = curtime.astimezone(pytz.utc)
-
+            _logger.info(db_list)
             if rec.name in db_list:
                 try:
                     if not os.path.isdir(rec.bkp_dir):
                         os.makedirs(rec.bkp_dir)
                 except:
                     raise
-                bkp_file = '%s_%s.sql' % (
-                    rec.name, curtime.strftime('%Y%m%d_%H_%M_%S'))
+                bkp_file = '%s_%s.sql' % (rec.name, curtime.strftime('%Y%m%d_%H_%M_%S'))
                 file_path = os.path.join(rec.bkp_dir, bkp_file)
                 bkp = ''
                 try:

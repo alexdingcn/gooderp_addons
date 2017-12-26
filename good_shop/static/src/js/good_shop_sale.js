@@ -12,7 +12,7 @@ odoo.define('good_shop.cart', function (require) {
         animation: true,
         html: true,
         title: function () {
-            return _t("My Cart");
+            return _t("购物车");
         },
         container: 'body',
         placement: 'auto',

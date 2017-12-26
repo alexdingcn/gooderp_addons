@@ -27,7 +27,7 @@
             <t t-att-class="'' if website_sale_order and website_sale_order.cart_quantity else 'hidden'" />
             <li >
                 <a href="/shop/cart">
-                    <i class="fa fa-shopping-cart"></i>购物车
+                    <i class="fa fa-shopping-cart"></i> 购物车
                     <sup t-attf-class="my_cart_quantity label label-primary" t-esc="website_sale_order and website_sale_order.cart_quantity or ''" />
                 </a>
             </li>
@@ -361,15 +361,15 @@
                             <div class="oe_structure" />
                         </div>
                         <div class="col-lg-3 col-lg-offset-1 col-sm-3 col-md-3 text-muted" id="right_column">
-                            <h4>Policies</h4>
+                            <h4>政策</h4>
                             <ul class="list-unstyled mb32">
-                                <li>☑ 30-days money-back guarantee</li>
-                                <li>☑ Invoice sent by e-Mail</li>
+                                <li>☑ 30天无条件退款</li>
+                                <li>☑ 正规发票</li>
                             </ul>
-                            <h4>Secure Payment</h4>
+                            <h4>线上支付</h4>
                             <ul class="list-unstyled mb32">
-                                <li>☑ 256 bit encryption</li>
-                                <li>☑ Processed by Ogone</li>
+                                <li>☑ 支持支付宝、微信</li>
+                                <li>☑ 额度大、到账快</li>
                             </ul>
                         </div>
                     </div>
