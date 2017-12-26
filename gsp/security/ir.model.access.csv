@@ -1,1 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_goods_maintenance,access_goods_maintenance,model_goods_maintenance,,1,1,1,1
+access_goods_maintenance_detail,access_goods_maintenance_detail,model_goods_maintenance_detail,,1,1,1,1

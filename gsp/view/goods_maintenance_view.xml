@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 药品养护档案 -->
+    <record id="goods_maintenance_tree" model="ir.ui.view">
+        <field name="name">goods.maintenance.tree</field>
+        <field name="model">goods.maintenance</field>
+        <field name="arch" type="xml">
+            <tree string="药品养护档案" colors='blue:state == "draft";lightgray:state == "cancel"'>
+                <field name="goods_id"/>
+                <field name="date"/>
+                <field name="next_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="goods_maintenance_form" model="ir.ui.view">
+        <field name="name">goods.maintenance.form</field>
+        <field name="model">goods.maintenance</field>
+        <field name="arch" type="xml">
+            <form string="药品养护档案">
+                <header attrs="{'invisible':[('create_uid', '=', False)]}">
+                    <button name="maintenance_done" states="draft" string="审核" type="object" class="oe_highlight"
+                            confirm="填表人和审核人相同，请确认"
+                            attrs="{'invisible': ['|', ('create_uid', '!=', uid)]}"/>
+                    <button name="maintenance_done" states="draft" string="审核" type="object" class="oe_highlight"
+                            attrs="{'invisible': ['|', ('create_uid', '=', uid)]}"/>
+                    <button name="maintenance_draft" states="done" string="反审核" type="object"/>
+                    <button name="action_cancel" states="draft" string="作废" type="object"
+                            confirm="是否作废该养护单，请确认"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"
+                           statusbar_colors='{"done":"blue"}' readonly="1"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date" required='1'/>
+                            <field name="goods_id" required='1'
+                                   domain="[('state','=','done')]"
+                                   options="{'no_create': True}"/>
+                            <field name="next_date"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="details">
+                            <tree string="养护明细项目" editable="bottom">
+                                <field name="line_in_id"
+                                       domain="[('goods_id', '=', parent.goods_id), ('state', '=', 'done'), ('lot', '!=', False), ('qty_remaining', '>', 0)]"
+                                       context="{'lot': True}" options="{'no_open': True, 'no_create': True}"
+                                       groups='goods.batch_groups'/>
+                                <field name="quality_issue"/>
+                                <field name="deal_method"/>
+                            </tree>
+                        </field>
+                    </group>
+
+                    <group attrs="{'invisible': [('create_uid','=',False)]}">
+                        <group>
+                            <field name="create_uid" readonly="1" string="填表人"/>
+                            <field name="write_uid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1" string="填报日期"/>
+                            <field name="write_date" readonly="1" string="最后修改时间"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

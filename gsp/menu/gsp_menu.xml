@@ -19,6 +19,7 @@
                   parent="menu_gsp_buy" sequence="4"
                   groups='gsp.buy_groups'/>
 
+
         <!--<menuitem id="menu_gsp_recall_registration" name='药品召回/追回登记' action="buy_adjust_action"-->
         <!--parent="menu_gsp_buy" sequence="4"-->
         <!--groups='gsp.buy_groups'/>-->
@@ -33,9 +34,15 @@
                   groups="gsp.quality_groups"/>
 
         <menuitem id="menu_gsp_qc_all" name='历史质检报告' action="menu_gsp_qc_all_action"
-                  parent="menu_gsp_quality" sequence="1"
+                  parent="menu_gsp_quality" sequence="2"
                   groups="gsp.quality_groups"/>
 
+
+        <menuitem id="menu_gsp_maintain" name="在库品养护管理" parent="menu_gsp_root" sequence="3"/>
+
+        <menuitem id="menu_gsp_goods_maintenance" name='药品养护档案' action="menu_gsp_goods_maintenance_action"
+                  parent="menu_gsp_maintain" sequence="1"
+                  groups="gsp.quality_groups"/>
 
     </data>
 </openerp>

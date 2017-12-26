@@ -19,3 +19,6 @@ access_report_stock_transceive,access_report_stock_transceive,warehouse.model_re
 access_qc_rule,access_qc_rule,warehouse.model_qc_rule,,1,1,1,1
 access_scan_barcode,access_scan_barcode,model_scan_barcode,,1,0,0,0
 access_location_all_group,access_location_all_group,model_location,,1,1,1,1
+access_goods_quality,access_goods_quality,model_goods_quality,,1,1,1,1
+access_wh_temperature,access_wh_temperature,model_wh_temperature,,1,1,1,1
+
