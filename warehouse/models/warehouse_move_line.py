@@ -211,7 +211,7 @@ class WhMoveLine(models.Model):
     subtotal = fields.Float(u'价税合计', compute=_compute_all_amount, store=True,
                             digits=dp.get_precision('Amount'),
                             help=u'价税合计,有不含税金额+税额计算得来')
-    note = fields.Text(u'备注',
+    note = fields.Char(u'备注',
                        help=u'可以为该单据添加一些需要的标识信息')
     cost_unit = fields.Float(u'单位成本', digits=dp.get_precision('Price'),
                              help=u'入库/出库单位成本')

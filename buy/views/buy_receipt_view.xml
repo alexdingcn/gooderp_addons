@@ -19,6 +19,7 @@
                     <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
                     <field name="need_quality_control"/>
+                    <field name="qc_result_brief"/>
                     <field name='currency_id'
                            groups='finance.group_multi_currency'/>
                     <field name='state'/>
@@ -32,7 +33,7 @@
             <field name="name">buy.receipt.form</field>
             <field name="model">buy.receipt</field>
             <field name="arch" type="xml">
-                <form string="采购入库单">
+                <form string="采购入库单" create="false">
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name='buy_to_return' states="done" string='生成退货单' type='object' class="oe_highlight"/>
                         <button name="buy_receipt_done" states="draft" string="审核" type="object" class="oe_highlight"
@@ -56,7 +57,7 @@
                                        domain="[('type', '=', 'SUP'),('state', '=', 'done')]"
                                        context="{'form_view_ref': 'core.partner_sup_form'}"
                                        options="{'no_open': True, 'no_create': True}"/>
-                                <field name='user_id' required="1"
+                                <field name='user_id' required="1" string="采购员"
                                        options="{'no_open': True, 'no_create': True}"/>
                                 <field name="date" required="1" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="is_return" readonly="1" invisible="1"/>
@@ -82,9 +83,9 @@
                             <page string="入库单明细">
                                 <field name="line_in_ids" attrs="{'readonly': [('state','!=','draft')]}"
                                        context="{'type':'in'}">
-                                    <tree string="Buy Receipt Lines" editable="bottom">
+                                    <tree string="Buy Receipt Lines" editable="bottom" create="false">
 
-                                        <field name="goods_id" required='1'
+                                        <field name="goods_id" required='1' readonly="1"
                                                domain="[('state','=','done'),('vendor_ids.vendor_id','=', parent.partner_id)]"
                                                context="{'default_partner':parent.partner_id, 'default_is_return':parent.is_return}"
                                                options="{'no_create': True}"/>
@@ -97,27 +98,30 @@
                                         <field name='location_id' groups="warehouse.multi_location_groups"
                                                options="{'no_open': True}"/>
                                         <field name='expiration_date' groups='warehouse.group_expiration_date'/>
-                                        <field name="goods_uos_qty" sum="合计辅助数量"
-                                               groups="goods.auxiliary_unit_groups"/>
-                                        <field name='uos_id' groups='goods.auxiliary_unit_groups'/>
-                                        <field name="goods_qty" sum="合计数量"/>
+
+                                        <field name="goods_qty" string="到货数量" sum="合计数量"/>
                                         <field name="uom_id"/>
-                                        <field name="price" groups='goods.view_cost_groups'/>
-                                        <field name="price_taxed" groups='buy.in_tax_groups'/>
-                                        <field name="discount_rate" groups='buy.buy_line_discount_groups'/>
-                                        <field name="discount_amount" groups='buy.buy_line_discount_groups' readonly="0"
-                                               sum="合计折扣额"/>
-                                        <field name="amount" string="购货金额" sum="合计金额" groups='goods.view_cost_groups'/>
-                                        <field name="tax_rate" groups='buy.in_tax_groups'/>
-                                        <field name="tax_amount" sum="合计税额" groups='buy.in_tax_groups'/>
-                                        <field name="subtotal" sum="价税合计的合计" groups='buy.in_tax_groups'/>
+                                        <field name="goods_uos_qty" sum="合计辅助数量" groups="goods.auxiliary_unit_groups"/>
+                                        <field name='uos_id' groups='goods.auxiliary_unit_groups'/>
 
                                         <field name='line_net_weight' sum="净重合计"
                                                groups="warehouse.manager_net_weight_group"/>
-                                        <field name="cost" invisible="1"/>
-                                        <field name="cost_unit" invisible="1"/>
                                         <field name="note"/>
                                         <field name="share_cost"/>
+
+                                        <field name="price" readonly="1" groups='goods.view_cost_groups'/>
+                                        <field name="price_taxed" readonly="1" groups='buy.in_tax_groups'/>
+                                        <field name="discount_rate" readonly="1" groups='buy.buy_line_discount_groups'/>
+                                        <field name="discount_amount" readonly="1" groups='buy.buy_line_discount_groups'
+                                               sum="合计折扣额"/>
+                                        <field name="amount" readonly="1" string="购货金额" sum="合计金额"
+                                               groups='goods.view_cost_groups'/>
+                                        <field name="tax_rate" readonly="1" groups='buy.in_tax_groups'/>
+                                        <field name="tax_amount" readonly="1" sum="合计税额" groups='buy.in_tax_groups'/>
+                                        <field name="subtotal" readonly="1" sum="价税合计的合计" groups='buy.in_tax_groups'/>
+
+                                        <field name="cost" invisible="1"/>
+                                        <field name="cost_unit" invisible="1"/>
                                         <field name="type" invisible="1"/>
                                         <field name='using_attribute' invisible='1'/>
                                         <field name='using_batch' invisible='1'/>
@@ -141,13 +145,56 @@
                                 </field>
                                 <button name="buy_share_cost" string="分摊" type="object"/>
                             </page>
+
+                            <page string="质检明细" attrs="{'invisible': [('need_quality_control','=',False)]}"
+                                  groups='goods.quality_groups'>
+                                <div attrs="{'invisible': [('state','=','done')]}">
+                                    <div class="btn-toolbar" role="toolbar">
+                                        <div class="btn-group" role="group">
+                                            <button name="buy_accept_all" string="全部签收" type="object"
+                                                    class="btn btn-sm btn-success"/>
+                                            <button name="buy_reject_all" string="全部拒收" type="object"
+                                                    class="btn btn-sm btn-danger"/>
+                                        </div>
+                                    </div>
+                                    <hr/>
+                                </div>
+
+                                <group>
+                                    <field name="quality_ids" attrs="{'readonly': [('state','!=','draft')]}">
+                                        <tree string="Quality Lines" editable="bottom" create="false">
+                                            <field name="goods_id" required='1' readonly="1"
+                                                   domain="[('state','=','done'),('vendor_ids.vendor_id','=', parent.partner_id)]"
+                                                   context="{'default_partner':parent.partner_id, 'default_is_return':parent.is_return}"
+                                                   options="{'no_create': True}"/>
+                                            <field name="lot" readonly="1"/>
+                                            <field name="location_id" readonly="1"/>
+                                            <field name="goods_qty" readonly="1"/>
+
+                                            <field name="accept_qty"/>
+                                            <field name="reject_qty"/>
+                                            <field name="goods_reject_reason"/>
+                                            <field name="question_qty"/>
+                                            <field name="date"/>
+                                            <field name="note"/>
+                                        </tree>
+                                    </field>
+                                    <group>
+                                        <field name="need_quality_control" invisible="1"/>
+                                        <field name="qc_user_id" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="qc_double_user_id" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="qc_result_brief" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    </group>
+                                    <group>
+                                        <field name='qc_result' widget='pdf_viewer'
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    </group>
+                                </group>
+                            </page>
                         </notebook>
 
-                        <group string="质量检查">
-                            <field name='qc_result' widget='pdf_viewer'
-                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
-                                   groups='warehouse.group_qc'/>
-                        </group>
                         <group string="财务">
                             <group>
                                 <field name='delivery_fee'/>
@@ -369,6 +416,22 @@
                         <field name="_to_approver_ids" widget="goodprocess" readonly="1"/>
                         <field name="message_ids" widget="mail_thread"/>
                     </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="generate_buy_return_confirm" model="ir.ui.view">
+            <field name="name">generate.buy.return.confirm</field>
+            <field name="model">buy.receipt</field>
+            <field name="arch" type="xml">
+                <form string="确认生成退货单">
+                    <group>
+                        <label string="该笔订单含有质检不合格商品，是否生成退货单？"/>
+                    </group>
+                    <footer>
+                        <button name="buy_to_return" string="确认" type="object" class="oe_highlight"/>
+                        <button string="取消" class="oe_link" special="cancel" />
+                    </footer>
                 </form>
             </field>
         </record>

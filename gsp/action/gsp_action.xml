@@ -161,7 +161,133 @@
             <field name="act_window_id" ref="gsp_vendor_goods_action"/>
         </record>
 
+        <!-- GSP质量管控 -->
+        <record id="buy_qc_search" model="ir.ui.view">
+            <field name="name">buy.quality.search</field>
+            <field name="model">goods.quality</field>
+            <field name="arch" type="xml">
+                <search string="商品">
+                    <field name="move_id"/>
+                    <field name="goods_id"/>
+                    <field name="lot"/>
+                    <field name="location_id"/>
+                </search>
+            </field>
+        </record>
 
+        <record id="buy_qc_tree" model="ir.ui.view">
+            <field name="name">buy.qc.tree</field>
+            <field name="model">goods.quality</field>
+            <field name="arch" type="xml">
+                <tree string="采购质量检查" create="false">
+                    <field name="move_id"/>
+                    <field name="goods_id"/>
+                    <field name="lot"/>
+                    <field name="location_id"/>
+                    <field name="goods_qty"/>
+                    <field name="accept_qty"/>
+                    <field name="reject_qty"/>
+                    <field name="goods_reject_reason"/>
+                    <field name="question_qty"/>
+                    <field name="date"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="buy_qc_form" model="ir.ui.view">
+            <field name="name">buy.qc.form</field>
+            <field name="model">goods.quality</field>
+            <field name="arch" type="xml">
+                <form string="采购质量检查" create="false">
+                    <header attrs="{'invisible':[('create_uid', '=', False)]}">
+                        <div class="btn-toolbar" role="toolbar">
+                            <div class="btn-group" role="group">
+                                <button name="accept_all" string="全部签收" type="object"
+                                        class="btn btn-sm btn-success"/>
+                                <button name="reject_all" string="全部拒收" type="object"
+                                        class="btn btn-sm btn-danger"/>
+                            </div>
+                        </div>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="move_id" readonly="1"/>
+                                <field name="goods_id" required='1' readonly="1"
+                                       domain="[('state','=','done'),('vendor_ids.vendor_id','=', parent.partner_id)]"
+                                       context="{'default_partner':parent.partner_id, 'default_is_return':parent.is_return}"
+                                       options="{'no_create': True}"/>
+                                <field name="lot" readonly="1"/>
+                                <field name="location_id" readonly="1"/>
+
+                                <field name="date"/>
+                                <field name="note"/>
+                            </group>
+
+                            <group>
+                                <field name="goods_qty" readonly="1"/>
+                                <field name="accept_qty"/>
+                                <field name="reject_qty"/>
+                                <field name="goods_reject_reason"/>
+                                <field name="question_qty"/>
+                                <!--<group>-->
+                                <!--<field name="need_quality_control" invisible="1"/>-->
+                                <!--<field name="qc_user_id" attrs="{'readonly': [('state', '!=', 'draft')]}"-->
+                                <!--options="{'no_open': True, 'no_create': True}"/>-->
+                                <!--<field name="qc_double_user_id" attrs="{'readonly': [('state', '!=', 'draft')]}"-->
+                                <!--options="{'no_open': True, 'no_create': True}"/>-->
+                                <!--<field name="qc_result_brief" attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+
+                                <!--<field name='qc_result' widget='pdf_viewer'-->
+                                <!--attrs="{'readonly': [('state', '!=', 'draft')]}"/>-->
+                                <!--</group>-->
+                            </group>
+
+                        </group>
+
+                        <hr/>
+                        <group attrs="{'invisible': [('create_uid','=',False)]}">
+                            <group>
+                                <field name="create_uid" readonly="1" string="填表人"/>
+                                <field name="write_uid" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="create_date" readonly="1" string="填报日期"/>
+                                <field name="write_date" readonly="1" string="最后修改时间"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="menu_gsp_buy_qc_action" model="ir.actions.act_window">
+            <field name="name">采购质量检查</field>
+            <field name="res_model">goods.quality</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('state', '=', 'draft')]</field>
+            <field name="search_view_id" ref="buy_qc_search"/>
+        </record>
+
+        <record id="menu_gsp_buy_qc_action_tree" model="ir.actions.act_window.view">
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="buy_qc_tree"/>
+            <field name="act_window_id" ref="menu_gsp_buy_qc_action"/>
+        </record>
+        <record id="menu_gsp_buy_qc_action_form" model="ir.actions.act_window.view">
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="buy_qc_form"/>
+            <field name="act_window_id" ref="menu_gsp_buy_qc_action"/>
+        </record>
+
+        <record id="menu_gsp_qc_all_action" model="ir.actions.act_window">
+            <field name="name">历史质检报告</field>
+            <field name="res_model">goods.quality</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="search_view_id" ref="buy_qc_search"/>
+        </record>
 
     </data>
 </openerp>

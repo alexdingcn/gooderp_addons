@@ -70,7 +70,7 @@ class BuyReceipt(models.Model):
     invoice_id = fields.Many2one('money.invoice', u'发票号', copy=False,
                                  ondelete='set null',
                                  help=u'产生的发票号')
-    date_due = fields.Date(u'到期日期', copy=False,
+    date_due = fields.Date(u'收货日期', copy=False,
                            default=lambda self: fields.Date.context_today(
                                self),
                            help=u'付款截止日期')
@@ -178,8 +178,7 @@ class BuyReceipt(models.Model):
                     [('state', '=', 'done'), ('type', '=', 'in'), ('goods_id', '=', line.goods_id.id)])
                 for move_line in wh_move_lines:
                     if (move_line.goods_id.id, move_line.lot) not in batch_one_list_wh and move_line.lot:
-                        batch_one_list_wh.append(
-                            (move_line.goods_id.id, move_line.lot))
+                        batch_one_list_wh.append((move_line.goods_id.id, move_line.lot))
 
             if (line.goods_id.id, line.lot) in batch_one_list_wh:
                 raise UserError(u'仓库已存在相同序列号的商品！\n商品:%s 序列号:%s' %
@@ -216,7 +215,21 @@ class BuyReceipt(models.Model):
             raise UserError(u'采购费用还未分摊或分摊不正确！\n采购费用:%s 分摊总费用:%s' %
                             (sum(cost_line.amount for cost_line in self.cost_line_ids),
                              sum(line.share_cost for line in self.line_in_ids)))
-        return
+
+        #质检
+        if self.need_quality_control:
+            if not self.quality_ids:
+                raise UserError(u'缺少质检报告')
+            for line in self.quality_ids:
+                if line.goods_qty > 0 and (line.accept_qty <= 0 and line.reject_qty <= 0):
+                    raise UserError(u'商品[%s]缺少质检报告' % line.goods_id.name)
+                if line.question_qty > 0:
+                    raise UserError(u'商品[%s]还有存疑质检单' % line.goods_id.name)
+                if line.goods_qty != line.accept_qty + line.reject_qty:
+                    raise UserError(u'商品[%s]：收货数量 + 拒收数量 不等于 到货数量' % line.goods_id.name)
+                if line.reject_qty and not line.goods_reject_reason:
+                    raise UserError(u'商品[%s]拒收数量大于0，需要填写拒收理由' % line.goods_id.name)
+
 
     @api.one
     def _line_qty_write(self):
@@ -380,6 +393,37 @@ class BuyReceipt(models.Model):
             vouch_id.unlink()
 
     @api.one
+    def buy_accept_all(self):
+        if self.quality_ids:
+            for line in self.quality_ids:
+                line.write({
+                    'date': fields.Datetime.now(self),
+                    'accept_qty': line.goods_qty,
+                    'reject_qty': 0,
+                    'goods_reject_reason': '',
+                    'question_qty': 0
+                })
+            self.write({
+                'qc_user_id': self.env.uid,
+                'qc_result_brief': '质检全部通过'
+            })
+
+    @api.one
+    def buy_reject_all(self):
+        if self.quality_ids:
+            for line in self.quality_ids:
+                line.write({
+                    'date': fields.Datetime.now(self),
+                    'accept_qty': 0,
+                    'reject_qty': line.goods_qty,
+                    'question_qty': 0
+                })
+            self.write({
+                'qc_user_id': self.env.uid,
+                'qc_result_brief': '质检全部拒收'
+            })
+
+    @api.multi
     def buy_receipt_done(self):
         '''审核采购入库单/退货单，更新本单的付款状态/退款状态，并生成结算单和付款单'''
         # 报错
@@ -398,7 +442,7 @@ class BuyReceipt(models.Model):
         self.write({
             'voucher_id': voucher and voucher.id,
             'invoice_id': invoice_id and invoice_id.id,
-            'state': 'done',    # 为保证审批流程顺畅，否则，未审批就可审核
+            'state': 'done',  # 为保证审批流程顺畅，否则，未审批就可审核
         })
         # 采购费用产生结算单
         self._buy_amount_to_invoice()
@@ -409,8 +453,26 @@ class BuyReceipt(models.Model):
             this_reconcile = flag * self.payment
             self._make_payment(invoice_id, amount, this_reconcile)
         # 生成分拆单 FIXME:无法跳转到新生成的分单
+        res = {}
         if self.order_id and not self.modifying:
-            return self.order_id.buy_generate_receipt()
+            res = self.order_id.buy_generate_receipt()
+
+        if self.need_quality_control and self.quality_ids:
+            has_reject = any([quality_line.reject_qty > 0 for quality_line in self.quality_ids])
+            if has_reject:
+                view = self.env.ref('buy.generate_buy_return_confirm')
+                return {
+                    'name': u'审批',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': self._name,
+                    'view_id': False,
+                    'views': [(view.id, 'form')],
+                    'type': 'ir.actions.act_window',
+                    'target': 'new',
+                    'res_id': self.id
+                }
+        return res
 
     @api.one
     def buy_receipt_draft(self):
@@ -476,6 +538,7 @@ class BuyReceipt(models.Model):
         if return_order_draft:
             raise UserError(u'采购入库单存在草稿状态的退货单！')
 
+        # 获得审核过的退货单，计算数量
         return_order = self.search([
             ('is_return', '=', True),
             ('origin_id', '=', self.id),
@@ -490,10 +553,20 @@ class BuyReceipt(models.Model):
                     return_goods[t_key] += return_line.goods_qty
                 else:
                     return_goods[t_key] = return_line.goods_qty
+
+        # 获得入库单的数量，对比退货单
         receipt_line = []
         for line in self.line_in_ids:
-            qty = line.goods_qty
+            # 需要质检的取得是拒收数量
+            if line.goods_id.need_quality_report and self.quality_ids:
+                for quality_line in self.quality_ids:
+                    if quality_line.line_in_id.id == line.id:
+                        qty = quality_line.reject_qty
+            else:
+                qty = line.goods_qty
+
             l_key = (line.goods_id.id, line.attribute_id.id, line.lot)
+            # 减去已经退货的数量
             if return_goods.get(l_key):
                 qty = qty - return_goods[l_key]
             if qty > 0:
@@ -516,6 +589,7 @@ class BuyReceipt(models.Model):
         if len(receipt_line) == 0:
             raise UserError(u'该订单已全部退货！')
 
+        # 创建移库单
         vals = {'partner_id': self.partner_id.id,
                 'is_return': True,
                 'order_id': self.order_id.id,

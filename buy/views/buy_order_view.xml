@@ -76,7 +76,6 @@
                                 <field name="invoice_by_receipt"/>
                             </group>
                             <group>
-                                <field name="ref"/>
                                 <field name="planned_date" required="1"/>
                                 <field name="type" widget="radio"/>
                                 <field name="goods_state" readonly="1"

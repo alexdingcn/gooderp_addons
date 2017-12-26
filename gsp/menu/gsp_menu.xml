@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-    	<!-- 根菜单 -->
+        <!-- 根菜单 -->
         <menuitem id="menu_gsp_root" name="GSP质量管理" groups='group_gsp' web_icon="gsp,static/description/icon.png"/>
 
         <menuitem id="menu_gsp_buy" name="首营管理" parent="menu_gsp_root" sequence="1"/>
 
         <menuitem id="menu_gsp_manufacturer_cert" name='首营企业管理' action="gsp_manufacturer_cert_action"
-            parent="menu_gsp_buy" sequence="1"
-            groups="gsp.buy_groups"/>
+                  parent="menu_gsp_buy" sequence="1"
+                  groups="gsp.buy_groups"/>
         <menuitem id="menu_gsp_customer_cert" name='首营客户管理' action="gsp_customer_cert_action"
-            parent="menu_gsp_buy" sequence="2"
-            groups="gsp.buy_groups"/>
+                  parent="menu_gsp_buy" sequence="2"
+                  groups="gsp.buy_groups"/>
         <menuitem id="menu_gsp_goods_cert" name='首营品种管理' action="gsp_goods_cert_action"
-            parent="menu_gsp_buy" sequence="3"
-            groups="gsp.buy_groups"/>
+                  parent="menu_gsp_buy" sequence="3"
+                  groups="gsp.buy_groups"/>
         <menuitem id="menu_gsp_supplier_cert" name='合格供货商档案表' action="gsp_supplier_cert_action"
-            parent="menu_gsp_buy" sequence="4"
-            groups='gsp.buy_groups'/>
+                  parent="menu_gsp_buy" sequence="4"
+                  groups='gsp.buy_groups'/>
 
         <!--<menuitem id="menu_gsp_recall_registration" name='药品召回/追回登记' action="buy_adjust_action"-->
-            <!--parent="menu_gsp_buy" sequence="4"-->
-            <!--groups='gsp.buy_groups'/>-->
+        <!--parent="menu_gsp_buy" sequence="4"-->
+        <!--groups='gsp.buy_groups'/>-->
         <menuitem id="menu_gsp_vendor_goods" name='药品供应商一览表' action="gsp_vendor_goods_action"
-            parent="menu_gsp_buy" sequence="6"
-            groups="gsp.buy_groups"/>
+                  parent="menu_gsp_buy" sequence="6"
+                  groups="gsp.buy_groups"/>
+
+        <menuitem id="menu_gsp_quality" name="质量管理" parent="menu_gsp_root" sequence="2"/>
+
+        <menuitem id="menu_gsp_buy_qc" name='采购入库质检' action="menu_gsp_buy_qc_action"
+                  parent="menu_gsp_quality" sequence="1"
+                  groups="gsp.quality_groups"/>
+
+        <menuitem id="menu_gsp_qc_all" name='历史质检报告' action="menu_gsp_qc_all_action"
+                  parent="menu_gsp_quality" sequence="1"
+                  groups="gsp.quality_groups"/>
 
 
-
-	</data>
+    </data>
 </openerp>

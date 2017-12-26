@@ -11,7 +11,7 @@ class WhMove(models.Model):
     MOVE_STATE = [
         ('draft', u'草稿'),
         ('done', u'已审核'),
-        ('cancel', u'已作废'),]
+        ('cancel', u'已作废'), ]
 
     @api.one
     @api.depends('line_out_ids', 'line_in_ids')
@@ -95,6 +95,10 @@ class WhMove(models.Model):
                                   domain=[('type', '=', 'in')],
                                   context={'type': 'in'}, copy=True,
                                   help=u'入库类型的移库单对应的入库明细')
+
+    quality_ids = fields.One2many('goods.quality', 'move_id', u'质检单明细',
+                                  help=u'入库类型的移库单对应的质检单明细')
+
     note = fields.Text(u'备注',
                        copy=False,
                        help=u'可以为该单据添加一些需要的标识信息')
@@ -116,7 +120,7 @@ class WhMove(models.Model):
         string=u'公司',
         change_default=True,
         default=lambda self: self.env['res.company']._company_default_get())
-    qc_result = fields.Binary(u'质检报告', help=u'点击上传质检报告')
+
     finance_category_id = fields.Many2one(
         'core.category',
         string=u'收发类别',
@@ -126,6 +130,15 @@ class WhMove(models.Model):
         context={'type': 'finance'},
         help=u'生成凭证时从此字段上取商品科目的对方科目',
     )
+
+    qc_result_brief = fields.Char(u'质检结果')
+    qc_result = fields.Binary(u'质检报告', help=u'点击上传质检报告')
+
+    qc_user_id = fields.Many2one('res.users', u'质检员',
+                                 copy=False, ondelete='restrict')
+
+    qc_double_user_id = fields.Many2one('res.users', u'质量复检员',
+                                        copy=False, ondelete='restrict')
 
     need_quality_control = fields.Boolean(u'需要质检', compute=_get_qc_status, store=True,
                                           help=u"是否含有需要质检的商品", default=False)
@@ -157,9 +170,9 @@ class WhMove(models.Model):
         loop_field = 'line_in_ids' if val['type'] == 'in' else 'line_out_ids'
         for line in move[loop_field]:
             line.cost_unit = (line.goods_id.price if val['type'] in ['out', 'internal']
-                              else line.goods_id.cost)  # 其他出入库单 、内部调拨单
+            else line.goods_id.cost)  # 其他出入库单 、内部调拨单
             line.price_taxed = (line.goods_id.price if val['type'] == 'out'
-                                else line.goods_id.cost)  # 采购或销售单据
+            else line.goods_id.cost)  # 采购或销售单据
             # 如果商品属性或商品上存在条码，且明细行上已经存在该商品，则数量累加
             if (att and line.attribute_id == att) or (goods and line.goods_id == goods):
                 create_line = self.scan_barcode_move_line_operation(
@@ -248,7 +261,7 @@ class WhMove(models.Model):
         # 采购入库取成本价，销售退货取销售价;采购退货取成本价，销售发货取销售价
         price_taxed = move._name == 'buy.receipt' and goods.cost or goods.price
         cost_unit = val['type'] == 'out' and 0 or goods.cost / \
-            (1 + tax_rate * 0.01)
+                    (1 + tax_rate * 0.01)
 
         val.update({
             'goods_id': goods_id,
@@ -316,8 +329,11 @@ class WhMove(models.Model):
                 ('move_type', '=', self.origin),
                 ('warehouse_id', '=', self.warehouse_id.id),
                 ('warehouse_dest_id', '=', self.warehouse_dest_id.id)])
-            if qc_rule and not self.qc_result:
-                raise UserError(u'请先上传质检报告')
+            if qc_rule:
+                if not self.qc_result and not self.qc_result_brief:
+                    raise UserError(u'该单据需要质检，请先上传质检报告')
+                if not self.qc_user_id:
+                    raise UserError(u'质检员信息缺失')
 
     def prev_approve_order(self):
         """
@@ -348,6 +364,39 @@ class WhMove(models.Model):
 
     def prev_cancel_approved_order(self):
         pass
+
+    @api.multi
+    def write(self, values):
+        super(WhMove, self).write(values)
+
+        if self.need_quality_control:
+            if self.quality_ids:
+                if 'line_in_ids' in values:
+                    for line in values['line_in_ids']:
+                        for qc_line in self.quality_ids:
+                            if line[1] == qc_line.line_in_id.id:
+                                updateLots = {}
+                                if 'goods_qty' in line[2]:
+                                    updateLots['goods_qty'] = line[2]['goods_qty']
+                                if 'location_id' in line[2]:
+                                    updateLots['location_id'] = line[2]['location_id']
+                                if 'lot' in line[2]:
+                                    updateLots['lot'] = line[2]['lot']
+                                qc_line.write(updateLots)
+            else:
+                # 给需要质检的创建质检单
+                for line in self.line_in_ids:
+                    if line.goods_id.need_quality_report:
+                        qc_line = {
+                            'move_id': self.id,
+                            'goods_id': line.goods_id.id,
+                            'line_in_id': line.id,
+                            'goods_qty': line.goods_qty,
+                            'lot': line.lot,
+                            'location_id': line.location_id.id,
+                        }
+                        self.env['goods.quality'].create(qc_line)
+        return True
 
     @api.multi
     def cancel_approved_order(self):

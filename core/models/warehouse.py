@@ -89,9 +89,8 @@ class Warehouse(models.Model):
 
         domain = [('type', '=', _type)]
         # 仓库管理员带出有权限的仓库作为默认值
-        if _type == 'stock' and self.env.user.has_group('warehouse.group_warehouse'):
-            domain += ['|', ('user_ids', '=', False),
-                       ('user_ids', 'in', self._uid)]
+        # if _type == 'stock' and self.env.user.has_group('warehouse.group_warehouse'):
+        #     domain += ['|', ('user_ids', '=', False), ('user_ids', 'in', self._uid)]
 
         warehouses = self.search(domain, limit=1, order='id asc')
         if not warehouses:
