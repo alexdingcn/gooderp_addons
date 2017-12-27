@@ -263,10 +263,9 @@
 		    						}">
                                     <tree string='销售发货单明细' editable='bottom'>
                                         <field name='goods_id'
-                                               domain="[('not_saleable','=',False), ,('state','=','done')]"
+                                               domain="[('not_saleable','=',False),('state','=','done')]"
                                                context="{'default_partner':parent.partner_id,
-		         									  'default_is_return':parent.is_return,
-		         									  }"/>
+		         									  'default_is_return':parent.is_return}"/>
                                         <!--<field name='attribute_id'-->
                                         <!--domain="[('goods_id', '=', goods_id)]"-->
                                         <!--groups='goods.multi_attrs_groups'-->
@@ -843,7 +842,7 @@
         <menuitem id='menu_sell_master' name='主数据' parent='sell_menu' sequence="2"/>
         <menuitem id='sell_customer_menu' action='core.customer_action' name="客户" parent='menu_sell_master'
                   sequence='10'/>
-        <menuitem id='sell_goods_menu' name='商品' parent='menu_sell_master' action='goods_action_sell' sequence='20'/>
+        <!--<menuitem id='sell_goods_menu' name='商品' parent='menu_sell_master' action='goods_action_sell' sequence='20'/>-->
         <menuitem id='pricing_menu' name='定价策略' action='action_pricing' parent='menu_sell_master' sequence='30'/>
         <record id="sell_goods_menu" model="ir.ui.menu">
             <field name="create_tag">1</field>

@@ -27,10 +27,9 @@ class SellOrder(models.Model):
     def _compute_cart_info(self):
         ''' 计算购物车产品数量 '''
         for order in self:
-            order.cart_quantity = int(
-                sum(order.mapped('website_order_line.quantity')))
-            order.only_services = all(
-                l.goods_id.not_saleable for l in order.website_order_line)
+            order.cart_quantity = len(order.website_order_line)
+            # int(sum(order.mapped('website_order_line.quantity')))
+            order.only_services = all(l.goods_id.not_saleable for l in order.website_order_line)
 
     @api.model
     def _get_website_data(self, order):

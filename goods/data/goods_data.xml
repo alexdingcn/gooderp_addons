@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="cert_name_1" model="core.value">
+            <field name="name">营业执照</field>
+            <field name="type">cert_name</field>
+        </record>
+        <record id="cert_name_2" model="core.value">
+            <field name="name">生产许可证</field>
+            <field name="type">cert_name</field>
+        </record>
+        <record id="cert_name_3" model="core.value">
+            <field name="name">销售许可证</field>
+            <field name="note">供应商销售许可证</field>
+            <field name="type">cert_name</field>
+        </record>
+        <record id="cert_name_4" model="core.value">
+            <field name="name">GMP质量认证</field>
+            <field name="note">生产企业GMP质量认证</field>
+            <field name="type">cert_name</field>
+        </record>
+        <record id="cert_name_5" model="core.value">
+            <field name="name">GSP质量认证</field>
+            <field name="note">GSP质量认证</field>
+            <field name="type">cert_name</field>
+        </record>
+        <record id="goods_cert_name_1" model="core.value">
+            <field name="name">批准文号</field>
+            <field name="type">goods_cert_name</field>
+        </record>
+        <record id="goods_cert_name_2" model="core.value">
+            <field name="name">进口注册证</field>
+            <field name="type">goods_cert_name</field>
+        </record>
+    </data>
+</openerp>

@@ -31,6 +31,7 @@
          该模块继承自 core 模块，进一步扩展定义了商品及其相关的类。
     ''',
     "data": [
+        'data/goods_data.xml',
         'security/groups.xml',
         'view/goods_view.xml',
         'view/goods_class_view.xml',

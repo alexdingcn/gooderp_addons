@@ -3,6 +3,8 @@ from datetime import datetime, timedelta, date
 from odoo.exceptions import UserError
 from odoo import models, fields, api
 
+from pypinyin import pinyin, Style
+
 
 class Goods(models.Model):
     '''
@@ -29,14 +31,14 @@ class Goods(models.Model):
     digital_audited = fields.Boolean(u'是否有电子监管码')
     digital_audit_code = fields.Char(u'电子监管码')
     need_maintained = fields.Boolean(u'是否需要养护')
-    need_quality_report = fields.Boolean(u'需要质检报告')
+    need_quality_report = fields.Boolean(u'需要质检报告', default=True)
     is_superiority = fields.Boolean(u'是否优势品种')
 
     expire_date = fields.Date(u'有效期', default=fields.Date.context_today,
                               help=u'药品有效期, 默认为当前天')
     incoming_tax_rate = fields.Float(u'进项税率')
     outgoing_tax_rate = fields.Float(u'销项税率')
-    licence_number = fields.Char(u'批准文号/进口注册证号')
+    licence_number = fields.Char(u'批准文号/进口注册证号', required=True)
 
     storage_condition = fields.Many2one('core.value', u'储藏条件', required=True,
                                         ondelete='restrict',
@@ -119,6 +121,27 @@ class Goods(models.Model):
         :return: 当选取单位时辅助单位默认和 单位相等。
         """
         self.uos_id = self.uom_id
+
+    @api.onchange('name')
+    def onchange_name(self):
+        """
+        :return: 修改名称时候，生成拼音简码
+        """
+        if self.name:
+            # 只获取首字母拼音 [['z'], ['x']]
+            abbrs = pinyin(self.name, style=Style.FIRST_LETTER)
+            self.pinyin_abbr = ''.join([item[0].upper() for item in abbrs])
+
+    @api.onchange('licence_number')
+    def onchange_licence_number(self):
+        """
+        :return: 修改批准文号的时候，自动生成证书信息
+        """
+        if self.licence_number:
+            if self.cert_ids:
+                for cert_line in self.cert_ids:
+                    if cert_line.cert_name and cert_line.cert_name.name == u'批准文号':
+                        cert_line.cert_number = self.licence_number
 
     @api.onchange('using_batch')
     def onchange_using_batch(self):

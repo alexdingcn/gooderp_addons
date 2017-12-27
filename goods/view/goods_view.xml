@@ -52,7 +52,7 @@
                                 <field name='not_saleable'/>
                             </group>
                             <group name="image_info">
-                                <div>
+                                <div style="width:70%">
                                     <field name='image' widget='image'
                                            options='{"preview_image": "image", "width": "100%"}'/>
                                 </div>
@@ -118,7 +118,15 @@
                             </page>
                             <page name="goods_cert_info" string='证书信息' icon="fa-certificate">
                                 <group>
-                                    <field name="cert_ids" nolabel="1" groups='goods.cert_info_groups'/>
+                                    <field name="cert_ids" nolabel="1" groups='goods.cert_info_groups'>
+                                         <tree string="商品认证信息" editable="bottom">
+                                            <field name="cert_name"/>
+                                            <field name="cert_number"/>
+                                            <field name="cert_expire"/>
+                                            <field name="cert_count"/>
+                                            <field name="note"/>
+                                        </tree>
+                                    </field>
                                 </group>
                             </page>
                             <page name="price_info" string='价格信息' icon="fa-cny">
@@ -207,6 +215,24 @@
                     <field name="cert_count"/>
                     <field name="note"/>
                 </tree>
+            </field>
+        </record>
+
+        <record id='goods_cert_info_form' model='ir.ui.view'>
+            <field name='name'>goods.cert.info.form</field>
+            <field name='model'>goods.cert.info</field>
+            <field name='arch' type='xml'>
+                <form string="商品认证信息">
+                    <group>
+                        <field name="goods_id" readonly="1"/>
+                        <field name="cert_name"/>
+                        <field name="cert_number"/>
+                        <field name="cert_expire"/>
+                        <field name="days_to_expire" readonly="1"/>
+                        <field name="cert_count"/>
+                        <field name="note"/>
+                    </group>
+                </form>
             </field>
         </record>
 

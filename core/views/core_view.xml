@@ -428,12 +428,13 @@
             <field name="model">bank.account</field>
             <field name="arch" type="xml">
                 <tree editable="TOP" string="账户">
-                    <field name="name"/>`
+                    <field name="name"/>
                     <field name="balance" sum='sum'/>
                     <field name='active' invisible='1'/>
                 </tree>
             </field>
         </record>
+
         <record id="bank_account_search" model="ir.ui.view">
             <field name="name">bank.account.search</field>
             <field name="model">bank.account</field>

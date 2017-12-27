@@ -111,7 +111,7 @@ class BuyOrder(models.Model):
                        help=u"购货订单的唯一编号，当创建时它会自动生成下一个编号。")
     type = fields.Selection([('buy', u'购货'),
                              ('return', u'退货')],
-                            u'类型',
+                            u'订单类型',
                             default='buy',
                             states=READONLY_STATES,
                             help=u'购货订单的类型，分为购货或退货')

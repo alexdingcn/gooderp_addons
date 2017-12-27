@@ -340,7 +340,7 @@
     </template>
 
     <!-- 购物车 -->
-    <template id="cart" name="Shopping Cart">
+    <template id="cart" name="购物车">
         <t t-call="website.layout">
             <div id="wrap">
                 <div class="container oe_website_sale">
@@ -389,7 +389,7 @@
                 <tr>
                     <th width="100">产品</th>
                     <th></th>
-                    <th width="100" class="text-center">属性</th>
+                    <th width="100" class="text-center">规格</th>
                     <th width="130" class="text-center">数量</th>
                     <th width="100" class="text-center">价格</th>
                 </tr>
@@ -409,13 +409,13 @@
                                 </a>
                             </div>
                             <div class="text-muted">
-                                <!-- <t t-foreach="line.name.splitlines()[1:]" t-as="name_line">
-                                    <span><t t-esc="name_line"/></span><br/>
-                                </t> -->
+                                <!--<t t-foreach="line.name.splitlines()[1:]" t-as="name_line">-->
+                                    <!--<span><t t-esc="name_line"/></span><br/>-->
+                                <!--</t>-->
                             </div>
-                            <a href='#' class='js_delete_product no-decoration'> <small><i class='fa fa-trash-o'></i> Remove</small></a>
+                            <a href='#' class='js_delete_product no-decoration'> <small><i class='fa fa-trash-o'></i> 移除</small></a>
                         </td>
-                        <td><span t-field="line.attribute_id.name"/></td>
+                        <td><span t-field="line.goods_id.specs"/></td>
                         <td class="text-center" id="td-qty">
                             <div class="input-group oe_website_spinner">
                                 <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json" data-no-instant="">
@@ -428,11 +428,11 @@
                             </div>
                         </td>
                         <td class="text-center" id="td-price" name="price">
-                            <!-- <t t-if="(compute_currency(line.product_id.lst_price) - line.price_reduce ) &gt; 0.01  and website.get_current_pricelist().discount_policy=='without_discount'">
-                                <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="compute_currency(line.product_id.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}" />
-                            </t> -->
-                            <!-- <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_subtotal" /> -->
-                            <!-- <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_total" /> -->
+                            <!--&lt;!&ndash; <t t-if="(compute_currency(line.product_id.lst_price) - line.price_reduce ) &gt; 0.01  and website.get_current_pricelist().discount_policy=='without_discount'">-->
+                                <!--<del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="compute_currency(line.product_id.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}" />-->
+                            <!--</t> &ndash;&gt;-->
+                             <!--<span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_subtotal" />-->
+                             <!--<span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'from_currency': website_sale_order.pricelist_id.currency_id, 'display_currency': website.currency_id}" groups="sale.group_show_price_total" />-->
                             <span t-field="line.amount" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}"/>
                         </td>
                     </tr>
@@ -474,7 +474,7 @@
                     <t t-call="good_shop.total" />
                 </span>
                 <a class="btn btn-primary" href="/shop/cart">查看购物车 
-                    (<t t-esc="website_sale_order.cart_quantity" /> 项)
+                    (<t t-esc="website_sale_order.cart_quantity" />项)
                 </a>
             </div>
         </t>

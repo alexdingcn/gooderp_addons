@@ -4,9 +4,8 @@
 		<!--
 		为了满足用户界面的权限设置需要，将用户组分成这些功能类别 
 		-->
-		<!-- 通用，所有GoodERP模块使用这个类别 -->
-		<record model="ir.module.category" id="Gooderp">
-			<field name="name">Gooderp</field>
+		<record model="ir.module.category" id="general_category">
+			<field name="name">通用</field>
 			<field name="sequence">1</field>
 		</record>
 		<!-- 以下为功能模块相关，给每个主菜单设置一个组便于理解 -->
@@ -45,19 +44,19 @@
 		<!--用户组-->
 		<record id='master_groups' model='res.groups'>
 			<field name='name'>配置</field>
-			<field name='category_id' ref="Gooderp"/>
+			<field name='category_id' ref="general_category"/>
 			<field name="users" eval="[(4, ref('base.user_root'))]"/>
 			<field name="comment">用于显示【配置】根菜单。建议分配给公司IT部门</field>
 		</record>
 		<record id="home_page.group_all_manager" model="res.groups">
 			<field name='name'>总经理</field>
-			<field name='category_id' ref="core.Gooderp"/>
+			<field name='category_id' ref="core.general_category"/>
 			<field name="users" eval="[(4, ref('base.user_root'))]"/>
 			<field name="comment">用于显示【首页】根菜单</field>
 		</record>
 		<record id="home_page.group_mail" model="res.groups">
 			<field name='name'>查看消息</field>
-			<field name='category_id' ref="core.Gooderp"/>
+			<field name='category_id' ref="core.general_category"/>
 			<field name="comment">用于显示【消息】根菜单</field>
 		</record>
 		<record id='settle_mode_groups' model='res.groups'>
@@ -74,7 +73,7 @@
 		</record>
 		<record id="nobody_can_see" model="res.groups" >
 			<field name="name">彻底隐藏</field>
-			<field name='category_id' ref="core.Gooderp"/>
+			<field name='category_id' ref="core.general_category"/>
 			<field name="comment">用来隐藏管理员也没必要看到的菜单等...(使用时请慎重)!</field>
 		</record>
 		<record id="base.group_user" model="res.groups">
