@@ -22,7 +22,9 @@ odoo.define('good.process', function (require) {
         render_tag: function (data) {
             var self = this;
             var user_ids = _.filter(data, function (value) {
-                if (value.display_name == self.session.name) {
+                var vals = value.display_name.split("-")
+                if (value.display_name == self.session.name ||
+                    (vals.length > 1 && vals[1] == self.session.name)) {
                     // remove header button if approver
                     $(".o_main_content .o_cp_left").remove();
                     $(".o_main_content .o_cp_right").remove();

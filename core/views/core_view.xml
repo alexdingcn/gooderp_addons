@@ -241,7 +241,7 @@
                                 <field name="note" placeholder="暂无备注信息"/>
                             </group>
                             <group>
-                                <field name="type"/>
+                                <field name="type" required="1" invisible="1"/>
                                 <field name="s_category_id" attrs="{'invisible':[('type', '!=', 'SUP')]}"/>
                                 <field name="c_category_id" attrs="{'invisible':[('type', '!=', 'CUS')]}"/>
                                 <field name="onsite_check"/>
@@ -301,6 +301,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'type': 'CUS'}</field>
             <field name="search_view_id" ref="partner_cus_search"/>
             <field name="domain">[('type','=','CUS')]</field>
         </record>
@@ -347,7 +348,7 @@
                                 <field name="tax_rate"/>
                             </group>
                             <group>
-                                <field name="type"/>
+                                <field name="type" required="1" invisible="1"/>
                                 <field name="s_category_id" attrs="{'invisible':[('type', '!=', 'SUP')]}"/>
                                 <field name="c_category_id" attrs="{'invisible':[('type', '!=', 'CUS')]}"/>
                                 <field name="bank_name"/>
@@ -402,6 +403,7 @@
             <field name="type">ir.actions.act_window</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
+            <field name="context">{'type': 'SUP'}</field>
             <field name="search_view_id" ref="partner_sup_search"/>
             <field name="domain">[('type','=','SUP')]</field>
         </record>
@@ -507,17 +509,6 @@
             <field name="search_view_id" ref="service_search"/>
         </record>
 
-        <!-- 继承 res.users form -->
-        <record id='res_users_form_inherit' model='ir.ui.view'>
-            <field name='name'>res users form inherit</field>
-            <field name='model'>res.users</field>
-            <field name="inherit_id" ref="base.view_users_form"/>
-            <field name='arch' type='xml'>
-                <xpath expr="//label[@for='login']" position='attributes'>
-                    <attribute name='string'>用户</attribute>
-                </xpath>
-            </field>
-        </record>
         <!-- 继承res.users tree -->
         <record id='res_users_tree_inherit' model='ir.ui.view'>
             <field name='name'>res users tree inherit</field>

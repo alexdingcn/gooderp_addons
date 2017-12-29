@@ -33,7 +33,7 @@
                             </div>
                         </div>
                         <notebook>
-                            <page string="公开信息">
+                            <page string="基础资料">
                                 <group>
                                     <group string="职位">
                                         <field name="department_id" required="1"/>

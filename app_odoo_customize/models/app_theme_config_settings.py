@@ -16,14 +16,11 @@ class AppThemeConfigSettings(models.TransientModel):
     app_show_lang = fields.Boolean('Show Quick Language Switcher',
                                    help=u"When enable,User can quick switch language in user menu")
     app_show_debug = fields.Boolean('Show Quick Debug', help=u"When enable,everyone login can see the debug menu")
-    app_show_documentation = fields.Boolean('Show Documentation', help=u"When enable,User can visit user manual")
+    app_show_documentation = fields.Boolean('Show Documentation', default=True, help=u"When enable,User can visit user manual")
     app_show_documentation_dev = fields.Boolean('Show Developer Documentation',
                                                 help=u"When enable,User can visit development documentation")
     app_show_support = fields.Boolean('Show Support', help=u"When enable,User can vist your support site")
-    app_show_account = fields.Boolean('Show My Account', help=u"When enable,User can login to your website")
-    app_show_enterprise = fields.Boolean('Show Enterprise Tag', help=u"Uncheck to hide the Enterprise tag")
     app_show_share = fields.Boolean('Show Share Dashboard', help=u"Uncheck to hide the Odoo Share Dashboard")
-    app_show_poweredby = fields.Boolean('Show Powered by Odoo', help=u"Uncheck to hide the Powered by text")
 
     app_documentation_url = fields.Char('Documentation Url')
     app_documentation_dev_url = fields.Char('Developer Documentation Url')
@@ -41,10 +38,7 @@ class AppThemeConfigSettings(models.TransientModel):
         app_show_documentation = True if ir_config.get_param('app_show_documentation') == "True" else False
         app_show_documentation_dev = True if ir_config.get_param('app_show_documentation_dev') == "True" else False
         app_show_support = True if ir_config.get_param('app_show_support') == "True" else False
-        app_show_account = True if ir_config.get_param('app_show_account') == "True" else False
-        app_show_enterprise = True if ir_config.get_param('app_show_enterprise') == "True" else False
         app_show_share = True if ir_config.get_param('app_show_share') == "True" else False
-        app_show_poweredby = True if ir_config.get_param('app_show_poweredby') == "True" else False
 
         app_documentation_url = ir_config.get_param('app_documentation_url',
                                                     default='http://www.sunpop.cn/documentation/user/10.0/en/index.html')
@@ -60,10 +54,7 @@ class AppThemeConfigSettings(models.TransientModel):
             app_show_documentation=app_show_documentation,
             app_show_documentation_dev=app_show_documentation_dev,
             app_show_support=app_show_support,
-            app_show_account=app_show_account,
-            app_show_enterprise=app_show_enterprise,
             app_show_share=app_show_share,
-            app_show_poweredby=app_show_poweredby,
             app_documentation_url=app_documentation_url,
             app_documentation_dev_url=app_documentation_dev_url,
             app_support_url=app_support_url,
@@ -78,13 +69,10 @@ class AppThemeConfigSettings(models.TransientModel):
         ir_config.set_param("app_system_name", self.app_system_name or "")
         ir_config.set_param("app_show_lang", self.app_show_lang or "False")
         ir_config.set_param("app_show_debug", self.app_show_debug or "False")
-        ir_config.set_param("app_show_documentation", self.app_show_documentation or "False")
+        ir_config.set_param("app_show_documentation", self.app_show_documentation or "True")
         ir_config.set_param("app_show_documentation_dev", self.app_show_documentation_dev or "False")
         ir_config.set_param("app_show_support", self.app_show_support or "False")
-        ir_config.set_param("app_show_account", self.app_show_account or "False")
-        ir_config.set_param("app_show_enterprise", self.app_show_enterprise or "False")
         ir_config.set_param("app_show_share", self.app_show_share or "False")
-        ir_config.set_param("app_show_poweredby", self.app_show_poweredby or "False")
 
         ir_config.set_param("app_documentation_url",
                             self.app_documentation_url or "http://www.sunpop.cn/documentation/user/10.0/en/index.html")

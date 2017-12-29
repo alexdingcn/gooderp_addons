@@ -15,6 +15,11 @@ class Partner(models.Model):
     _description = u'业务伙伴'
     _inherit = ['mail.thread']
 
+    @api.model
+    def _default_partner_type(self):
+        '''获取默认类型'''
+        return self.env.context.get('type', False)
+
     state = fields.Selection([
         ('draft', u'未审核'),
         ('done', u'已审核'),
@@ -26,7 +31,7 @@ class Partner(models.Model):
     code = fields.Char(u'编号')
     name = fields.Char(u'名称', required=True, copy=False)
 
-    main_mobile = fields.Char(u'联系电话', required=True)
+    main_mobile = fields.Char(u'联系电话', required=True, size=20)
     main_address = fields.Char(u'详细地址')
     fax = fields.Char(u'传真')
     postcode = fields.Char(u'邮编')
@@ -42,8 +47,8 @@ class Partner(models.Model):
     type = fields.Selection([
         ('MNF', u'生产企业'),
         ('SUP', u'供应商'),
-        ('CUS', u'客户')
-    ], string=u'业务伙伴类型')
+        ('CUS', u'客户'),
+    ], default=_default_partner_type, string=u'业务伙伴类型')
 
     receivable = fields.Float(u'应收余额', readonly=True,
                               digits=dp.get_precision('Amount'))
@@ -70,7 +75,7 @@ class Partner(models.Model):
     source = fields.Char(u'来源')
     note = fields.Text(u'备注')
     main_contact = fields.Char(u'主联系人')
-    responsible_id = fields.Many2one('res.users', u'负责人员')
+    responsible_id = fields.Many2one('res.users', u'负责人员', default=lambda self: self.env.user)
 
     onsite_check = fields.Boolean(u'需要实地考察')
 

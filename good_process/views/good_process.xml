@@ -66,7 +66,7 @@
 					<field name='sequence'/>
 				</tree>
 			-->
-			<kanban create="0">
+			<kanban create="0" default_group_by="model_type">
                   <field name='creator'/>
 				  <field name='model_type'/>
 				  <field name='record_name'/>
@@ -97,10 +97,15 @@
             <field name='res_model'>good_process.approver</field>
             <field name='view_mode'>kanban</field>
 			<field name='domain'>[('user_id','=',uid)]</field>
+			<field name="help" type="html">
+              <p class="oe_view_nocontent">
+                目前没有需要审批的事项，休息一下吧
+              </p>
+            </field>
         </record>
 
 		<menuitem id='menu_to_approve_process' name='待审批' action='good_process_approver_action'
-		   groups="home_page.group_mail" web_icon="good_process,static/description/icon.png" sequence='998'/>
+		   groups="home_page.group_mail" web_icon="good_process,static/description/icon.png" sequence='2'/>
 
     </data>
 </openerp>

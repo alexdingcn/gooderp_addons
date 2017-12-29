@@ -35,7 +35,7 @@ odoo.define('app_odoo_customize.customize_user_menu', function (require) {
 
     $(document).ready(function () {
         var self = this;
-        documentation_url = 'http://www.sunpop.cn/documentation/user/10.0/zh_CN/index.html';
+        documentation_url = 'http://www.yibanjf.com/erpdocs/';
         documentation_dev_url = 'http://www.sunpop.cn/documentation/10.0/index.html';
         support_url = 'http://www.sunpop.cn/trial';
         account_title = 'My Online Account';
@@ -86,31 +86,6 @@ odoo.define('app_odoo_customize.customize_user_menu', function (require) {
                         }
                     });
                 }
-            });
-            new Model('ir.config_parameter').call('search_read', [[['key', '=', 'app_show_account']], ['value']]).then(function (show) {
-                if (show.length >= 1 && (show[0]['value'] == "False"))
-                    $('[data-menu="account"]').parent().hide();
-                else {
-                    new Model('ir.config_parameter').call('search_read', [[['key', '=', 'app_account_title']], ['value']]).then(function (res) {
-                        if (res.length >= 1) {
-                            _.each(res, function (item) {
-                                account_title = item['value'];
-                            });
-                        }
-                        $('[data-menu="account"]').html(account_title);
-                    });
-                }
-            });
-            new Model('ir.config_parameter').call('search_read', [[['key', '=', 'app_account_url']], ['value']]).then(function (res) {
-                if (res.length >= 1) {
-                    _.each(res, function (item) {
-                        account_url = item['value'];
-                    });
-                }
-            });
-            new Model('ir.config_parameter').call('search_read', [[['key', '=', 'app_show_poweredby']], ['value']]).then(function (show) {
-                if (show.length >= 1 && (show[0]['value'] == "False"))
-                    $('.o_sub_menu_footer').hide();
             });
         }, 2500);
     });

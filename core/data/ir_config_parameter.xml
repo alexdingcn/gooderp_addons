@@ -16,7 +16,7 @@
         </record>
         <record id="app_odoo_customize.app_show_documentation" model="ir.config_parameter">
             <field name="key">app_show_documentation</field>
-            <field name="value">False</field>
+            <field name="value">True</field>
         </record>
         <record id="app_odoo_customize.app_show_documentation_dev" model="ir.config_parameter">
             <field name="key">app_show_documentation_dev</field>
@@ -26,30 +26,18 @@
             <field name="key">app_show_support</field>
             <field name="value">False</field>
         </record>
-        <record id="app_odoo_customize.app_show_account" model="ir.config_parameter">
-            <field name="key">app_show_account</field>
-            <field name="value">False</field>
-        </record>
-        <record id="app_odoo_customize.app_show_enterprise" model="ir.config_parameter">
-            <field name="key">app_show_enterprise</field>
-            <field name="value">False</field>
-        </record>
         <record id="app_odoo_customize.app_show_share" model="ir.config_parameter">
             <field name="key">app_show_share</field>
-            <field name="value">False</field>
-        </record>
-        <record id="app_odoo_customize.app_show_poweredby" model="ir.config_parameter">
-            <field name="key">app_show_poweredby</field>
             <field name="value">False</field>
         </record>
         
         <record id="app_odoo_customize.app_documentation_url" model="ir.config_parameter">
             <field name="key">app_documentation_url</field>
-            <field name="value">https://www.kancloud.cn/osbzr/gooderp_user_manual/295107</field>
+            <field name="value">http://www.yibanjf.com/erpdocs/</field>
         </record>
         <record id="app_odoo_customize.app_documentation_dev_url" model="ir.config_parameter">
             <field name="key">app_documentation_dev_url</field>
-            <field name="value">http://www.sunpop.cn/documentation/10.0/index.html</field>
+            <field name="value">http://www.yibanjf.com/erpdocs/</field>
         </record>
         <record id="app_odoo_customize.app_support_url" model="ir.config_parameter">
             <field name="key">app_support_url</field>
@@ -61,7 +49,7 @@
         </record>
         <record id="app_odoo_customize.app_account_url" model="ir.config_parameter">
             <field name="key">app_account_url</field>
-            <field name="value">https://www.kancloud.cn/gooderp/gooderp-complete-reference/395480</field>
+            <field name="value">http://www.yibanjf.com/erpdocs/</field>
         </record>
     </data>
 </openerp>

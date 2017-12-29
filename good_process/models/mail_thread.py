@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import traceback
 
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
@@ -79,12 +78,16 @@ class MailThread(models.AbstractModel):
         if not process_row:
             return []
 
+        # 获得需要添加的组
         groups = self.__get_groups__(process_row)
-        department_manager = self.__get_user_manager__(
-            thread_row, process_row)
+        # 加上部门经理
+        department_manager = self.__get_user_manager__(thread_row, process_row)
         if department_manager:
             users.append((department_manager, 0, False))
+        # 加上审批组
+        # TODO 移除重复用户
         users.extend(self.__get_users__(groups))
+
         [approver_rows.append(self.env['good_process.approver'].create(
             {'user_id': user.id,
              'res_id': thread_row.id,
@@ -92,14 +95,14 @@ class MailThread(models.AbstractModel):
              'record_name': getattr(thread_row, 'name', ''),
              'creator': thread_row.create_uid.id,
              'sequence': sequence,
-             'group_id': groud_id,
-             'model': thread_row._name})) for user, sequence, groud_id in users]
-        return [{'id': row.id, 'display_name': row.user_id.name} for row in approver_rows]
+             'group_id': group_id,
+             'model': thread_row._name})) for user, sequence, group_id in users]
+        # same format with department-username
+        return [{'id': row.id, 'display_name': row.display_name} for row in approver_rows]
 
     def __good_approver_send_message__(self, active_id, active_model, message):
         mode_row = self.env[active_model].browse(active_id)
-        user_row = self.env['res.users'].browse(self.env.uid)
-        message_text = u"%s %s %s" % (message, mode_row._name, mode_row.name)
+        message_text = u"%s%s: %s" % (u'首营审核', message, mode_row.name)
         return message_text
 
     def __is_departement_manager__(self, department_row):
@@ -131,8 +134,7 @@ class MailThread(models.AbstractModel):
             return_vals.extend(self.__remove_approver__(
                 active_id, active_model, users, can_clean_groups))
             if return_vals:
-                message = self.__good_approver_send_message__(
-                    active_id, active_model, u'同意')
+                message = self.__good_approver_send_message__(active_id, active_model, u'同意')
             else:
                 return_vals = u'您不是这张单据的下一个审批者'
         else:
@@ -153,11 +155,10 @@ class MailThread(models.AbstractModel):
         approver_rows = self.env['good_process.approver'].search([('model', '=', active_model),
                                                                   ('res_id', '=', active_id)])
         if model_row._approver_num == len(model_row._to_approver_ids):
-            return_vals = u'您是首个需要审批的人无需拒绝, 请通知填表人重新提审或者作废！'
+            return_vals = u'由于你是第一个需要审批的人，不需要点击拒绝, 请通知填表人重新提审或者作废！'
         elif approver_rows and users:
             approver_rows.unlink()
-            message = self.__good_approver_send_message__(
-                active_id, active_model, u'拒绝')
+            message = self.__good_approver_send_message__(active_id, active_model, u'拒绝')
             return_vals = self.__add_approver__(model_row, active_model, active_id)
         else:
             return_vals = u'已经通过不能拒绝！'
@@ -301,7 +302,6 @@ class Approver(models.Model):
     单据的待审批者
     '''
     _name = 'good_process.approver'
-    _rec_name = 'user_id'
     _order = 'model, res_id, sequence'
 
     model_type = fields.Char(u'单据类型')
@@ -312,6 +312,15 @@ class Approver(models.Model):
     group_id = fields.Many2one('res.groups', string=u'审批组')
     user_id = fields.Many2one('res.users', string=u'用户')
     sequence = fields.Integer(string=u'顺序')
+
+    @api.multi
+    def name_get(self):
+        ret = []
+        for record in self:
+            staff = self.env['staff'].search([('user_id', '=', record.user_id.id)])
+            display_name = staff.department_id.name if staff and staff.department_id else ''
+            ret.append((record.id, '%s-%s' % (display_name, record.user_id.name)))
+        return ret
 
     @api.multi
     def goto(self):
