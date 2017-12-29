@@ -14,7 +14,7 @@
         <!--<menuitem id='outsoruce_menu' action='outsource_action' parent='warehouse_order' groups='warehouse.assembly_groups' sequence='11' />-->
 
 		<!-- 主数据 -->
-		<menuitem id='warehouse_master' name='主数据' parent='warehouse_root' sequence='2' />
+		<menuitem id='warehouse_master' name='资料维护' parent='warehouse_root' sequence='2' />
 		<menuitem id='goods.goods_menu' name='商品' parent='warehouse_master' action='goods.goods_action' sequence='10' />
         <record id="goods.goods_menu" model="ir.ui.menu">
 			<field name="create_tag">1</field>
@@ -39,6 +39,7 @@
         <menuitem id='report_lot_status_menu' name='批次余额表' action='report_lot_status_action' parent='report_parent' sequence='4'
         	 groups='goods.batch_groups' />
         <menuitem id='wh_move_line_menu' name='库存调拨' action='wh_move_line_action' parent='report_parent' sequence='6' />
+        <menuitem id='out_of_stock_report_menu' name='缺货预警' action='wh_out_of_stock_action' parent='report_parent' sequence='11' />
         <menuitem id='non_active_report_wizard_menu' name='呆滞料报表' action='non_active_report_wizard_action' parent='report_parent' sequence='10' />
         <menuitem id='report_temperature_menu' name='温湿度记录单' action='wh_temperature_action' parent='report_parent' sequence='15' />
 

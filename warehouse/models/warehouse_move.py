@@ -48,10 +48,12 @@ class WhMove(models.Model):
         return self._get_default_warehouse_dest_impl()
 
     @api.one
-    @api.depends('line_in_ids')
+    @api.depends('line_out_ids')
     def _get_qc_status(self):
         if self.line_in_ids:
             self.need_quality_control = any([line.goods_id.need_quality_report for line in self.line_in_ids])
+        if self.line_out_ids:
+            self.need_quality_control = any([line.goods_id.need_quality_report for line in self.line_out_ids])
 
     origin = fields.Char(u'移库类型', required=True,
                          help=u'移库类型')
@@ -61,7 +63,7 @@ class WhMove(models.Model):
     state = fields.Selection(MOVE_STATE, u'状态', copy=False, default='draft',
                              index=True,
                              help=u'移库单状态标识，新建时状态为未审核;审核后状态为已审核',
-                             track_visibility='onchange')
+                             track_visibility='always')
     partner_id = fields.Many2one('partner', u'业务伙伴', ondelete='restrict',
                                  help=u'该单据对应的业务伙伴')
     date = fields.Date(u'单据日期', required=True, copy=False, default=fields.Date.context_today,
@@ -113,7 +115,11 @@ class WhMove(models.Model):
         help=u'单据经办人',
         track_visibility='onchange'
     )
-    express_type = fields.Char(string='承运商', track_visibility='onchange')
+    express_type = fields.Many2one('core.value', u'承运商',
+                                   ondelete='restrict',
+                                   domain=[('type', '=', 'express')],
+                                   context={'type': 'express'},
+                                   track_visibility='onchange')
     express_code = fields.Char(u'快递单号', copy=False, track_visibility='onchange')
     company_id = fields.Many2one(
         'res.company',
@@ -303,13 +309,14 @@ class WhMove(models.Model):
         :param order_id: 单据id
         :return:
         """
+        # 修复barcode
         att = self.env['attribute'].search([('ean', '=', barcode)])
         goods = self.env['goods'].search([('barcode', '=', barcode)])
         line_model = (model_name == 'wh.inventory' and 'wh.inventory.line'
                       or 'wh.move.line')
 
         if not att and not goods:
-            raise UserError(u'条码为  %s 的商品不存在' % (barcode))
+            raise UserError(u'条码为 %s 的商品不存在' % barcode)
         else:
             self.check_barcode(model_name, order_id, att, goods)
             conversion = att and att.goods_id.conversion or goods.conversion
@@ -331,7 +338,7 @@ class WhMove(models.Model):
                 ('warehouse_dest_id', '=', self.warehouse_dest_id.id)])
             if qc_rule:
                 if not self.qc_result and not self.qc_result_brief:
-                    raise UserError(u'该单据需要质检，请先上传质检报告')
+                    raise UserError(u'该单据需要质量验收，请先上传质检报告')
                 if not self.qc_user_id:
                     raise UserError(u'质检员信息缺失')
 
@@ -342,7 +349,7 @@ class WhMove(models.Model):
         """
         for order in self:
             if not order.line_out_ids and not order.line_in_ids:
-                raise UserError(u'单据的明细项不可以为空')
+                raise UserError(u'入/出库明细不可以为空')
             order.check_qc_result()
 
     @api.multi
@@ -352,6 +359,7 @@ class WhMove(models.Model):
         :return:
         """
         for order in self:
+            # 检查入出库明细、质检报告
             order.prev_approve_order()
             order.line_out_ids.action_done()
             order.line_in_ids.action_done()
@@ -373,6 +381,8 @@ class WhMove(models.Model):
             if self.quality_ids:
                 if 'line_in_ids' in values:
                     for line in values['line_in_ids']:
+                        if not line:
+                            continue
                         for qc_line in self.quality_ids:
                             if line[1] == qc_line.line_in_id.id:
                                 updateLots = {}

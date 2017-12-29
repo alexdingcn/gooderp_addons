@@ -15,7 +15,7 @@
             <field name='inherit_id' ref='buy.buy_receipt_form'/>
             <field name="arch" type="xml">
                 <button name="buy_receipt_draft" position="after">
-                    <button name="%(buy.report_buy_receipt_in)d" string="打印" type="action" class="oe_highlight"/>
+                    <button name="%(buy.report_buy_receipt_in)d" string="打印" type="action"/>
                 </button>
             </field>
         </record>
@@ -33,7 +33,7 @@
             <field name='inherit_id' ref='buy.buy_return_form'/>
             <field name="arch" type="xml">
                 <button name="buy_receipt_draft" position="after">
-                    <button name="%(buy.report_buy_receipt_out)d" string="打印" type="action" class="oe_highlight"/>
+                    <button name="%(buy.report_buy_receipt_out)d" string="打印" type="action"/>
                 </button>
             </field>
         </record>
@@ -51,7 +51,7 @@
             <field name='inherit_id' ref='buy.buy_order_form'/>
             <field name="arch" type="xml">
                 <button name="buy_order_draft" position="after">
-                    <button name="%(buy.report_buy_order)d" string="打印" type="action" class="oe_highlight"/>
+                    <button name="%(buy.report_buy_order)d" string="打印" type="action"/>
                 </button>
             </field>
         </record>
@@ -69,7 +69,7 @@
             <field name='inherit_id' ref='buy.buy_adjust_form'/>
             <field name="arch" type="xml">
                 <button name="buy_adjust_done" position="after">
-                    <button name="%(buy.report_buy_adjust)d" string="打印" type="action" class="oe_highlight"/>
+                    <button name="%(buy.report_buy_adjust)d" string="打印" type="action"/>
                 </button>
             </field>
         </record>

@@ -15,7 +15,6 @@
                     </group>
                     <footer>
                         <button name='save_bom' string='确定' type='object' class='oe_highlight'/>
-                        or
                         <button string='取消' class='oe_link' special='cancel'/>
                     </footer>
                 </form>

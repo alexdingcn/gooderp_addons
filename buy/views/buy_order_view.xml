@@ -16,13 +16,11 @@
                     <field name="planned_date"/>
                     <field name="create_uid" string="填表人"/>
                     <field name="approve_uid"/>
-                    <field name='currency_id'
-                           groups='finance.group_multi_currency'/>
+                    <field name='currency_id' groups='finance.group_multi_currency'/>
                     <field name="state"/>
                     <field name="_approve_state"/>
                     <field name="goods_state"/>
                     <field name="paid_amount"/>
-                    <field name="ref"/>
                 </tree>
             </field>
         </record>

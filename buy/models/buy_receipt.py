@@ -59,6 +59,7 @@ class BuyReceipt(models.Model):
 
     buy_move_id = fields.Many2one('wh.move', u'入库单',
                                   required=True, ondelete='cascade',
+                                  track_visibility='onchange',
                                   help=u'入库单号')
     is_return = fields.Boolean(u'是否退货',
                                default=lambda self: self.env.context.get(
@@ -71,8 +72,8 @@ class BuyReceipt(models.Model):
                                  ondelete='set null',
                                  help=u'产生的发票号')
     date_due = fields.Date(u'收货日期', copy=False,
-                           default=lambda self: fields.Date.context_today(
-                               self),
+                           default=lambda self: fields.Date.context_today(self),
+                           track_visibility='onchange',
                            help=u'付款截止日期')
     discount_rate = fields.Float(u'优惠率(%)', states=READONLY_STATES,
                                  help=u'整单优惠率')
@@ -87,19 +88,23 @@ class BuyReceipt(models.Model):
                           help=u'总金额减去优惠金额')
     payment = fields.Float(u'本次付款', states=READONLY_STATES,
                            digits=dp.get_precision('Amount'),
+                           track_visibility='onchange',
                            help=u'本次付款金额')
     bank_account_id = fields.Many2one('bank.account', u'结算账户',
                                       ondelete='restrict',
                                       help=u'用来核算和监督企业与其他单位或个人之间的债权债务的结算情况')
     cost_line_ids = fields.One2many('cost.line', 'buy_id', u'采购费用', copy=False,
+                                    track_visibility='onchange',
                                     help=u'采购费用明细行')
     money_state = fields.Char(u'付款状态', compute=_get_buy_money_state,
                               store=True, default=u'未付款',
                               help=u"采购入库单的付款状态",
+                              track_visibility='onchange',
                               index=True, copy=False)
     return_state = fields.Char(u'退款状态', compute=_get_buy_money_state,
                                store=True, default=u'未退款',
                                help=u"采购退货单的退款状态",
+                               track_visibility='onchange',
                                index=True, copy=False)
     modifying = fields.Boolean(u'差错修改中', default=False,
                                help=u'是否处于差错修改中')
@@ -157,7 +162,9 @@ class BuyReceipt(models.Model):
             'origin': self.get_move_origin(vals),
             'finance_category_id': self.env.ref('finance.categ_buy_goods').id,
         })
-        return super(BuyReceipt, self).create(vals)
+
+        res = super(BuyReceipt, self.with_context({'mail_create_nolog': True})).create(vals)
+        return res
 
     @api.multi
     def unlink(self):
@@ -216,7 +223,7 @@ class BuyReceipt(models.Model):
                             (sum(cost_line.amount for cost_line in self.cost_line_ids),
                              sum(line.share_cost for line in self.line_in_ids)))
 
-        #质检
+        # 质检
         if self.need_quality_control:
             if not self.quality_ids:
                 raise UserError(u'缺少质检报告')
@@ -229,7 +236,6 @@ class BuyReceipt(models.Model):
                     raise UserError(u'商品[%s]：收货数量 + 拒收数量 不等于 到货数量' % line.goods_id.name)
                 if line.reject_qty and not line.goods_reject_reason:
                     raise UserError(u'商品[%s]拒收数量大于0，需要填写拒收理由' % line.goods_id.name)
-
 
     @api.one
     def _line_qty_write(self):
@@ -427,6 +433,7 @@ class BuyReceipt(models.Model):
     def buy_receipt_done(self):
         '''审核采购入库单/退货单，更新本单的付款状态/退款状态，并生成结算单和付款单'''
         # 报错
+        current_state = self.state
         self._wrong_receipt_done()
         # 调用wh.move中审核方法，更新审核人和审核状态
         self.buy_move_id.approve_order()
@@ -439,6 +446,8 @@ class BuyReceipt(models.Model):
 
         # 入库单/退货单 生成结算单
         invoice_id = self._receipt_make_invoice()
+        # HACK: 因为上面state已经在warehouse_move中标记为done，但是没有继承mail.thread
+        self.state = current_state
         self.write({
             'voucher_id': voucher and voucher.id,
             'invoice_id': invoice_id and invoice_id.id,
@@ -536,7 +545,7 @@ class BuyReceipt(models.Model):
             ('state', '=', 'draft')
         ])
         if return_order_draft:
-            raise UserError(u'采购入库单存在草稿状态的退货单！')
+            raise UserError(u'该采购入库单已关联一笔未审核的退货单！')
 
         # 获得审核过的退货单，计算数量
         return_order = self.search([
@@ -602,6 +611,7 @@ class BuyReceipt(models.Model):
                 'date': (datetime.datetime.now()).strftime(ISODATEFORMAT),
                 'line_out_ids': [(0, 0, line) for line in receipt_line],
                 'discount_amount': self.discount_amount,
+                'note': u'从入库单%s创建' % self.name
                 }
         delivery_return = self.with_context(is_return=True).create(vals)
         view_id = self.env.ref('buy.buy_return_form').id

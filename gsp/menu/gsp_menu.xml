@@ -29,11 +29,11 @@
 
         <menuitem id="menu_gsp_quality" name="质量管理" parent="menu_gsp_root" sequence="2"/>
 
-        <menuitem id="menu_gsp_buy_qc" name='采购入库质检' action="menu_gsp_buy_qc_action"
+        <menuitem id="menu_gsp_buy_qc" name='采购入库质量验收' action="menu_gsp_buy_qc_action"
                   parent="menu_gsp_quality" sequence="1"
                   groups="gsp.quality_groups"/>
 
-        <menuitem id="menu_gsp_qc_all" name='历史质检报告' action="menu_gsp_qc_all_action"
+        <menuitem id="menu_gsp_qc_all" name='历史质量验收报告' action="menu_gsp_qc_all_action"
                   parent="menu_gsp_quality" sequence="2"
                   groups="gsp.quality_groups"/>
 
@@ -44,5 +44,12 @@
                   parent="menu_gsp_maintain" sequence="1"
                   groups="gsp.quality_groups"/>
 
+        <menuitem id="menu_buy_qc_master" name="质量验收" parent="buy.menu_buy_root" sequence="4"/>
+        <menuitem id="menu_gsp_buy_receipt_qc" name='采购入库质量验收' action="menu_gsp_buy_qc_action"
+                  parent="menu_buy_qc_master" sequence="1"
+                  groups="gsp.quality_groups"/>
+        <!--<menuitem id="menu_gsp_buy_return_qc" name='采购退货质量验收' action="menu_gsp_buy_return_qc_action"-->
+                  <!--parent="menu_buy_qc_master" sequence="2"-->
+                  <!--groups="gsp.quality_groups"/>-->
     </data>
 </openerp>

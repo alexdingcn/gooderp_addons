@@ -77,6 +77,11 @@ class SellOrder(models.Model):
         for order in self:
             order.delivery_count = len(order.delivery_ids)
 
+    @api.model
+    def create(self, vals):
+        res = super(SellOrder, self.with_context({'mail_create_nolog': True})).create(vals)
+        return res
+
     partner_id = fields.Many2one('partner', u'客户',
                                  ondelete='restrict', states=READONLY_STATES,
                                  help=u'签约合同的客户')
@@ -129,7 +134,7 @@ class SellOrder(models.Model):
     discount_rate = fields.Float(u'优惠率(%)', states=READONLY_STATES,
                                  help=u'整单优惠率')
     discount_amount = fields.Float(u'抹零', states=READONLY_STATES,
-                                   track_visibility='always',
+                                   track_visibility='onchange',
                                    digits=dp.get_precision('Amount'),
                                    help=u'整单优惠金额，可由优惠率自动计算出来，也可手动输入')
     amount = fields.Float(string=u'成交金额', store=True, readonly=True,
@@ -138,15 +143,18 @@ class SellOrder(models.Model):
                           help=u'总金额减去优惠金额')
     pre_receipt = fields.Float(u'预收款', states=READONLY_STATES,
                                digits=dp.get_precision('Amount'),
+                               track_visibility='onchange',
                                help=u'输入预收款审核销售订单，会产生一张收款单')
     bank_account_id = fields.Many2one('bank.account', u'结算账户',
                                       ondelete='restrict',
+                                      track_visibility='onchange',
                                       help=u'用来核算和监督企业与其他单位或个人之间的债权债务的结算情况')
     approve_uid = fields.Many2one('res.users', u'审核人', copy=False,
                                   ondelete='restrict',
                                   help=u'审核单据的人')
     state = fields.Selection(SELL_ORDER_STATES, u'审核状态', readonly=True,
                              help=u"销售订单的审核状态", index=True,
+                             track_visibility='onchange',
                              copy=False, default='draft')
     goods_state = fields.Char(u'发货状态', compute=_get_sell_goods_state,
                               default=u'未出库',

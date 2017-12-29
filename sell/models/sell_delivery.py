@@ -185,7 +185,8 @@ class SellDelivery(models.Model):
             'finance_category_id': self.env.ref('finance.categ_sell_goods').id,
         })
 
-        return super(SellDelivery, self).create(vals)
+        res = super(SellDelivery, self.with_context({'mail_create_nolog': True})).create(vals)
+        return res
 
     @api.multi
     def unlink(self):

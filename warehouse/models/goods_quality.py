@@ -25,13 +25,21 @@ class GoodsQuality(models.Model):
 
     def update_warehouse_move_qc_status(self):
         if self.move_id and self.move_id.quality_ids:
-            done_count = sum([(line.goods_qty == line.accept_qty and line.state == 'done') for line in self.move_id.quality_ids])
-            if done_count == 0:
+            total_num = accept_total = reject_total = 0
+            for line in self.move_id.quality_ids:
+                total_num += line.goods_qty
+                if line.state == 'done':
+                    accept_total += line.accept_qty
+                    reject_total += line.reject_qty
+
+            if reject_total == total_num:
                 qc_result_brief = '质检全部拒收'
-            elif done_count == len(self.move_id.quality_ids):
+            elif accept_total == total_num:
                 qc_result_brief = '质检全部通过'
-            else:
+            elif 0 < accept_total < total_num:
                 qc_result_brief = '质检部分通过'
+            elif 0 < reject_total < total_num:
+                qc_result_brief = '质检部分拒收'
 
             self.move_id.write({
                 'qc_result_brief': qc_result_brief,

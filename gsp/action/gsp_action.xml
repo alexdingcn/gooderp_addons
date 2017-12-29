@@ -171,6 +171,8 @@
                     <field name="goods_id"/>
                     <field name="lot"/>
                     <field name="location_id"/>
+                    <filter name="draft" string="未验收" domain="[('state','=','draft')]"/>
+                    <filter name="done" string="已验收" domain="[('state','=','done')]"/>
                 </search>
             </field>
         </record>
@@ -180,7 +182,7 @@
             <field name="model">goods.quality</field>
             <field name="arch" type="xml">
                 <tree string="采购质量检查" create="false">
-                    <field name="move_id"/>
+                    <field name="move_id" string="入库单"/>
                     <field name="goods_id"/>
                     <field name="lot"/>
                     <field name="location_id"/>
@@ -261,11 +263,22 @@
         </record>
 
         <record id="menu_gsp_buy_qc_action" model="ir.actions.act_window">
-            <field name="name">采购质量检查</field>
+            <field name="name">采购入库质量验收</field>
             <field name="res_model">goods.quality</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('state', '=', 'draft')]</field>
+            <field name="domain">[('move_id.origin', '=', 'buy.receipt.buy'), ('move_id.state', '=', 'draft')]</field>
+            <field name="context">{'search_default_draft':1}</field>
+            <field name="search_view_id" ref="buy_qc_search"/>
+        </record>
+
+        <record id="menu_gsp_buy_return_qc_action" model="ir.actions.act_window">
+            <field name="name">采购退货质量验收</field>
+            <field name="res_model">goods.quality</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('move_id.origin', '=', 'buy.receipt.return'), ('move_id.state', '=', 'draft')]</field>
+            <field name="context">{'search_default_draft':1}</field>
             <field name="search_view_id" ref="buy_qc_search"/>
         </record>
 
@@ -281,7 +294,7 @@
         </record>
 
         <record id="menu_gsp_qc_all_action" model="ir.actions.act_window">
-            <field name="name">历史质检报告</field>
+            <field name="name">历史质量验收报告</field>
             <field name="res_model">goods.quality</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">tree,form</field>

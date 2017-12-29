@@ -32,7 +32,7 @@
             <field name='name'>sell.order.form</field>
             <field name='model'>sell.order</field>
             <field name='arch' type='xml'>
-                <form string='销售订单'>
+                <form string='销售订单' create="false">
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="sell_order_done" states="draft" string="审核" type="object" class="oe_highlight"
                                 confirm="填表人和审核人相同，请确认"
@@ -79,10 +79,11 @@
                                 <field name='currency_id' readonly='1'
                                        groups='finance.group_multi_currency'/>
                                 <field name='pay_method' required="1"/>
+                                <field name="note" placeholder="暂无备注信息"/>
                             </group>
                         </group>
                         <notebook>
-                            <page string="销售订单明细">
+                            <page string="销售商品明细" icon="fa-bars">
                                 <field name='line_ids'>
                                     <tree string='销售订单明细' editable='bottom'>
                                         <field name='goods_id'
@@ -92,7 +93,7 @@
                                         <!--groups='goods.multi_attrs_groups'-->
                                         <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
                                         <field name='quantity' sum='数量合计'/>
-                                        <field name="quantity_out" readonly="1" sum="合计已发货数量"/>
+                                        <field name="quantity_out" readonly="1" string="已发货数量" sum="合计已发货数量"/>
                                         <field name='uom_id' readonly="1"/>
                                         <field name='price'/>
                                         <field name="price_taxed" groups='sell.out_tax_groups'/>
@@ -119,7 +120,6 @@
                                         <field name="pre_receipt"/>
                                         <field name="bank_account_id" required="1"
                                                options="{'no_open': True, 'no_create': True}"/>/>
-                                        <field name="note" placeholder="暂无备注信息"/>
                                     </group>
                                 </group>
                                 <hr/>
@@ -252,7 +252,7 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="发货单明细">
+                            <page string="发货商品明细" icon="fa-bars">
                                 <field name='line_out_ids' attrs="{'readonly': [('state','!=','draft')]}"
                                        context="{
 		    						'type':'out',
@@ -458,13 +458,13 @@
                             </group>
                         </group>
                         <notebook>
-                            <page string="退货单行">
+                            <page string="退货单明细">
                                 <field name='line_in_ids' attrs="{'readonly': [('state','!=','draft')]}"
                                        context="{
 		    						'type':'in',
                                     'default_is_return': is_return,
 		    						}">
-                                    <tree string='销售退货单行' editable='bottom'>
+                                    <tree string='销售退货单明细' editable='bottom'>
                                         <field name='goods_id'
                                                domain="[('not_saleable','=',False)]"
                                                context="{'default_partner':parent.partner_id,
@@ -839,7 +839,7 @@
         <menuitem id="sell_wh_return_menu" name='销售退货单' action="sell_return_action"
                   parent="warehouse.warehouse_order" sequence="2"/>
         <!-- 销售主数据 -->
-        <menuitem id='menu_sell_master' name='主数据' parent='sell_menu' sequence="2"/>
+        <menuitem id='menu_sell_master' name='资料维护' parent='sell_menu' sequence="2"/>
         <menuitem id='sell_customer_menu' action='core.customer_action' name="客户" parent='menu_sell_master'
                   sequence='10'/>
         <!--<menuitem id='sell_goods_menu' name='商品' parent='menu_sell_master' action='goods_action_sell' sequence='20'/>-->

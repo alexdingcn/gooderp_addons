@@ -222,7 +222,7 @@ class BuyOrder(models.Model):
 
     @api.model
     def create(self, vals):
-        res = super(BuyOrder, self.with_context({'mail_create_nolog':True})).create(vals)
+        res = super(BuyOrder, self.with_context({'mail_create_nolog': True})).create(vals)
         return res
 
     @api.onchange('discount_rate', 'line_ids')
@@ -656,7 +656,6 @@ class BuyOrderLine(models.Model):
         self.price = self.price_taxed / (1 + self.tax_rate * 0.01)
         self.discount_amount = (self.quantity * self.price *
                                 self.discount_rate * 0.01)
-
 
 
 class Payment(models.Model):

@@ -11,7 +11,6 @@
                     </group>
                     <footer>
                         <button name="do_confirm" type="object" string="确认" class="oe_highlight"/>
-                        or
                         <button string='取消' class='oe_link' special='cancel'/>
                     </footer>
                 </form>

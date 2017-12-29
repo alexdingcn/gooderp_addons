@@ -132,6 +132,14 @@
             <field name='view_id' ref='non_active_report_tree' />
         </record>
 
+        <!-- 缺货报表 -->
+        <record id='wh_out_of_stock_action' model='ir.actions.act_window'>
+            <field name='name'>缺货预警报表</field>
+            <field name='res_model'>non.active.report</field>
+            <field name='view_mode'>tree</field>
+            <field name='view_id' ref='non_active_report_tree' />
+        </record>
+
         <!-- 温湿度记录单-->
         <record id='wh_temperature_action' model='ir.actions.act_window' >
             <field name='name'>温湿度记录单</field>
