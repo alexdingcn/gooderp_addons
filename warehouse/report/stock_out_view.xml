@@ -6,7 +6,9 @@
             <field name='model'>report.stock.out</field>
             <field name='arch' type='xml'>
                 <tree string='商品缺货/超库明细表' create='0' edit='0' delete="0"
-                      colors="red:goods_warehouse_min >= goods_qty; blue: goods_qty >= goods_warehouse_max">
+                      decoration-info="goods_qty >= goods_warehouse_max"
+                      decoration-danger="goods_warehouse_min >= goods_qty"
+                      default_order="warning_days">
                     <field name='warehouse' groups='warehouse.multi_warehouse_groups'/>
                     <field name='goods_id'/>
                     <field name='goods_qty'/>
@@ -18,6 +20,10 @@
                     <field name="warning_days"/>
 
                     <button name="find_source_move_line" type="object" string="查看入/出库明细" icon="fa-search"
+                            class="oe_highlight"/>
+                    <button name="show_goods_detail" type="object" string="编辑商品" icon="fa-edit"
+                            class="oe_highlight"/>
+                    <button name="generate_buy_order" type="object" string="生成采购订单" icon="fa-file-text-o"
                             class="oe_highlight"/>
                 </tree>
             </field>

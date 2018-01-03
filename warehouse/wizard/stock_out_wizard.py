@@ -49,6 +49,6 @@ class ReportStockOutWizard(models.TransientModel):
             'view_mode': 'tree',
             'name': u'缺货/超库预警 %s至%s' % (self.date_start, self.date_end),
             'context': self.read(['date_start', 'date_end', 'warehouse_id', 'goods_id'])[0],
-            'order': 'warning_days desc',
+            'target': 'main',
             'limit': 65535,
         }

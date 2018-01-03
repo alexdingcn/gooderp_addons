@@ -6,7 +6,7 @@
             <field name='model'>report.stock.out.wizard</field>
             <field name='arch' type='xml'>
                 <form string='商品缺货/超库情况'>
-                    <group>
+                    <div class="col-sm-8">
                         <group>
                             <label for="date_start" string="统计区间" class='oe_inline' />
                             <div>
@@ -16,7 +16,7 @@
                             <field name='goods_id' />
                             <field name='warehouse_id' groups='warehouse.multi_warehouse_groups' />
                         </group>
-                    </group>
+                    </div>
                     <footer>
                         <button name='open_report' string='确定' type='object' class='oe_highlight'/>
                         <button string='取消' class='oe_link' special='cancel'/>

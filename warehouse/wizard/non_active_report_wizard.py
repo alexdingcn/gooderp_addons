@@ -150,6 +150,7 @@ class NonActiveReportWizard(models.TransientModel):
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', non_active_id_list)],
             'limit': 65535,
+            'target': 'main',
             'context': {'first_stage_day': self.first_stage_day,
                         'second_stage_day': self.second_stage_day, 'third_stage_day': self.third_stage_day}
         }

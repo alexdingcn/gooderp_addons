@@ -111,3 +111,24 @@ class ReportStockOut(models.TransientModel):
             'type': 'ir.actions.act_window',
             'domain': [('id', 'in', move_line_ids)]
         }
+
+    @api.multi
+    def show_goods_detail(self):
+        view = self.env.ref('goods.goods_form')
+        return {
+            'view_mode': 'form',
+            'views': [(view.id, 'form')],
+            'res_model': 'goods',
+            'type': 'ir.actions.act_window',
+            'res_id': self.goods_id.id
+        }
+
+    @api.multi
+    def generate_buy_order(self):
+        view = self.env.ref('buy.buy_order_form')
+        return {
+            'view_mode': 'form',
+            'views': [(view.id, 'form')],
+            'res_model': 'buy.order',
+            'type': 'ir.actions.act_window'
+        }
