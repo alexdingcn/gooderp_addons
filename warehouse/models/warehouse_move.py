@@ -48,7 +48,7 @@ class WhMove(models.Model):
         return self._get_default_warehouse_dest_impl()
 
     @api.one
-    @api.depends('line_out_ids')
+    @api.depends('line_in_ids', 'line_out_ids')
     def _get_qc_status(self):
         if self.line_in_ids:
             self.need_quality_control = any([line.goods_id.need_quality_report for line in self.line_in_ids])
@@ -395,7 +395,8 @@ class WhMove(models.Model):
                                 qc_line.write(updateLots)
             else:
                 # 给需要质检的创建质检单
-                for line in self.line_in_ids:
+                lines = self.line_in_ids if self.line_in_ids else self.line_out_ids
+                for line in lines:
                     if line.goods_id.need_quality_report:
                         qc_line = {
                             'move_id': self.id,

@@ -22,13 +22,13 @@
 {
     "name": "仓库管理",
     "version": '11.11',
-    "author": 'ZhengXiang',
-    "website": "http://www.osbzr.com",
+    "author": 'Yiban',
+    "website": "http://www.yibanjf.com",
     "category": "Generic Modules",
     "depends": ['goods', 'web_float_limit', 'money'],
     "description":
     '''
-                        该模块实现了 GoodERP 中 仓库管理的功能。
+                        该模块实现了仓库管理的功能。
 
                         通过创建或者处理销售发货单/销售退货单，来完成出/入库。
                         通过创建或者处理采购入库单/采购退货单，来完成入/出库。
@@ -48,6 +48,7 @@
         'security/groups.xml',
         'security/rules.xml',
         'wizard/save_bom_view.xml',
+        'wizard/stock_out_wizard_view.xml',
         'wizard/stock_transceive_wizard_view.xml',
         'wizard/non_active_report_wizard.xml',
         'view/assets_backend.xml',
@@ -57,6 +58,7 @@
         'view/res_company.xml',
         'view/qc_rule.xml',
         'report/report_data.xml',
+        'report/stock_out_view.xml',
         'report/stock_balance_view.xml',
         'report/stock_transceive_view.xml',
         'report/lot_status_view.xml',

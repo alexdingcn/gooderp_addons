@@ -1,16 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <openerp>
     <data>
-        <record id='report_stock_transceive_wizard_form' model='ir.ui.view'>
-            <field name='name'>report.stock.transceive.wizard.form</field>
-            <field name='model'>report.stock.transceive.wizard</field>
+        <record id='report_stock_out_wizard_form' model='ir.ui.view'>
+            <field name='name'>report.stock.out.wizard.form</field>
+            <field name='model'>report.stock.out.wizard</field>
             <field name='arch' type='xml'>
-                <form string='商品收发明细表'>
+                <form string='商品缺货/超库情况'>
                     <group>
                         <group>
-                            <label for="date_start" string="单据期间" class='oe_inline' />
+                            <label for="date_start" string="统计区间" class='oe_inline' />
                             <div>
-                                <field name="date_start" class="oe_inline" nolabel='1' required='1' /> - 
+                                <field name="date_start" class="oe_inline" nolabel='1' required='1' /> -
                                 <field name="date_end" class="oe_inline" nolabel='1' required='1' />
                             </div>
                             <field name='goods_id' />

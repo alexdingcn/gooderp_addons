@@ -233,6 +233,7 @@
                                        options="{'no_open': True, 'no_create': True}"/>
                                 <field name='date' attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="warehouse_id"/>
+                                <field name="note" placeholder="暂无备注信息" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="warehouse_dest_id" invisible="1"/>
                                 <field name="is_return" invisible="1"/>
                             </group>
@@ -312,9 +313,64 @@
                                         <field name="amount"/>
                                         <field name='tax_rate' groups="sell.out_tax_groups"/>
                                         <field name="tax" groups="sell.out_tax_groups"/>
-                                        <field name="note"/>
+                                        <field name="note" placeholder="暂无备注信息"/>
                                     </tree>
                                 </field>
+                            </page>
+                            <page string="质量验收" attrs="{'invisible': [('need_quality_control','=',False)]}"
+                                  icon="fa-check green"
+                                  groups='goods.quality_groups'>
+                                <div attrs="{'invisible': [('state','=','done')]}">
+                                    <div class="btn-toolbar pull-right" role="toolbar">
+                                        <div class="btn-group" role="group">
+                                            <button name="sell_accept_all" string="全部签收" type="object"
+                                                    class="btn btn-sm btn-success"/>
+                                            <button name="sell_reject_all" string="全部拒收" type="object"
+                                                    class="btn btn-sm btn-danger"/>
+                                        </div>
+                                    </div>
+                                    <h3>
+                                        <small class="text-muted">
+                                        提交质检报告，或者填写质检结果, 也可以单独打开每一项商品进行填写
+                                        </small>
+                                    </h3>
+                                    <hr/>
+                                </div>
+
+                                <div>
+                                    <field name="quality_ids" attrs="{'readonly': [('state','!=','draft')]}">
+                                        <tree string="Quality Lines" editable="bottom" create="false">
+                                            <field name="goods_id" required='1' readonly="1"
+                                                   domain="[('state','=','done'),('vendor_ids.vendor_id','=', parent.partner_id)]"
+                                                   context="{'default_partner':parent.partner_id, 'default_is_return':parent.is_return}"
+                                                   options="{'no_create': True}"/>
+                                            <field name="lot" readonly="1"/>
+                                            <field name="location_id" readonly="1"/>
+                                            <field name="goods_qty" sum='发货总数量' readonly="1"/>
+
+                                            <field name="accept_qty" sum='通过总数量'/>
+                                            <field name="reject_qty" sum='不合格总数量'/>
+                                            <field name="goods_reject_reason"/>
+                                            <field name="question_qty" sum='存疑总数量'/>
+                                            <field name="date"/>
+                                            <field name="note"/>
+                                        </tree>
+                                    </field>
+                                </div>
+                                <group>
+                                    <group>
+                                        <field name="need_quality_control" invisible="1"/>
+                                        <field name="qc_user_id" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="qc_double_user_id" attrs="{'readonly': [('state', '!=', 'draft')]}"
+                                               options="{'no_open': True, 'no_create': True}"/>
+                                        <field name="qc_result_brief" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    </group>
+                                    <group>
+                                        <field name='qc_result' widget='pdf_viewer'
+                                               attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                    </group>
+                                </group>
                             </page>
                         </notebook>
                         <group>
@@ -327,13 +383,6 @@
                                 <field name="receipt" attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name="bank_account_id" attrs="{'readonly': [('state','!=','draft')]}"/>
                             </group>
-                        </group>
-                        <field name="note" placeholder="暂无备注信息" attrs="{'readonly': [('state','!=','draft')]}"/>
-                        <group>
-                            <field name='qc_result' widget='pdf_viewer'
-                                   attrs="{'readonly': [('state', '!=', 'draft')]}"
-                                   groups='warehouse.group_qc'
-                            />
                         </group>
                         <group>
                             <group>

@@ -20,13 +20,13 @@ class ReportStockBalance(models.Model):
     attribute_id = fields.Char(u'属性')
     warehouse = fields.Char(u'仓库')
     goods_qty = fields.Float(u'数量', digits=dp.get_precision('Quantity'))
-    goods_uos_qty = fields.Float(
-        u'辅助单位数量', digits=dp.get_precision('Quantity'))
+    goods_uos_qty = fields.Float(u'辅助单位数量', digits=dp.get_precision('Quantity'))
     cost = fields.Float(u'成本', digits=dp.get_precision('Amount'))
 
     def init(self):
         cr = self._cr
         tools.drop_view_if_exists(cr, 'report_stock_balance')
+        # warehouse=stock, 移库单done， 目的地是warehouse, goods不是虚拟
         cr.execute(
             """
             create or replace view report_stock_balance as (
@@ -43,7 +43,7 @@ class ReportStockBalance(models.Model):
                        sum(line.qty_remaining) as goods_qty,
                        sum(line.uos_qty_remaining) as goods_uos_qty,
                        sum(line.qty_remaining * line.cost_unit) as cost
-
+                       
                 FROM wh_move_line line
                 LEFT JOIN warehouse wh ON line.warehouse_dest_id = wh.id
                 LEFT JOIN goods goods ON line.goods_id = goods.id
@@ -52,7 +52,7 @@ class ReportStockBalance(models.Model):
                     LEFT JOIN uom uos ON goods.uos_id = uos.id
                     LEFT JOIN location loc ON loc.goods_id = line.goods_id
 
-                WHERE  wh.type = 'stock'
+                WHERE wh.type = 'stock'
                   AND line.state = 'done'
                   AND ( goods.no_stock is null or goods.no_stock = FALSE)
 

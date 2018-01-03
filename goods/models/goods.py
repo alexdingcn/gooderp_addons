@@ -47,6 +47,8 @@ class Goods(models.Model):
     storage_description = fields.Char(u'储藏条件描述')
     storage_position = fields.Char(u'默认货位号')
     warehouse_comment = fields.Char(u'入库验收')
+    warehouse_min = fields.Integer(u'库存最小预警', default=1, track_visibility='onchange')
+    warehouse_max = fields.Integer(u'库存最大预警', default=0, track_visibility='onchange')
 
     contact_info = fields.Char(u'联系方式')
 

@@ -168,6 +168,10 @@ class PartnerCertInfo(models.Model):
     _description = u"合作伙伴认证信息"
     _sort = "id desc"
 
+    @api.multi
+    def name_get(self):
+        return [(record.id, "%s[%s]" % (record.partner_id.name, record.cert_name.name)) for record in self]
+
     @api.one
     @api.depends('cert_expire')
     def _get_expire_status(self):

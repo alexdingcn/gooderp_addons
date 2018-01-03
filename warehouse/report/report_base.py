@@ -44,8 +44,7 @@ class ReportBase(models.Model):
                 context[key] = value.encode('utf-8')
 
         self.env.cr.execute((self.select_sql(sql_type) + self.from_sql(sql_type) + self.where_sql(
-            sql_type) + self.group_sql(sql_type) + self.order_sql(
-            sql_type)).format(**context))
+            sql_type) + self.group_sql(sql_type) + self.order_sql(sql_type)).format(**context))
 
         return self.env.cr.dictfetchall()
 

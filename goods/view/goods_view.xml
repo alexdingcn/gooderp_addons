@@ -76,6 +76,9 @@
                                         <field name='storage_condition' required="1"/>
                                         <field name='storage_description'/>
                                         <field name='storage_position'/>
+                                        <field name='warehouse_min'/>
+                                        <field name='warehouse_max'/>
+
                                         <field name="using_batch"/>
                                         <field name='check_first_documents'/>
                                         <field name='need_quality_report'/>

@@ -111,6 +111,37 @@ class SellDelivery(models.Model):
     voucher_id = fields.Many2one('voucher', u'出库凭证', readonly=True,
                                  help=u'审核时产生的出库凭证')
 
+    @api.one
+    def sell_accept_all(self):
+        if self.quality_ids:
+            for line in self.quality_ids:
+                line.write({
+                    'date': fields.Datetime.now(self),
+                    'accept_qty': line.goods_qty,
+                    'reject_qty': 0,
+                    'goods_reject_reason': '',
+                    'question_qty': 0
+                })
+            self.write({
+                'qc_user_id': self.env.uid,
+                'qc_result_brief': '质检全部通过'
+            })
+
+    @api.one
+    def sell_reject_all(self):
+        if self.quality_ids:
+            for line in self.quality_ids:
+                line.write({
+                    'date': fields.Datetime.now(self),
+                    'accept_qty': 0,
+                    'reject_qty': line.goods_qty,
+                    'question_qty': 0
+                })
+            self.write({
+                'qc_user_id': self.env.uid,
+                'qc_result_brief': '质检全部不通过'
+            })
+
     @api.onchange('address_id')
     def onchange_address_id(self):
         ''' 选择地址填充 联系人、电话 '''
