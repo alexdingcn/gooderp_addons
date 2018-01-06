@@ -67,7 +67,10 @@ class Goods(models.Model):
     maintenance_prop = fields.Char(u'养护属性')
     formulation = fields.Char(u'剂型')
     gmp_certified = fields.Boolean(u'GMP认证')
-    business_scope = fields.Char(u'经营范围')
+    business_scope = fields.Many2many('core.value',
+                                      string=u'经营范围',
+                                      domain=[('type', '=', 'goods_scope')],
+                                      context={'type': 'goods_scope'})
     abc_category = fields.Char(u'ABC分类属性')
     essential_medicine = fields.Char(u'基药属性')
 

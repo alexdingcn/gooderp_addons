@@ -25,8 +25,6 @@ class AppThemeConfigSettings(models.TransientModel):
     app_documentation_url = fields.Char('Documentation Url')
     app_documentation_dev_url = fields.Char('Developer Documentation Url')
     app_support_url = fields.Char('Support Url')
-    app_account_title = fields.Char('My Odoo.com Account Title')
-    app_account_url = fields.Char('My Odoo.com Account Url')
 
     @api.model
     def get_default_all(self, fields):
@@ -45,8 +43,6 @@ class AppThemeConfigSettings(models.TransientModel):
         app_documentation_dev_url = ir_config.get_param('app_documentation_dev_url',
                                                         default='http://www.sunpop.cn/documentation/10.0/index.html')
         app_support_url = ir_config.get_param('app_support_url', default='http://www.sunpop.cn/trial/')
-        app_account_title = ir_config.get_param('app_account_title', default='My Online Account')
-        app_account_url = ir_config.get_param('app_account_url', default='http://www.sunpop.cn/my-account/')
         return dict(
             app_system_name=app_system_name,
             app_show_lang=app_show_lang,
@@ -58,8 +54,6 @@ class AppThemeConfigSettings(models.TransientModel):
             app_documentation_url=app_documentation_url,
             app_documentation_dev_url=app_documentation_dev_url,
             app_support_url=app_support_url,
-            app_account_title=app_account_title,
-            app_account_url=app_account_url
         )
 
     @api.multi
@@ -75,11 +69,9 @@ class AppThemeConfigSettings(models.TransientModel):
         ir_config.set_param("app_show_share", self.app_show_share or "False")
 
         ir_config.set_param("app_documentation_url",
-                            self.app_documentation_url or "http://www.sunpop.cn/documentation/user/10.0/en/index.html")
+                            self.app_documentation_url or "http://www.yibanjf.com/erpdocs/")
         ir_config.set_param("app_documentation_dev_url",
-                            self.app_documentation_dev_url or "http://www.sunpop.cn/documentation/10.0/index.html")
-        ir_config.set_param("app_support_url", self.app_support_url or "http://www.sunpop.cn/trial/")
-        ir_config.set_param("app_account_title", self.app_account_title or "My Online Account")
-        ir_config.set_param("app_account_url", self.app_account_url or "http://www.sunpop.cn/my-account/")
+                            self.app_documentation_dev_url or "http://www.yibanjf.com/erpdocs/")
+        ir_config.set_param("app_support_url", self.app_support_url or "http://www.yibanjf.com/erpdocs/")
 
         return True

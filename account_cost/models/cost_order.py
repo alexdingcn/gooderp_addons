@@ -102,7 +102,8 @@ class CostOrder(models.Model):
         string=u'公司',
         change_default=True,
         default=lambda self: self.env['res.company']._company_default_get())
-    #pay_ids=fields.One2many("payment.plan","cost_id",string=u"付款计划", help=u'分批付款时使用付款计划')
+
+    # pay_ids=fields.One2many("payment.plan","cost_id",string=u"付款计划", help=u'分批付款时使用付款计划')
 
     def _get_vals(self):
         '''返回创建 money_order 时所需数据'''
@@ -114,7 +115,7 @@ class CostOrder(models.Model):
             'partner_id': self.partner_id.id,
             'date': fields.Date.context_today(self),
             'line_ids':
-            [(0, 0, line) for line in money_lines],
+                [(0, 0, line) for line in money_lines],
             'amount': self.amount,
             'reconciled': self.prepayment,
             'to_reconcile': self.amount,
@@ -259,7 +260,7 @@ class CostOrderLine(models.Model):
                                   help=u'分类：采购')
     amount = fields.Float(u'金额',
                           digits=dp.get_precision('Amount'),
-                          help=u'金额  = 价税合计  - 税额')
+                          help=u'金额 = 价税合计 - 税额')
     tax_amount = fields.Float(u'税额',
                               help=u'增值税专用发票中的税额')
     subtotal = fields.Float(u'价税合计', compute=_compute_all_amount,

@@ -893,9 +893,6 @@
                   sequence='10'/>
         <!--<menuitem id='sell_goods_menu' name='商品' parent='menu_sell_master' action='goods_action_sell' sequence='20'/>-->
         <menuitem id='pricing_menu' name='定价策略' action='action_pricing' parent='menu_sell_master' sequence='30'/>
-        <record id="sell_goods_menu" model="ir.ui.menu">
-            <field name="create_tag">1</field>
-        </record>
         <!-- 销售报表 -->
         <menuitem id="menu_sell_report" name="报表" parent="sell_menu" sequence="3"/>
     </data>

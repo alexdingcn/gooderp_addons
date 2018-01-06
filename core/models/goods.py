@@ -27,23 +27,26 @@ class Goods(models.Model):
         res = []
 
         for Goods in self:
-            name = Goods.code and (Goods.code + '_' + Goods.name) or Goods.name
+            # name = Goods.code and (Goods.code + '_' + Goods.name) or Goods.name
+            name = Goods.name
             name += Goods.specs and ('[' + Goods.specs + ']')
             res.append((Goods.id, name))
         return res
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
-        '''在many2one字段中支持按编号搜索'''
+        '''在many2one字段中支持按拼音搜索'''
+        if not name or len(name) < 2:
+            return []
         args = args or []
         code_search_goods = []
         if name:
-            args.append(('code', 'ilike', name))
+            args.append(('pinyin_abbr', 'ilike', name))
             goods_ids = self.search(args)
             if goods_ids:
                 code_search_goods = goods_ids.name_get()
 
-            args.remove(('code', 'ilike', name))
+            args.remove(('pinyin_abbr', 'ilike', name))
         search_goods = super(Goods, self).name_search(name=name, args=args,
                                                       operator=operator, limit=limit)
         for good_tup in code_search_goods:  # 去除重复产品

@@ -39,11 +39,13 @@ odoo.define('app_odoo_customize.switch_language', function (require) {
                             }
                             lang_list += '<li><a href="#" data-menu="lang" data-lang-id="' + lang['code'] + '"><img class="flag" src="app_odoo_customize/static/src/img/flags/' + lang['code'] + '.png"/>' + lang['name'] + a + '</a></li>';
                         });
-                        lang_list += '<li class="divider"></li>';
+                        if (lang_list) {
+                            lang_list += '<li class="divider"></li>';
+                        }
                         $('switch-lang').replaceWith(lang_list);
                     });
                 }
             });
-        }, 2500);
+        }, 2000);
     });
 });

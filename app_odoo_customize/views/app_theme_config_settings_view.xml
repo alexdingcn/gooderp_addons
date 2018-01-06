@@ -11,7 +11,7 @@
                         <button string="取消" type="object" name="cancel" class="oe_link" special="cancel"/>
                     </header>
                     <separator string="个性化设置"/>
-                    <group string="系统名称">
+                    <group string="标题栏">
                         <label for="app_system_name"/>
                         <div>
                             <field name="app_system_name"/>
@@ -20,10 +20,10 @@
                     <group string="用户菜单">
                         <label string="可配置选项"/>
                         <div name="user_menu_show_hide">
-                            <div>
-                                <field name="app_show_lang"/>
-                                <label for="app_show_lang"/>
-                            </div>
+                            <!--<div>-->
+                                <!--<field name="app_show_lang"/>-->
+                                <!--<label for="app_show_lang"/>-->
+                            <!--</div>-->
                             <div>
                                 <field name="app_show_debug"/>
                                 <label for="app_show_debug"/>
@@ -58,14 +58,6 @@
                         <label for="app_support_url"/>
                         <div>
                             <field name="app_support_url"/>
-                        </div>
-                        <label for="app_account_title"/>
-                        <div>
-                            <field name="app_account_title"/>
-                        </div>
-                        <label for="app_account_url"/>
-                        <div>
-                            <field name="app_account_url"/>
                         </div>
                     </group>
                 </form>

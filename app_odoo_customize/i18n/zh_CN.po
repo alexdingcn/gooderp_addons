@@ -189,16 +189,6 @@ msgid "MRP"
 msgstr "生产"
 
 #. module: app_odoo_customize
-#: model:ir.model.fields,field_description:app_odoo_customize.field_app_theme_config_settings_app_account_title
-msgid "My Odoo.com Account Title"
-msgstr "我的帐户显示标题"
-
-#. module: app_odoo_customize
-#: model:ir.model.fields,field_description:app_odoo_customize.field_app_theme_config_settings_app_account_url
-msgid "My Odoo.com Account Url"
-msgstr "我的帐户链接"
-
-#. module: app_odoo_customize
 #: model:ir.ui.view,arch_db:app_odoo_customize.view_app_theme_config_settings
 msgid "Online Support"
 msgstr "系统支持"
@@ -231,7 +221,7 @@ msgstr "销售"
 #. module: app_odoo_customize
 #: model:ir.model.fields,help:app_odoo_customize.field_app_theme_config_settings_app_system_name
 msgid "Setup System Name,which replace Odoo"
-msgstr "设置系统名称，取代Odoo"
+msgstr "设置系统名称"
 
 #. module: app_odoo_customize
 #: model:ir.model.fields,field_description:app_odoo_customize.field_app_theme_config_settings_app_show_documentation_dev

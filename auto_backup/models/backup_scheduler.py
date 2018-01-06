@@ -117,7 +117,7 @@ class DbBackup(models.Model):
                 try:
                     bkp = execute(conn, 'dump', master_pass, rec.name, 'zip')
                 except:
-                    _logger.info(
+                    _logger.error(
                         'backup', "Could'nt backup database %s. Bad database administrator password for server running at http://%s:%s" % (rec.name, rec.host, rec.port))
                     continue
                 bkp = base64.decodestring(bkp)
@@ -125,7 +125,7 @@ class DbBackup(models.Model):
                 fp.write(bkp)
                 fp.close()
             else:
-                _logger.info('backup', "database %s doesn't exist on http://%s:%s" %
+                _logger.error('backup', "database %s doesn't exist on http://%s:%s" %
                              (rec.name, rec.host, rec.port))
 
         return True

@@ -25,7 +25,7 @@
             <field name='name'>goods.form</field>
             <field name='model'>goods</field>
             <field name='arch' type='xml'>
-                <form string='商品'>
+                <form string='商品' create="false">
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="goods_done" states="draft" string="首营审核通过" type="object" class="oe_highlight"/>
                         <button name="goods_draft" states="done" string="重新提交首营审核" type="object"/>
@@ -111,7 +111,7 @@
                                         <field name="traditional_medicine"/>
                                         <field name="maintenance_prop"/>
                                         <field name='formulation' required="1"/>
-                                        <field name="business_scope" required="1"/>
+                                        <field name="business_scope" required="1" widget="many2many_tags"/>
                                         <field name="abc_category"/>
                                         <field name="essential_medicine"/>
                                         <field name='gmp_certified'/>

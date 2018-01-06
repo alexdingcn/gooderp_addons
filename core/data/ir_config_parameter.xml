@@ -43,13 +43,5 @@
             <field name="key">app_support_url</field>
             <field name="value">http://shang.qq.com/wpa/qunwpa?idkey=f0b47f9891e6f5361c4bdc841c424eb13035d981da9451995eca13cb42273725</field>
         </record>
-        <record id="app_odoo_customize.app_account_title" model="ir.config_parameter">
-            <field name="key">app_account_title</field>
-            <field name="value">参考大全</field>
-        </record>
-        <record id="app_odoo_customize.app_account_url" model="ir.config_parameter">
-            <field name="key">app_account_url</field>
-            <field name="value">http://www.yibanjf.com/erpdocs/</field>
-        </record>
     </data>
 </openerp>
