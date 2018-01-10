@@ -2,7 +2,8 @@
 <openerp>
     <data>
         <!-- 根菜单 -->
-        <menuitem id="menu_gsp_root" name="GSP质量管理" groups='group_gsp' web_icon="gsp,static/description/icon.png"/>
+        <menuitem id="menu_gsp_root" name="GSP质量管理" groups='group_gsp' web_icon="gsp,static/description/gsp_icon.png"
+                  sequence="11"/>
 
         <menuitem id="menu_gsp_buy" name="首营管理" parent="menu_gsp_root" sequence="1"/>
 
@@ -49,7 +50,39 @@
                   parent="menu_buy_qc_master" sequence="1"
                   groups="gsp.quality_groups"/>
         <!--<menuitem id="menu_gsp_buy_return_qc" name='采购退货质量验收' action="menu_gsp_buy_return_qc_action"-->
-                  <!--parent="menu_buy_qc_master" sequence="2"-->
-                  <!--groups="gsp.quality_groups"/>-->
+        <!--parent="menu_buy_qc_master" sequence="2"-->
+        <!--groups="gsp.quality_groups"/>-->
+
+
+        <!-- 资料维护菜单 -->
+        <menuitem id="menu_data_root" name="资料维护" groups='group_data' sequence="10"
+                  web_icon="gsp,static/description/material_icon.png"/>
+
+        <menuitem id="data_partner_menu" name="合作伙伴"
+                  parent="menu_data_root" sequence="1"/>
+        <menuitem id='data_buy_manufacturer_menu' action='buy.manufacturer_action' name="生产企业"
+                  parent='data_partner_menu' sequence='1'/>
+        <menuitem id='data_buy_vendor_menu' action='core.supplier_action' name="供应商"
+                  parent='data_partner_menu' sequence='2'/>
+        <menuitem id='data_sell_customer_menu' action='core.customer_action' name="客户"
+                  parent='data_partner_menu' sequence='3'/>
+        <menuitem id='data_region_customer_menu' action='core.customer_action' name="客户区域关系"
+                  parent='data_partner_menu' sequence='3'/>
+
+        <menuitem id="data_goods_menu" name="商品数据"
+                  parent="menu_data_root" sequence="2"/>
+        <menuitem id="data_goods_class_menu" name="商品分类" action="goods.goods_class_action"
+                  parent="data_goods_menu" sequence="1"/>
+        <menuitem id='data_buy_goods_menu' name='商品资料维护' action='goods.goods_action'
+                  parent='data_goods_menu' sequence='2'/>
+        <menuitem id='data_goods_barcode_menu' name='商品条码维护' action='goods.goods_action'
+                  parent='data_goods_menu' sequence='3'/>
+
+        <menuitem id="data_warehouse_menu" name="仓库数据"
+                  parent="menu_data_root" sequence="3"/>
+        <menuitem id="data_warehouse_detail_menu" name="仓库" action="warehouse.warehouse_action"
+                  parent="data_warehouse_menu" sequence="1"/>
+        <menuitem id='data_warehouse_lot_menu' name='货位资料维护' action='warehouse.warehouse_location_action'
+                  parent='data_warehouse_menu' sequence='2'/>
     </data>
 </openerp>

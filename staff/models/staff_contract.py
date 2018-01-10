@@ -26,7 +26,6 @@ class StaffContract(models.Model):
                              help=u'公司承担的生育保险')
     housing_fund_co = fields.Float(u'公司住房公积金',
                                    help=u'公司承担的住房公积金')
-    job_id = fields.Many2one('staff.job', u'岗位', required=True)
     company_id = fields.Many2one(
         'res.company',
         string=u'公司',

@@ -17,9 +17,7 @@ class TestStaff(TransactionCase):
             'work_phone': 12345678901,
             'work_email': 'lucy@osbzr.com',
             'name': 'Lucy',
-            'user_id': user_lucy.id,
-            'job_id': self.env.ref('staff.staff_job_1').id})
-        staff_pro.onchange_job_id()
+            'user_id': user_lucy.id})
 
     def test_staff_contract_over_date(self):
         '''测试：员工合同到期，发送邮件给员工 和 部门经理（如果存在）'''
@@ -37,8 +35,7 @@ class TestStaff(TransactionCase):
         staff_lily.work_email = 'lili@sina.com.cn'
         staff_lily.contract_ids.create({'staff_id': staff_lily.id,
                                         'basic_wage': 123456,
-                                        'over_date': datetime.now().strftime("%Y-%m-%d"),
-                                        'job_id': self.env.ref('staff.staff_job_1').id})
+                                        'over_date': datetime.now().strftime("%Y-%m-%d")})
         # has staff.contract_ids and apartment manager
         self.env.ref('staff.staff_1').work_email = 'admin@sina.com.cn'
         staff_lily.parent_id = self.env.ref('staff.staff_1').id

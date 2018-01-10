@@ -6,7 +6,7 @@
     'category': 'gooderp',
     "description":
     '''
-                            该模块实现了人力资源的功能。
+    该模块实现了人力资源的功能。
     ''',
     'version': '11.11',
     'depends': ['finance'],

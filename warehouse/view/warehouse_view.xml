@@ -71,7 +71,7 @@
                 </tree>
             </field>
         </record>
-        <record model="ir.actions.act_window" id="gooderp_location_action">
+        <record model="ir.actions.act_window" id="warehouse_location_action">
             <field name="name">库位设置</field>
             <field name="res_model">location</field>
             <field name="view_mode">tree</field>
