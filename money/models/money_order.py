@@ -63,8 +63,7 @@ class MoneyOrder(models.Model):
                                                      ('state', '=', 'draft'),
                                                      ('id', '!=', self.id)])
             if orders:
-                raise UserError(u'业务伙伴(%s)存在未审核的收/付款单，请先审核' %
-                                orders.partner_id.name)
+                raise UserError(u'业务伙伴(%s)存在未审核的收/付款单，请先审核' % orders.partner_id.name)
 
         return super(MoneyOrder, self).write(values)
 

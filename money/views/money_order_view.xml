@@ -14,9 +14,9 @@
         	parent='menu_money_setting' groups='core.settle_mode_groups' sequence='3'/>
 
         <menuitem id='customer_menu' action='core.customer_action' name="客户" 
-            parent='menu_money_setting' sequence='4'/>
+            parent='menu_money_setting' sequence='10'/>
         <menuitem id='vendor_menu' action='core.supplier_action' name="供应商"
-            parent='menu_money_setting' sequence='5'/>
+            parent='menu_money_setting' sequence='11'/>
 
 		<!--收/付款单tree-->
     	<record id="money_order_tree" model="ir.ui.view">

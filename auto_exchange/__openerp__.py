@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "GOODERP 自动取汇率模块",
+    'name': "自动取汇率模块",
     'author': "德清武康开源软件工作室",
     'website': "无",
     'category': 'gooderp',
     "description":
     '''
-                        该模块实现了自动取汇率的功能。
+    该模块实现了自动取汇率的功能。
     ''',
     'version': '11.11',
     'depends': ['money'],

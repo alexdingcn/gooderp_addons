@@ -7,13 +7,13 @@
 
     'description':
     '''
-                        该模块实现了 GoodERP 中 任务管理 的功能。
+                        该模块实现了任务管理 的功能。
 
                         将project拆分成task，并将task分配到人。每个人每天一张 timesheet 记录每个 task 的执行过程。
     ''',
 
-    'author': "开阖软件",
-    'website': "http://www.osbzr.com",
+    'author': "医伴金服",
+    'website': "http://www.yibanjf.com",
 
     'category': 'gooderp',
     'version': '11.11',

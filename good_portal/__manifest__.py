@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'GoodERP Portal',
-    'author': "开阖软件",
+    'name': '客户Portal',
+    'author': "医伴金服",
     'category': 'Website',
-    'summary': 'Account Management Frontend for your Customers',
+    'summary': '客户账号管理',
     'version': '1.0',
-    'description': """
-Allows your customers to manage their account from a beautiful web interface.
-        """,
+    'description': """允许客户创建账号，并从shop下单""",
     'depends': [
         'website',
         'core',

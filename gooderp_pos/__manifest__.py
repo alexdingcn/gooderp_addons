@@ -5,7 +5,7 @@
     'name': 'GOODERP POS',
     'version': '11.11',
     'author': "上海开阖软件有限公司",
-    'website': "http://www.osbzr.com",
+    'website': "http://www.yibanjf.com",
     'category': 'gooderp',
     'sequence': 20,
     'summary': 'pos',

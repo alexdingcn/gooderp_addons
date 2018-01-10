@@ -3,7 +3,7 @@
     'name': "核心模块",
     'author': "医伴",
     'summary': '隐藏Odoo内置技术复杂性，增加基本权限组',
-    'website': "http://www.osbzr.com",
+    'website': "http://www.yibanjf.com",
     'category': 'gooderp',
     "description":
     '''

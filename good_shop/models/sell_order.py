@@ -19,6 +19,10 @@ class SellOrder(models.Model):
                                          )
     cart_quantity = fields.Integer(compute='_compute_cart_info',
                                    string=u'购物车产品数量')
+
+    amount_total = fields.Float(compute='_compute_cart_info',
+                                string=u'购物车产品金额')
+
     only_services = fields.Boolean(
         compute='_compute_cart_info', string='Only Services')
 
@@ -30,6 +34,11 @@ class SellOrder(models.Model):
             order.cart_quantity = len(order.website_order_line)
             # int(sum(order.mapped('website_order_line.quantity')))
             order.only_services = all(l.goods_id.not_saleable for l in order.website_order_line)
+            order.amount_total = sum(l.subtotal for l in order.website_order_line)
+
+    @api.model
+    def _get_errors(self, order):
+        return []
 
     @api.model
     def _get_website_data(self, order):
@@ -90,7 +99,8 @@ class SellOrder(models.Model):
                 attribute_category = self.env['core.category'].sudo().search(
                     [('name', '=', k.split('-')[2])])
                 attribute_value_value = self.env['attribute.value.value'].sudo().search([('name', '=', v),
-                                                                                         ('category_id', '=', attribute_category.id)])
+                                                                                         ('category_id', '=',
+                                                                                          attribute_category.id)])
                 web_value_lists.append(attribute_value_value.id)
 
         attribute_id = False
@@ -117,7 +127,7 @@ class SellOrder(models.Model):
         return name
 
     @api.multi
-    def _cart_update(self, product_id=None, line_id=None, add_qty=0, set_qty=0, attributes=None, **kwargs):
+    def _cart_update(self, goods_id=None, line_id=None, add_qty=0, set_qty=0, attributes=None, **kwargs):
         """ 添加或者设置产品数量 """
         self.ensure_one()
         sell_order_line_sudo_obj = self.env['sell.order.line'].sudo()
@@ -129,18 +139,18 @@ class SellOrder(models.Model):
 
         if line_id is not False:
             order_lines = self._cart_find_product_line(
-                product_id, line_id, attributes=attributes, **kwargs)
+                goods_id, line_id, attributes=attributes, **kwargs)
             order_line = order_lines and order_lines[0]
 
         # 不存在产品的销售明细行，则新建
         if not order_line:
             values = self._website_product_id_change(
-                self.id, product_id, qty=1)  # 获取创建订单明细需要的数据
+                self.id, goods_id, qty=1)  # 获取创建订单明细需要的数据
             # 获取创建订单明细的 属性
             values['attribute_id'] = self._get_line_attribute(
-                self.id, product_id, attributes=attributes)
+                self.id, goods_id, attributes=attributes)
             values['note'] = self._get_line_description(
-                self.id, product_id)  # 获取创建订单明细的 备注
+                self.id, goods_id)  # 获取创建订单明细的 备注
             order_line = sell_order_line_sudo_obj.create(values)
 
             if add_qty:
@@ -158,7 +168,7 @@ class SellOrder(models.Model):
         else:
             # update line
             values = self._website_product_id_change(
-                self.id, product_id, qty=quantity)
+                self.id, goods_id, qty=quantity)
             if not self.env.context.get('fixed_price'):
                 order = self.sudo().browse(self.id)
                 product_context = dict(self.env.context)
@@ -177,19 +187,20 @@ class SellOrder(models.Model):
 class Website(models.Model):
     _inherit = 'website'
 
-#     pricelist_id = fields.Many2one('product.pricelist', compute='_compute_pricelist_id', string='Default Pricelist')
-#     currency_id = fields.Many2one('res.currency', related='pricelist_id.currency_id', string='Default Currency')
+    #     pricelist_id = fields.Many2one('product.pricelist', compute='_compute_pricelist_id', string='Default Pricelist')
+    #     currency_id = fields.Many2one('res.currency', related='pricelist_id.currency_id', string='Default Currency')
     salesperson_id = fields.Many2one('res.users', string=u'销售员')
-#     salesteam_id = fields.Many2one('crm.team', string='Sales Team')
+
+    #     salesteam_id = fields.Many2one('crm.team', string='Sales Team')
 
     @api.multi
     def _prepare_sale_order_values(self, partner):
         ''' 创建销售订单数据 '''
         self.ensure_one()
-#         affiliate_id = request.session.get('affiliate_id')
-#         salesperson_id = affiliate_id if self.env['res.users'].sudo().browse(affiliate_id).exists() else request.website.salesperson_id.id
-#         addr = partner.address_get(['delivery', 'invoice'])
-#         default_user_id = partner.parent_id.user_id.id or partner.user_id.id
+        #         affiliate_id = request.session.get('affiliate_id')
+        #         salesperson_id = affiliate_id if self.env['res.users'].sudo().browse(affiliate_id).exists() else request.website.salesperson_id.id
+        #         addr = partner.address_get(['delivery', 'invoice'])
+        #         default_user_id = partner.parent_id.user_id.id or partner.user_id.id
         values = {
             'partner_id': partner.id,
             'currency_id': self.env.user.company_id.currency_id.id,
@@ -277,18 +288,18 @@ class Website(models.Model):
         })
 
     @api.multi
-    def sell_order_to_delivery(self):
+    def complete_sell_order(self):
+        """ Change status to done
+        """
         sell_order_id = request.session.get('sale_order_id')
-        SellOrder = self.env['sell.order'].sudo().search(
-            [('id', '=', sell_order_id)])
-        if SellOrder:
-            if SellOrder.pre_receipt and not sell_order.bank_account_id:
+        sell_order = self.env['sell.order'].sudo().search([('id', '=', sell_order_id)])
+        if sell_order:
+            if sell_order.pre_receipt and not sell_order.bank_account_id:
                 if not self.env.user.company_id.bank_account_id:
-                    SellOrder.bank_account_id = self.env.ref(
-                        'good_shop.web_company_bank').id
+                    sell_order.bank_account_id = self.env.ref('good_shop.web_company_bank').id
                 else:
-                    SellOrder.bank_account_id = self.env.user.sudo().company_id.bank_account_id.id
-            SellOrder.sell_order_done()
+                    sell_order.bank_account_id = self.env.user.sudo().company_id.bank_account_id.id
+            sell_order.sell_order_done()
 
 
 class ResPartner(models.Model):

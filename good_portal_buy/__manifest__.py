@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
-    'name': 'GoodERP Portal Buy',
-    'author': "开阖软件",
+    'name': '商城下单模块',
+    'author': "医伴金服",
     'category': 'Website',
     'summary': 'Account Management Frontend for your Supplier',
     'version': '1.0',

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'GoodERP Portal Money',
-    'author': "开阖软件",
+    'author': "医伴金服",
     'category': 'Website',
     'summary': 'Account Management Frontend for your Customers',
     'version': '1.0',

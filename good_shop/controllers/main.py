@@ -329,9 +329,9 @@ class WebsiteSale(http.Controller):
 
     # 点击 加入购物车
     @http.route(['/shop/cart/update'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
-    def cart_update(self, product_id, add_qty=1, set_qty=0, **kw):
+    def cart_update(self, goods_id, add_qty=1, set_qty=0, **kw):
         request.website.sale_get_order(force_create=1)._cart_update(
-            product_id=int(product_id),
+            goods_id=int(goods_id),
             add_qty=float(add_qty),
             set_qty=float(set_qty),
             attributes=self._filter_attributes(**kw),
@@ -351,7 +351,7 @@ class WebsiteSale(http.Controller):
             return {}
 
         value = order._cart_update(
-            product_id=product_id, line_id=line_id, add_qty=add_qty, set_qty=set_qty)
+            goods_id=product_id, line_id=line_id, add_qty=add_qty, set_qty=set_qty)
         if not order.cart_quantity:
             request.website.sale_reset()
             return {}
@@ -380,18 +380,24 @@ class WebsiteSale(http.Controller):
         if redirection:
             return redirection
 
-        if order.partner_id.id == request.website.user_id.sudo().gooderp_partner_id.id:
-            return request.redirect('/shop/address')
+        # 如果没有error
+        SellOrder = request.env['sell.order']
+        values = {'website_sale_order': order, 'errors': SellOrder._get_errors(order)}
+        values.update(SellOrder._get_website_data(order))
+        if not values['errors']:
+            if order.partner_id.id == request.website.user_id.sudo().gooderp_partner_id.id:
+                return request.redirect('/shop/address')
 
-        for f in self._get_mandatory_billing_fields():
-            if not order.partner_id[f]:
-                return request.redirect('/shop/address?partner_id=%d' % order.partner_id.id)
+            for f in self._get_mandatory_billing_fields():
+                if not order.partner_id[f]:
+                    return request.redirect('/shop/address?partner_id=%d' % order.partner_id.id)
 
-        values = self.checkout_values(**post)
+            values.update(self.prepare_checkout_values(**post))
 
-        # Avoid useless rendering if called in ajax
-        if post.get('xhr'):
-            return 'ok'
+            # Avoid useless rendering if called in ajax
+            if post.get('xhr'):
+                return 'ok'
+
         return request.render("good_shop.checkout", values)
 
     # ------------------------------------------------------
@@ -412,20 +418,40 @@ class WebsiteSale(http.Controller):
         if tx and tx.state != 'draft':
             return request.redirect('/shop/payment/confirmation/%s' % order.id)
 
-    def checkout_values(self, **kw):
+    def prepare_checkout_values(self, **kw):
         order = request.website.sale_get_order(force_create=1)
+        # get all partner address
         shippings = []
         if order.partner_id != request.website.user_id.sudo().gooderp_partner_id:
-            Partner = order.partner_id.with_context(show_address=1).sudo()
-            shippings = Partner.search([
-                ("id", "=", order.partner_id.id),
-            ], order='id desc')
+            shippings = request.env['partner.address'].search([('partner_id', '=', order.partner_id.id)], order='id')
+
+        # get all payment methods
+        acquirers = request.env['payment.acquirer'].search(
+            [('environment', '=', 'prod'), ('company_id', '=', order.company_id.id)]
+        )
 
         values = {
             'order': order,
             'shippings': shippings,
+            'acquirers': [],
             'only_services': order and order.only_services or False
         }
+
+        for acquirer in acquirers:
+            acquirer_button = acquirer.with_context(submit_class='btn btn-primary', submit_txt='支付').sudo().render(
+                '/',
+                order.amount_total,
+                request.env.user.company_id.currency_id.id,
+                values={
+                    'return_url': '/shop/payment/validate',
+                    'billing_partner_id': order.partner_id.id,
+                }
+            )
+            acquirer.button = acquirer_button
+            values['acquirers'].append(acquirer)
+
+        values['tokens'] = request.env['payment.token'].search([('partner_id', '=', order.partner_id.id), ('acquirer_id', 'in', acquirers.ids)])
+
         return values
 
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True)
@@ -567,9 +593,240 @@ class WebsiteSale(http.Controller):
     @http.route(['/shop/confirm_order'], type='http', auth="public", website=True)
     def confirm_order(self, **post):
         order = request.website.sale_get_order()
-        request.website.sell_order_to_delivery()
+        #request.website.complete_sell_order()
 
         # 订单创建成功，清空购物车
         redirection = self.checkout_redirection(order)
         if redirection:
-            return request.render("good_shop.success")
+            # return request.render("good_shop.success")
+            return redirection
+
+        # order.onchange_partner_shipping_id()
+        request.session['sale_last_order_id'] = order.id
+        request.website.sale_get_order(update_pricelist=True)
+        # extra_step = request.env.ref('website_sale.extra_info_option')
+        # if extra_step.active:
+        #     return request.redirect("/shop/extra_info")
+
+        return request.redirect("/shop/payment")
+
+    # ------------------------------------------------------
+    # Payment
+    # ------------------------------------------------------
+
+    @http.route(['/shop/payment'], type='http', auth="public", website=True)
+    def payment(self, **post):
+        """ Payment step. This page proposes several payment means based on available
+        payment.acquirer. State at this point :
+
+         - a draft sale order with lines; otherwise, clean context / session and
+           back to the shop
+         - no transaction in context / session, or only a draft one, if the customer
+           did go to a payment.acquirer website but closed the tab without
+           paying / canceling
+        """
+        order = request.website.sale_get_order()
+
+        redirection = self.checkout_redirection(order)
+        if redirection:
+            return redirection
+
+        SellOrder = request.env['sell.order']
+        values = {'website_sale_order': order, 'errors': SellOrder._get_errors(order)}
+        values.update(SellOrder._get_website_data(order))
+        if not values['errors']:
+            acquirers = request.env['payment.acquirer'].search(
+                [('website_published', '=', True), ('company_id', '=', order.company_id.id)]
+            )
+            values['acquirers'] = []
+            for acquirer in acquirers:
+                acquirer_button = acquirer.with_context(submit_class='btn btn-primary', submit_txt=_('Pay Now')).sudo().render(
+                    '/',
+                    order.amount_total,
+                    order.pricelist_id.currency_id.id,
+                    values={
+                        'return_url': '/shop/payment/validate',
+                        'billing_partner_id': order.partner_invoice_id.id,
+                    }
+                )
+                acquirer.button = acquirer_button
+                values['acquirers'].append(acquirer)
+
+            values['tokens'] = request.env['payment.token'].search([('partner_id', '=', order.partner_id.id), ('acquirer_id', 'in', acquirers.ids)])
+
+        return request.render("good_shop.payment", values)
+
+    @http.route(['/shop/payment/transaction_token/confirm'], type='json', auth="public", website=True)
+    def payment_transaction_token_confirm(self, tx, **kwargs):
+        tx = request.env['payment.transaction'].sudo().browse(int(tx))
+        if (tx and request.website.sale_get_transaction() and
+                tx.id == request.website.sale_get_transaction().id and
+                tx.payment_token_id and
+                tx.partner_id == tx.sale_order_id.partner_id):
+            try:
+                s2s_result = tx.s2s_do_transaction()
+                valid_state = 'authorized' if tx.acquirer_id.auto_confirm == 'authorize' else 'done'
+                if not s2s_result or tx.state != valid_state:
+                    return dict(success=False, error=_("Payment transaction failed (%s)") % tx.state_message)
+                else:
+                    # Auto-confirm SO if necessary
+                    tx._confirm_so()
+                    return dict(success=True, url='/shop/payment/validate')
+            except Exception, e:
+                _logger.warning(_("Payment transaction (%s) failed : <%s>") % (tx.id, str(e)))
+                return dict(success=False, error=_("Payment transaction failed (Contact Administrator)"))
+        return dict(success=False, error='Tx missmatch')
+
+    @http.route(['/shop/payment/transaction_token'], type='http', methods=['POST'], auth="public", website=True)
+    def payment_transaction_token(self, tx_id, **kwargs):
+        tx = request.env['payment.transaction'].sudo().browse(int(tx_id))
+        if (tx and request.website.sale_get_transaction() and
+                tx.id == request.website.sale_get_transaction().id and
+                tx.payment_token_id and
+                tx.partner_id == tx.sale_order_id.partner_id):
+            return request.render("good_shop.payment_token_form_confirm", dict(tx=tx))
+        else:
+            return request.redirect("/shop/payment?error=no_token_or_missmatch_tx")
+
+    @http.route(['/shop/payment/transaction/<int:acquirer_id>'], type='json', auth="public", website=True)
+    def payment_transaction(self, acquirer_id, tx_type='form', token=None, **kwargs):
+        """ Json method that creates a payment.transaction, used to create a
+        transaction when the user clicks on 'pay now' button. After having
+        created the transaction, the event continues and the user is redirected
+        to the acquirer website.
+
+        :param int acquirer_id: id of a payment.acquirer record. If not set the
+                                user is redirected to the checkout page
+        """
+        Transaction = request.env['payment.transaction'].sudo()
+
+        # In case the route is called directly from the JS (as done in Stripe payment method)
+        so_id = kwargs.get('so_id')
+        so_token = kwargs.get('so_token')
+        if so_id and so_token:
+            order = request.env['sell.order'].sudo().search([('id', '=', so_id), ('access_token', '=', so_token)])
+        elif so_id:
+            order = request.env['sell.order'].search([('id', '=', so_id)])
+        else:
+            order = request.website.sale_get_order()
+        if not order or not order.order_line or acquirer_id is None:
+            return request.redirect("/shop/checkout")
+
+        assert order.partner_id.id != request.website.partner_id.id
+
+        # find an already existing transaction
+        tx = request.website.sale_get_transaction()
+        if tx:
+            if tx.sale_order_id.id != order.id or tx.state in ['error', 'cancel'] or tx.acquirer_id.id != acquirer_id:
+                tx = False
+            elif token and tx.payment_token_id and token != tx.payment_token_id.id:
+                # new or distinct token
+                tx = False
+            elif tx.state == 'draft':  # button cliked but no more info -> rewrite on tx or create a new one ?
+                tx.write(dict(Transaction.on_change_partner_id(order.partner_id.id).get('value', {}), amount=order.amount_total, type=tx_type))
+        if not tx:
+            tx_values = {
+                'acquirer_id': acquirer_id,
+                'type': tx_type,
+                'amount': order.amount_total,
+                'currency_id': order.pricelist_id.currency_id.id,
+                'partner_id': order.partner_id.id,
+                'partner_country_id': order.partner_id.country_id.id,
+                'reference': Transaction.get_next_reference(order.name),
+                'sale_order_id': order.id,
+            }
+            if token and request.env['payment.token'].sudo().browse(int(token)).partner_id == order.partner_id:
+                tx_values['payment_token_id'] = token
+
+            tx = Transaction.create(tx_values)
+            request.session['sale_transaction_id'] = tx.id
+
+        # update quotation
+        order.write({
+            'payment_acquirer_id': acquirer_id,
+            'payment_tx_id': request.session['sale_transaction_id']
+        })
+        if token:
+            return request.env.ref('good_shop.payment_token_form').render(dict(tx=tx), engine='ir.qweb')
+
+        return tx.acquirer_id.with_context(submit_class='btn btn-primary', submit_txt=_('Pay Now')).sudo().render(
+            tx.reference,
+            order.amount_total,
+            order.pricelist_id.currency_id.id,
+            values={
+                'return_url': '/shop/payment/validate',
+                'partner_id': order.partner_shipping_id.id or order.partner_invoice_id.id,
+                'billing_partner_id': order.partner_invoice_id.id,
+            },
+        )
+
+    @http.route('/shop/payment/get_status/<int:sale_order_id>', type='json', auth="public", website=True)
+    def payment_get_status(self, sale_order_id, **post):
+        order = request.env['sell.order'].sudo().browse(sale_order_id)
+        assert order.id == request.session.get('sale_last_order_id')
+
+        values = {}
+        flag = False
+        if not order:
+            values.update({'not_order': True, 'state': 'error'})
+        else:
+            tx = request.env['payment.transaction'].sudo().search(
+                ['|', ('sale_order_id', '=', order.id), ('reference', '=', order.name)], limit=1
+            )
+
+            if not tx:
+                if order.amount_total:
+                    values.update({'tx_ids': False, 'state': 'error'})
+                else:
+                    values.update({'tx_ids': False, 'state': 'done', 'validation': None})
+            else:
+                state = tx.state
+                flag = state == 'pending'
+                values.update({
+                    'tx_ids': True,
+                    'state': state,
+                    'acquirer_id': tx.acquirer_id,
+                    'validation': tx.acquirer_id.auto_confirm == 'none',
+                    'tx_post_msg': tx.acquirer_id.post_msg or None
+                })
+
+        return {'recall': flag, 'message': request.env['ir.ui.view'].render_template("good_shop.order_state_message", values)}
+
+    @http.route('/shop/payment/validate', type='http', auth="public", website=True)
+    def payment_validate(self, transaction_id=None, sale_order_id=None, **post):
+        """ Method that should be called by the server when receiving an update
+        for a transaction. State at this point :
+
+         - UDPATE ME
+        """
+        if transaction_id is None:
+            tx = request.website.sale_get_transaction()
+        else:
+            tx = request.env['payment.transaction'].browse(transaction_id)
+
+        if sale_order_id is None:
+            order = request.website.sale_get_order()
+        else:
+            order = request.env['sell.order'].sudo().browse(sale_order_id)
+            assert order.id == request.session.get('sale_last_order_id')
+
+        if not order or (order.amount_total and not tx):
+            return request.redirect('/shop')
+
+        if (not order.amount_total and not tx) or tx.state in ['pending', 'done', 'authorized']:
+            if (not order.amount_total and not tx):
+                # Orders are confirmed by payment transactions, but there is none for free orders,
+                # (e.g. free events), so confirm immediately
+                order.with_context(send_email=True).action_confirm()
+        elif tx and tx.state == 'cancel':
+            # cancel the quotation
+            order.action_cancel()
+
+        # clean context and session, then redirect to the confirmation page
+        request.website.sale_reset()
+        if tx and tx.state == 'draft':
+            return request.redirect('/shop')
+
+        return request.redirect('/shop/confirmation')
+
+

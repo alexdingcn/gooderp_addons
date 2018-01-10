@@ -2,7 +2,7 @@
 {
     'name': "ERP采购模块",
     'author': "dingxiaodong@yibanjf.com",
-    'website': "http://www.osbzr.com",
+    'website': "http://www.yibanjf.com",
     'category': 'gooderp',
     "description":
     '''
