@@ -1,0 +1,55 @@
+@charset "UTF-8";
+
+.bonsai,
+.bonsai > li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
+}
+
+.bonsai > li.o_sidebar_menu_item {
+    padding: 2px 8px 2px 24px;
+    cursor: pointer;
+}
+
+.bonsai .o_sidebar_menu_item:hover {
+    background-color: #585858;
+}
+
+.bonsai .o_sidebar_menu_item.o_active {
+    background-color: #515151;
+}
+
+.bonsai > ol {
+    list-style: none;
+}
+
+.bonsai > li {
+    position: relative;
+    padding-left: 1.3em; /* padding for the thumb */
+}
+
+li .thumb {
+    margin: -1px 0 0 -1em; /* negative margin into the padding of the li */
+    position: absolute;
+    cursor: pointer;
+}
+
+li.has-children > .thumb:after {
+    content: '▸';
+}
+
+li.has-children.expanded > .thumb:after {
+    content: '▾';
+}
+
+li.collapsed > ol.bonsai {
+    height: 0;
+    overflow: hidden;
+}
+
+.bonsai .all,
+.bonsai .none {
+    cursor: pointer;
+}

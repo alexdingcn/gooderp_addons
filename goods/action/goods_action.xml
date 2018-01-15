@@ -30,13 +30,14 @@
             <field name='view_mode'>form</field>
             <field name='view_id' ref='goods_cert_info_form'/>
         </record>
+
         <record id="goods_class_action" model="ir.actions.act_window">
             <field name="name">商品分类</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">goods.class</field>
-            <field name="view_type">form</field>
+            <field name="view_type">tree</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" eval="False"/>
+            <field name="domain">[('parent_id','=',False)]</field>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     点击创建新的商品分类

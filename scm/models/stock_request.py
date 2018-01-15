@@ -201,7 +201,7 @@ class StockRequest(models.Model):
 
     @api.one
     def stock_request_done(self):
-        todo_buy_lines = []  # 待生成购货订单
+        todo_buy_lines = []  # 待生成采购订单
         todo_produce_lines = []  # 待生成组装单
         for line in self.line_ids:
             if line.is_buy:
@@ -276,13 +276,13 @@ class StockRequest(models.Model):
                 raise UserError(u'请输入补货申请行商品%s%s 的供应商。' % (
                     line.goods_id.name, line.attribute_id.name or ''))
 
-            # 找供应商相同的购货订单
+            # 找供应商相同的采购订单
             buy_order = self.env['buy.order'].search([('partner_id', '=', line.supplier_id.id),
                                                       ('state', '=', 'draft')])
             if len(buy_order) >= 1:
                 buy_order = buy_order[0]
             else:
-                # 创建新的购货订单
+                # 创建新的采购订单
                 buy_order = self.env['buy.order'].with_context(warehouse_dest_type='stock').create({
                     'partner_id': line.supplier_id.id
                 })

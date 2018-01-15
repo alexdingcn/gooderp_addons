@@ -170,7 +170,7 @@
                     <group expand="0" string="分组">
                         <filter string="客户" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="单据日期" domain="[]" context="{'group_by':'date:day'}"/>
-                        <filter string="要求交货日期" domain="[]" context="{'group_by':'delivery_date:day'}"/>
+                        <filter string="预到货日期" domain="[]" context="{'group_by':'delivery_date:day'}"/>
                     </group>
                 </search>
             </field>

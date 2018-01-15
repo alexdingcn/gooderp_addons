@@ -21,7 +21,7 @@ class SellOrderTrack(models.TransientModel):
     qty = fields.Float(u'数量', digits=dp.get_precision('Quantity'))
     amount = fields.Float(u'销售额', digits=dp.get_precision('Amount'))  # 商品的价税合计
     qty_not_out = fields.Float(u'未出库数量', digits=dp.get_precision('Quantity'))
-    delivery_date = fields.Date(u'要求交货日期')
+    delivery_date = fields.Date(u'预到货日期')
     wh_out_date = fields.Date(u'出库日期')
     note = fields.Char(u'备注')
     type = fields.Selection([('sell', u'销售'), ('return', u'退货')], string=u'单据类型')

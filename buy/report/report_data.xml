@@ -37,7 +37,7 @@
                 </button>
             </field>
         </record>
-        <!-- 购货订单打印 -->
+        <!-- 采购订单打印 -->
         <record id='report_buy_order' model='ir.actions.report.xml'>
             <field name='name'>${object.name}</field>
             <field name='model'>buy.order</field>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-
+        <template id="assets_backend" name="web sublist" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/gsp/static/src/js/client_action.js"></script>
+                <script type="text/javascript" src="/gsp/static/src/js/jquery.treeview.min.js"></script>
+                <link rel="stylesheet" type="text/css" href="/gsp/static/src/css/jquery.treeview.css"/>
+            </xpath>
+        </template>
     </data>
 </openerp>

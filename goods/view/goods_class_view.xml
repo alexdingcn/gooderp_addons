@@ -11,30 +11,41 @@
                         <group>
                             <group>
                                 <field name="name"/>
-                            </group>
-                            <group>
-                                <field name="type"/>
-                            </group>
-                            <group>
-                                <field name="parent_id" domain="[('type','=','view')]"/>
+                                <field name="parent_id" options="{'no_create': True}"/>
                                 <field name="sequence"/>
+                                <field name="note"/>
                             </group>
-                            <field name="note"/>
-                        </group>       
+                        </group>
                     </div>
                 </sheet>
             </form>
         </field>
     </record>
+
     <record id="goods_class_tree_view" model="ir.ui.view">
         <field name="name">goods.class.tree</field>
         <field name="model">goods.class</field>
-        <field name="field_parent" eval="False"/>
+        <field name="field_parent">child_ids</field>
         <field name="arch" type="xml">
             <tree string="商品分类">
-                <field name="sequence" widget="handle"/>
                 <field name="name"/>
             </tree>
         </field>
+    </record>
+
+    <!-- 在树形上打开分类 -->
+    <record id="action_goods_class_open" model="ir.actions.server">
+        <field name="name">打开商品分类</field>
+        <field name="model_id" ref="model_goods_class"/>
+        <field name="state">code</field>
+        <field name="code">action=records.view_detail()</field>
+    </record>
+    <record id="ir_action_goods_class_open" model="ir.values">
+        <field name="model_id" ref="model_goods_class"/>
+        <field name="name">打开商品分类</field>
+        <field name="key2">tree_but_open</field>
+        <field eval="'ir.actions.server,%d'%action_goods_class_open" name="value"/>
+        <field name="key">action</field>
+        <field name="model">goods.class</field>
     </record>
 </odoo>

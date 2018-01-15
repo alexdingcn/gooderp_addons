@@ -726,7 +726,7 @@ class MoneyInvoice(models.Model):
     def find_source_order(self):
         '''
         查看原始单据，有以下情况：销售发货单、销售退货单、采购退货单、采购入库单、
-        项目、委外加工单、核销单、购货订单、固定资产、固定资产变更以及期初应收应付。
+        项目、委外加工单、核销单、采购订单、固定资产、固定资产变更以及期初应收应付。
         '''
         self.ensure_one()
         code = False

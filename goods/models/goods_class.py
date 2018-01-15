@@ -15,15 +15,28 @@ class GoodsClass(models.Model):
 
     name = fields.Char(required=True, string=u'名字')
     parent_id = fields.Many2one('goods.class', string=u'上级分类', index=True)
-    child_id = fields.One2many('goods.class', 'parent_id', string=u'子分类')
-    sequence = fields.Integer(u'顺序')
-    type = fields.Selection([('view', u'视图'),
-                             ('normal', u'常规')],
-                            u'类型',
-                            required=True,
-                            default='normal',
-                            help=u'货品分类的类型，分为视图和常规，只有视图的分类才可以建下级货品分类，常规分类不可作为上级货品分类')
+    child_ids = fields.One2many('goods.class', 'parent_id', string=u'子分类')
+    sequence = fields.Integer(u'显示顺序(越小越靠前)')
     note = fields.Text(u'备注')
+
     image = fields.Binary(attachment=True)
     image_medium = fields.Binary(string="Medium-sized image", attachment=True)
     image_small = fields.Binary(string="Small-sized image", attachment=True)
+
+    @api.multi
+    def view_detail(self):
+        for item in self:
+            res_id = self.env['goods.class'].search([('id', '=', item.id)])
+            view_id = self.env.ref('goods.goods_class_form_view').id
+
+            return {
+                'name': u'商品分类/' + item.name,
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'goods.class',
+                'res_id': res_id.id,
+                'view_id': False,
+                'views': [(view_id, 'form')],
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+            }

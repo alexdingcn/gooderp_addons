@@ -277,7 +277,8 @@
             <field name="res_model">goods.quality</field>
             <field name="type">ir.actions.act_window</field>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('move_id.origin', '=', 'buy.receipt.return'), ('move_id.state', '=', 'draft')]</field>
+            <field name="domain">[('move_id.origin', '=', 'buy.receipt.return'), ('move_id.state', '=', 'draft')]
+            </field>
             <field name="context">{'search_default_draft':1}</field>
             <field name="search_view_id" ref="buy_qc_search"/>
         </record>
@@ -339,5 +340,25 @@
             <field name="view_id" ref="goods_maintenance_form"/>
             <field name="act_window_id" ref="menu_gsp_goods_maintenance_action"/>
         </record>
+
+        <record id='gsp_goods_class_search' model='ir.ui.view'>
+            <field name='name'>goods.class.search</field>
+            <field name='model'>goods.class</field>
+            <field name='arch' type='xml'>
+                <search string='商品分类'>
+                    <field name='name'/>
+                    <field name='sequence'/>
+                </search>
+            </field>
+        </record>
+
+        <record id="gsp_goods_class_list" model="ir.actions.client">
+            <field name="name">商品分类</field>
+            <field name="tag">gsp.goods_class_list</field>
+            <field name="res_model">goods.class</field>
+            <field name="view_type">tree</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
     </data>
 </openerp>

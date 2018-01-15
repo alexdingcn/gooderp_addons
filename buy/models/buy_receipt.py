@@ -65,9 +65,9 @@ class BuyReceipt(models.Model):
                                default=lambda self: self.env.context.get(
                                    'is_return'),
                                help=u'是否为退货类型')
-    order_id = fields.Many2one('buy.order', u'购货订单号',
+    order_id = fields.Many2one('buy.order', u'采购订单号',
                                copy=False, ondelete='cascade',
-                               help=u'产生入库单/退货单的购货订单')
+                               help=u'产生入库单/退货单的采购订单')
     invoice_id = fields.Many2one('money.invoice', u'发票号', copy=False,
                                  ondelete='set null',
                                  help=u'产生的发票号')

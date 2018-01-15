@@ -96,7 +96,7 @@ class BuyOrderTrackWizard(models.TransientModel):
 
         buy_order_line = self.env['buy.order.line']
         for line in buy_order_line.search(self._get_domain(), order='goods_id'):
-            is_buy = line.order_id.type == 'buy' and 1 or -1  # 是否购货订单
+            is_buy = line.order_id.type == 'buy' and 1 or -1  # 是否采购订单
             # 以下分别为明细行上数量、采购额、未入库数量，退货时均取反
             qty = is_buy * line.quantity
             amount = is_buy * line.subtotal

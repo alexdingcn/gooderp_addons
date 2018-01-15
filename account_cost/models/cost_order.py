@@ -25,7 +25,7 @@ from odoo.exceptions import UserError
 from datetime import datetime
 from odoo.tools import float_compare, float_is_zero
 
-# 购货订单审核状态可选值
+# 采购订单审核状态可选值
 COST_ORDER_STATES = [
     ('draft', u'未审核'),
     ('done', u'已审核'),
@@ -65,7 +65,7 @@ class CostOrder(models.Model):
     note = fields.Text(u'备注', help=u'单据备注')
     prepayment = fields.Float(u'预付款', states=READONLY_STATES,
                               digits=dp.get_precision('Amount'),
-                              help=u'输入预付款审核购货订单，会产生一张付款单')
+                              help=u'输入预付款审核采购订单，会产生一张付款单')
     bank_account_id = fields.Many2one('bank.account', u'结算账户',
                                       ondelete='restrict',
                                       help=u'用来核算和监督企业与其他单位或个人之间的债权债务的结算情况')
@@ -88,7 +88,7 @@ class CostOrder(models.Model):
                                   copy=False, ondelete='restrict',
                                   help=u'审核单据的人')
     state = fields.Selection(COST_ORDER_STATES, u'审核状态', readonly=True,
-                             help=u"购货订单的审核状态", index=True, copy=False,
+                             help=u"采购订单的审核状态", index=True, copy=False,
                              default='draft')
     amount = fields.Float(u'合计金额', store=True, readonly=True,
                           compute='_compute_amount', track_visibility='always',
@@ -125,7 +125,7 @@ class CostOrder(models.Model):
 
     @api.one
     def generate_payment_order(self):
-        '''由购货订单生成付款单'''
+        '''由采购订单生成付款单'''
         # 入库单/退货单
         if self.prepayment:
             money_order = self.with_context(type='pay').env['money.order'].create(

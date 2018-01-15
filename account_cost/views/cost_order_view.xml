@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <openerp>
 	<data>
-		<!-- 购货订单视图 -->
+		<!-- 采购订单视图 -->
 
 		<record id="cost_order_tree" model="ir.ui.view">
 			<field name="name">cost.order.tree</field>

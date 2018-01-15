@@ -71,12 +71,17 @@
 
         <menuitem id="data_goods_menu" name="商品数据"
                   parent="menu_data_root" sequence="2"/>
-        <menuitem id="data_goods_class_menu" name="商品分类" action="goods.goods_class_action"
-                  parent="data_goods_menu" sequence="1"/>
-        <menuitem id='data_buy_goods_menu' name='商品资料维护' action='goods.goods_action'
-                  parent='data_goods_menu' sequence='2'/>
-        <menuitem id='data_goods_barcode_menu' name='商品条码维护' action='goods.goods_action'
+        <menuitem id="data_goods_class_menu2" name="商品分类" action="gsp_goods_class_list"
+                  parent="data_goods_menu" sequence="2"/>
+
+        <menuitem id='data_buy_goods_menu' name='商品' action='goods.goods_action'
                   parent='data_goods_menu' sequence='3'/>
+        <record id="data_buy_goods_menu" model="ir.ui.menu">
+            <field name="create_tag">1</field>
+        </record>
+
+        <menuitem id='data_goods_barcode_menu' name='商品条码维护' action='goods.goods_action'
+                  parent='data_goods_menu' sequence='4'/>
 
         <menuitem id="data_warehouse_menu" name="仓库数据"
                   parent="menu_data_root" sequence="3"/>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Client Action -->
+    <t t-name="gsp.goods_class_list_action">
+        <div class="o_mail_chat">
+            <div class="o_mail_chat_sidebar"/>
+            <div class="o_mail_chat_content goods_list"/>
+        </div>
+    </t>
+
+    <t t-name="gsp.GoodsClass.Sidebar">
+        <div class="o_mail_chat_sidebar">
+            <ol id="sidebar_tree">
+                <li class='expanded' data-value='0'>所有
+                    <ol>
+                        <t t-foreach="items" t-as="item">
+                            <li t-att-data-item-id="item.id" t-attf-class="o_sidebar_menu_item #{(active_id == item.id) ? 'o_active': ''}" t-if="!item.parent_id">
+                                <span class="o_channel_name"><t t-esc="item.name"/></span>
+                                <ol t-if="item.child_ids">
+                                    <t t-foreach="item.child_ids" t-as="item_id">
+                                        <li t-att-data-item-id="item_id" t-attf-class="o_sidebar_menu_item #{(active_id == item_id) ? 'o_active': ''}">
+                                            <span class="o_channel_name"><t t-esc="dataset[item_id].name"/></span>
+                                        </li>
+                                    </t>
+                                </ol>
+                            </li>
+                        </t>
+                    </ol>
+                </li>
+            </ol>
+        </div>
+    </t>
+
+    <t t-name="gsp.ListView">
+        <div class="list">
+            <t t-foreach="items" t-as="item">
+                <span class="o_channel_name" t-esc="item.name"/>
+            </t>
+        </div>
+    </t>
+
+    <!-- Buttons of the Control Panel -->
+    <t t-name="mail.chat.ControlButtons">
+        <div>
+            <button type="button" class="btn btn-primary btn-sm o_new_goods_class" title="新建商品分类">新建商品分类</button>
+            <button type="button" class="btn btn-success btn-sm o_new_goods" title="新建商品">新建商品</button>
+        </div>
+    </t>
+
+</templates>

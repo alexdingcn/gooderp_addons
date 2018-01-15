@@ -123,7 +123,7 @@ class TestBuyReceipt(TransactionCase):
         with self.assertRaises(UserError):
             self.receipt.unlink()
 
-        # 反审核购货订单，测试删除buy_receipt时是否可以删除关联的wh.move.line记录
+        # 反审核采购订单，测试删除buy_receipt时是否可以删除关联的wh.move.line记录
         self.receipt.buy_receipt_draft()
 
         move_id = self.receipt.buy_move_id.id

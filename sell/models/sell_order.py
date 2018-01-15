@@ -107,13 +107,13 @@ class SellOrder(models.Model):
                        copy=False,
                        help=u"默认是订单创建日期")
     delivery_date = fields.Date(
-        u'要求交货日期',
+        u'预到货日期',
         required=True,
         states=READONLY_STATES,
         default=lambda self: fields.Date.context_today(self),
         index=True,
         copy=False,
-        help=u"订单的要求交货日期")
+        help=u"订单的预到货日期")
     type = fields.Selection([('sell', u'销售'), ('return', u'退货')], u'类型',
                             default='sell', states=READONLY_STATES,
                             help=u'销售订单的类型，分为销售或退货')

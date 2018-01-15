@@ -23,7 +23,7 @@ class BuyOrderTrack(models.TransientModel):
                           digits=dp.get_precision('Amount'))  # 商品的价税合计
     qty_not_in = fields.Float(u'未入库数量',
                               digits=dp.get_precision('Quantity'))
-    planned_date = fields.Date(u'要求交货日期')
+    planned_date = fields.Date(u'预到货日期')
     wh_in_date = fields.Date(u'入库日期')
     note = fields.Char(u'备注')
     type = fields.Selection([('buy', u'购货'),('return', u'退货')], string=u'单据类型')
@@ -36,7 +36,7 @@ class BuyOrderTrack(models.TransientModel):
         if order:
             view = self.env.ref('buy.buy_order_form')
             return {
-                'name': u'购货订单',
+                'name': u'采购订单',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'view_id': False,

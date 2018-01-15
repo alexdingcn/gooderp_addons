@@ -100,7 +100,7 @@ class SellAdjust(models.Model):
                         move_line.note = (move_line.note and
                                           move_line.note or move_line.note + origin_line.note)
                     else:
-                        raise UserError(u'商品 %s 已全部入库，建议新建购货订单' %
+                        raise UserError(u'商品 %s 已全部入库，建议新建采购订单' %
                                         line.goods_id.name)
                 # 调整后数量与已出库数量相等时，删除产生的发货单分单
                 else:

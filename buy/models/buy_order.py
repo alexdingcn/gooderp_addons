@@ -10,7 +10,7 @@ from odoo.tools import float_compare, float_is_zero
 
 _logger = logging.getLogger(__name__)
 
-# 购货订单审核状态可选值
+# 采购订单审核状态可选值
 BUY_ORDER_STATES = [
     ('draft', u'未审核'),
     ('done', u'已审核'),
@@ -25,7 +25,7 @@ READONLY_STATES = {
 class BuyOrder(models.Model):
     _name = "buy.order"
     _inherit = ['mail.thread']
-    _description = u"购货订单"
+    _description = u"采购订单"
     _order = 'date desc, id desc'
 
     @api.one
@@ -59,7 +59,7 @@ class BuyOrder(models.Model):
 
     @api.one
     def _get_paid_amount(self):
-        '''计算购货订单付款/退款状态'''
+        '''计算采购订单付款/退款状态'''
         receipts = self.env['buy.receipt'].search([('order_id', '=', self.id)])
         money_order_rows = self.env['money.order'].search([('buy_id', '=', self.id),
                                                            ('reconciled', '=', 0),
@@ -98,23 +98,23 @@ class BuyOrder(models.Model):
                        copy=False,
                        help=u"默认是订单创建日期")
     planned_date = fields.Date(
-        u'要求交货日期',
+        u'预到货日期',
         states=READONLY_STATES,
         default=lambda self: fields.Date.context_today(
             self),
         index=True,
         copy=False,
-        help=u"订单的要求交货日期")
+        help=u"订单的预到货日期")
     name = fields.Char(u'单据编号',
                        index=True,
                        copy=False,
-                       help=u"购货订单的唯一编号，当创建时它会自动生成下一个编号。")
+                       help=u"采购订单的唯一编号，当创建时它会自动生成下一个编号。")
     type = fields.Selection([('buy', u'购货'),
                              ('return', u'退货')],
                             u'订单类型',
                             default='buy',
                             states=READONLY_STATES,
-                            help=u'购货订单的类型，分为购货或退货')
+                            help=u'采购订单的类型，分为购货或退货')
     ref = fields.Char(u'供应商订单号')
     warehouse_dest_id = fields.Many2one('warehouse',
                                         u'调入仓库',
@@ -129,10 +129,10 @@ class BuyOrder(models.Model):
                                         help=u'如未勾选此项，可在资金行里输入付款金额，订单保存后，采购人员可以单击资金行上的【确认】按钮。')
     line_ids = fields.One2many('buy.order.line',
                                'order_id',
-                               u'购货订单明细',
+                               u'采购订单明细',
                                states=READONLY_STATES,
                                copy=True,
-                               help=u'购货订单的明细项，不能为空')
+                               help=u'采购订单的明细项，不能为空')
     note = fields.Text(u'备注',
                        help=u'单据备注')
     discount_rate = fields.Float(u'优惠率(%)',
@@ -154,7 +154,7 @@ class BuyOrder(models.Model):
                               states=READONLY_STATES,
                               track_visibility='onchange',
                               digits=dp.get_precision('Amount'),
-                              help=u'输入预付款审核购货订单，会产生一张付款单')
+                              help=u'输入预付款审核采购订单，会产生一张付款单')
     bank_account_id = fields.Many2one('bank.account',
                                       u'结算账户',
                                       ondelete='restrict',
@@ -169,7 +169,7 @@ class BuyOrder(models.Model):
                              u'审核状态',
                              readonly=True,
                              track_visibility='onchange',
-                             help=u"购货订单的审核状态",
+                             help=u"采购订单的审核状态",
                              index=True,
                              copy=False,
                              default='draft')
@@ -178,7 +178,7 @@ class BuyOrder(models.Model):
                               default=u'未入库',
                               store=True,
                               track_visibility='onchange',
-                              help=u"购货订单的收货状态",
+                              help=u"采购订单的收货状态",
                               index=True,
                               copy=False)
     cancelled = fields.Boolean(u'已终止',
@@ -276,7 +276,7 @@ class BuyOrder(models.Model):
 
     @api.one
     def _generate_payment_order(self):
-        '''由购货订单生成付款单'''
+        '''由采购订单生成付款单'''
         # 入库单/退货单
         if self.prepayment:
             money_order = self.with_context(type='pay').env['money.order'].create(
@@ -286,7 +286,7 @@ class BuyOrder(models.Model):
 
     @api.one
     def buy_order_done(self):
-        '''审核购货订单'''
+        '''审核采购订单'''
         if self.state == 'done':
             raise UserError(u'请不要重复审核')
         if not self.line_ids:
@@ -307,11 +307,11 @@ class BuyOrder(models.Model):
 
     @api.one
     def buy_order_draft(self):
-        '''反审核购货订单'''
+        '''反审核采购订单'''
         if self.state == 'draft':
             raise UserError(u'请不要重复反审核！')
         if self.goods_state != u'未入库':
-            raise UserError(u'该购货订单已经收货，不能反审核！')
+            raise UserError(u'该采购订单已经收货，不能反审核！')
         # 查找产生的入库单并删除
         receipt = self.env['buy.receipt'].search(
             [('order_id', '=', self.name)])
@@ -391,7 +391,7 @@ class BuyOrder(models.Model):
 
     @api.one
     def buy_generate_receipt(self):
-        '''由购货订单生成采购入库/退货单'''
+        '''由采购订单生成采购入库/退货单'''
         receipt_line = []  # 采购入库/退货单行
 
         for line in self.line_ids:
@@ -495,7 +495,7 @@ class BuyOrder(models.Model):
 
 class BuyOrderLine(models.Model):
     _name = 'buy.order.line'
-    _description = u'购货订单明细'
+    _description = u'采购订单明细'
 
     @api.one
     @api.depends('goods_id')
@@ -576,7 +576,7 @@ class BuyOrderLine(models.Model):
     quantity_in = fields.Float(u'已入库数量',
                                copy=False,
                                digits=dp.get_precision('Quantity'),
-                               help=u'购货订单产生的入库单/退货单已执行数量')
+                               help=u'采购订单产生的入库单/退货单已执行数量')
     price = fields.Float(u'购货单价',
                          store=True,
                          digits=dp.get_precision('Price'),
@@ -669,7 +669,7 @@ class Payment(models.Model):
     date_application = fields.Date(string=u"申请日期", readonly=True,
                                    help=u'付款申请日期')
     buy_id = fields.Many2one("buy.order",
-                             help=u'关联的购货订单')
+                             help=u'关联的采购订单')
 
     @api.one
     def request_payment(self):

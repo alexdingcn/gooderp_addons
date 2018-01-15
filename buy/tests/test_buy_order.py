@@ -55,7 +55,7 @@ class TestBuyOrder(TransactionCase):
         self.assertTrue(self.order.goods_state == u'部分入库')
 
     def test_default_warehouse_dest(self):
-        '''新建购货订单时默认调入仓库'''
+        '''新建采购订单时默认调入仓库'''
         order = self.env['buy.order'].with_context({
             'warehouse_dest_type': 'stock'
         }).create({})
@@ -109,7 +109,7 @@ class TestBuyOrder(TransactionCase):
             self.order.buy_order_done()
 
     def test_buy_order_done_foreign_currency(self):
-        """测试审核购货订单，外币免税"""
+        """测试审核采购订单，外币免税"""
         self.order.currency_id = self.env.ref('base.USD')
         for line in self.order.line_ids:
             line.price_taxed = 1170
@@ -231,7 +231,7 @@ class TestBuyOrder(TransactionCase):
         self.order.action_view_invoice()
         self.order.receipt_ids[0].buy_receipt_done()
         self.order.action_view_invoice()
-        # 生成两张入库单，都审核后在购货订单上查看结算单
+        # 生成两张入库单，都审核后在采购订单上查看结算单
         self.order.receipt_ids[0].buy_receipt_draft()
         self.order.buy_order_draft()
         self.order.buy_order_done()

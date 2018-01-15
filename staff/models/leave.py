@@ -44,7 +44,7 @@ class StaffLeave(models.Model):
     leave_dates = fields.Float(u'请假天数', readonly=True,
                                states={'draft': [('readonly', False)]})
     state = fields.Selection(LEAVE_STATES, u'审核状态', readonly=True,
-                             help=u"购货订单的审核状态", index=True, copy=False,
+                             help=u"采购订单的审核状态", index=True, copy=False,
                              default='draft')
     company_id = fields.Many2one(
         'res.company',

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <openerp>
     <data>
-        <!-- 购货订单视图 -->
+        <!-- 采购订单视图 -->
 
         <record id="buy_order_tree" model="ir.ui.view">
             <field name="name">buy.order.tree</field>
             <field name="model">buy.order</field>
             <field name="arch" type="xml">
-                <tree string="购货订单" colors='blue:state == "draft";lightgray:state == "cancel"'>
+                <tree string="采购订单" colors='blue:state == "draft";lightgray:state == "cancel"'>
                     <field name="date"/>
                     <field name="name"/>
                     <field name="type"/>
@@ -28,7 +28,7 @@
             <field name="name">buy.order.form</field>
             <field name="model">buy.order</field>
             <field name="arch" type="xml">
-                <form string="购货订单">
+                <form string="采购订单">
                     <header attrs="{'invisible':[('create_uid', '=', False)]}">
                         <button name="buy_order_done" states="draft" string="审核" type="object" class="oe_highlight"
                                 confirm="填表人和审核人相同，请确认"
@@ -156,7 +156,7 @@
             <field name="name">buy.order.search</field>
             <field name="model">buy.order</field>
             <field name="arch" type="xml">
-                <search string="购货订单">
+                <search string="采购订单">
                     <field name="name"/>
                     <field name="type"/>
                     <field name="partner_id"/>
@@ -179,7 +179,7 @@
                     <group expand="0" string="分组">
                         <filter string="供应商" domain="[]" context="{'group_by':'partner_id'}"/>
                         <filter string="单据日期" domain="[]" context="{'group_by':'date:day'}"/>
-                        <filter string="要求交货日期" domain="[]" context="{'group_by':'planned_date:day'}"/>
+                        <filter string="预到货日期" domain="[]" context="{'group_by':'planned_date:day'}"/>
                     </group>
                 </search>
             </field>

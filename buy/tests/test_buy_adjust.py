@@ -119,7 +119,7 @@ class TestBuyAdjust(TransactionCase):
         self.assertTrue(not new_receipt)
 
     def test_buy_adjust_done_all_in(self):
-        '''审核采购变更单：购货订单生成的采购入库单已全部入库，审核时报错'''
+        '''审核采购变更单：采购订单生成的采购入库单已全部入库，审核时报错'''
         self.env.ref('core.goods_category_1').account_id = self.env.ref(
             'finance.account_goods').id
         receipt = self.env['buy.receipt'].search(
@@ -137,7 +137,7 @@ class TestBuyAdjust(TransactionCase):
             adjust.buy_adjust_done()
 
     def test_buy_adjust_done_more_same_line(self):
-        '''审核采购变更单：查找到购货订单中多行同一商品，不能调整'''
+        '''审核采购变更单：查找到采购订单中多行同一商品，不能调整'''
         self.env.ref('core.goods_category_1').account_id = self.env.ref(
             'finance.account_goods').id
         self.order.buy_order_draft()

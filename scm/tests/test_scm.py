@@ -93,7 +93,7 @@ class TestScm(TransactionCase):
         self.stock_request.stock_request_done()
 
     def test_stock_request_done_no_same_supplier(self):
-        ''' 测试 找不到相同供应商的购货订单 '''
+        ''' 测试 找不到相同供应商的采购订单 '''
         self.stock_request.stock_query()
         # 保证不存在多条未审核购货单明细
         self.env.ref('buy.buy_order_line_1_same').attribute_id = False

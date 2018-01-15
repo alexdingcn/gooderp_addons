@@ -27,7 +27,7 @@ class BuyAdjust(models.Model):
                        help=u'变更单编号，保存时可自动生成')
     order_id = fields.Many2one('buy.order', u'原始单据', states=READONLY_STATES,
                                copy=False, ondelete='restrict',
-                               help=u'要调整的原始购货订单，只能调整已审核且没有全部入库的购货订单')
+                               help=u'要调整的原始采购订单，只能调整已审核且没有全部入库的采购订单')
     date = fields.Date(u'单据日期', states=READONLY_STATES,
                        default=lambda self: fields.Date.context_today(self),
                        index=True, copy=False,
@@ -109,7 +109,7 @@ class BuyAdjust(models.Model):
                     raise UserError(u'%s调整后数量不能小于原订单已入库数量' %
                                     line.goods_id.name)
                 elif origin_line.quantity > origin_line.quantity_in:
-                    # 查找出原购货订单产生的草稿状态的入库单明细行，并更新它
+                    # 查找出原采购订单产生的草稿状态的入库单明细行，并更新它
                     move_line = self.env['wh.move.line'].search(
                         [('buy_line_id', '=', origin_line.id),
                          ('state', '=', 'draft')])
@@ -118,7 +118,7 @@ class BuyAdjust(models.Model):
                         move_line.note = (move_line.note and
                                           move_line.note or move_line.note + origin_line.note)
                     else:
-                        raise UserError(u'商品%s已全部入库，建议新建购货订单' %
+                        raise UserError(u'商品%s已全部入库，建议新建采购订单' %
                                         line.goods_id.name)
                 # 调整后数量与已入库数量相等时，删除产生的入库单分单
                 else:
