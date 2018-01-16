@@ -30,6 +30,7 @@ class Goods(models.Model):
             # name = Goods.code and (Goods.code + '_' + Goods.name) or Goods.name
             name = Goods.name
             name += Goods.specs and ('[' + Goods.specs + ']')
+            name += Goods.supplier_id and (' - ' + Goods.supplier_id.name)
             res.append((Goods.id, name))
         return res
 
@@ -77,11 +78,10 @@ class Goods(models.Model):
                                   context={'type': 'goods'}, required=True,
                                   help=u'从会计科目角度划分的类别',
                                   )
-    uom_id = fields.Many2one('uom', ondelete='restrict', string=u'计量单位', required=True)
-
-    uos_id = fields.Many2one('uom', ondelete='restrict', string=u'辅助单位')
-    conversion = fields.Float(string=u'装箱规格', default=1, digits=(16, 3),
-                              help=u'1个辅助单位等于多少计量单位的数量，如1箱30盒药品，这里就输入30')
+    uom_id = fields.Many2one('uom', ondelete='restrict', string=u'包装单位', required=True)
+    uos_id = fields.Many2one('uom', ondelete='restrict', string=u'计量单位')
+    conversion = fields.Float(string=u'计量规格', default=1, digits=(16, 3),
+                              help=u'1个计量单位等于多少包装单位，如1箱30盒药品，这里就输入30')
 
     cost = fields.Float(u'成本', digits=dp.get_precision('Amount'))
     cost_method = fields.Selection(CORE_COST_METHOD, u'存货计价方法',

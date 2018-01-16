@@ -8,11 +8,12 @@
                 <tree string='商品' colors='blue:state == "draft";lightgray:state == "cancel"'>
                     <field name='code'/>
                     <field name='name'/>
+                    <field name="supplier_id"/>
                     <field name='brand'/>
                     <field name='category_id'/>
                     <field name='uom_id'/>
                     <field name='uos_id' groups='goods.auxiliary_unit_groups'/>
-                    <field name='conversion' string='装箱规格' digits='(5,0)' groups='goods.auxiliary_unit_groups'/>
+                    <field name='conversion' digits='(5,0)' groups='goods.auxiliary_unit_groups'/>
                     <field name='cost' groups='goods.view_cost_groups'/>
                     <field name='price'/>
                     <field name="is_superiority"/>
@@ -167,13 +168,11 @@
             <field name='model'>goods</field>
             <field name='arch' type='xml'>
                 <search string='商品'>
+                    <field name='pinyin_abbr'/>
                     <field name='name'/>
+                    <field name="supplier_id"/>
                     <field name='brand'/>
                     <field name='code'/>
-                    <field name='category_id'/>
-                    <group expand="0" string="分组">
-                        <filter string="商品类别" domain="[]" context="{'group_by':'category_id'}"/>
-                    </group>
                 </search>
             </field>
         </record>

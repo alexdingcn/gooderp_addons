@@ -5,7 +5,7 @@ import logging
 from odoo import fields, models, api
 import odoo.addons.decimal_precision as dp
 from odoo.exceptions import UserError
-from datetime import datetime
+from datetime import datetime, timedelta
 from odoo.tools import float_compare, float_is_zero
 
 _logger = logging.getLogger(__name__)
@@ -100,8 +100,7 @@ class BuyOrder(models.Model):
     planned_date = fields.Date(
         u'预到货日期',
         states=READONLY_STATES,
-        default=lambda self: fields.Date.context_today(
-            self),
+        default=lambda self: (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d'),
         index=True,
         copy=False,
         help=u"订单的预到货日期")
@@ -118,7 +117,6 @@ class BuyOrder(models.Model):
     ref = fields.Char(u'供应商订单号')
     warehouse_dest_id = fields.Many2one('warehouse',
                                         u'调入仓库',
-                                        required=True,
                                         default=_default_warehouse_dest,
                                         ondelete='restrict',
                                         states=READONLY_STATES,
@@ -203,6 +201,9 @@ class BuyOrder(models.Model):
                                   compute='_compute_currency_id',
                                   store=True,
                                   help=u'外币币别')
+    deduction_rate = fields.Float(u'扣率', default=100)
+    contract_number = fields.Char(u'合同号')
+
     user_id = fields.Many2one(
         'res.users',
         u'经办人',
@@ -235,9 +236,6 @@ class BuyOrder(models.Model):
     def onchange_partner_id(self):
         if self.partner_id:
             for line in self.line_ids:
-                for vendor in line.goods_id.vendor_ids:
-                    if vendor.vendor_id != self.partner_id:
-                        raise UserError(u'变更供应商：商品[%s]不属于该供应商，请删除该商品' % line.goods_id.name)
                 if line.goods_id.tax_rate and self.partner_id.tax_rate:
                     if line.goods_id.tax_rate >= self.partner_id.tax_rate:
                         line.tax_rate = self.partner_id.tax_rate
@@ -514,6 +512,9 @@ class BuyOrderLine(models.Model):
     @api.depends('quantity', 'price_taxed', 'discount_amount', 'tax_rate')
     def _compute_all_amount(self):
         '''当订单明细的数量、含税单价、折扣额、税率改变时，改变购货金额、税额、价税合计'''
+        # 计算包装数量
+        if self.goods_id and self.quantity and self.goods_id.conversion > 0:
+            self.uos_quantity = self.quantity / self.goods_id.conversion
         if self.tax_rate > 100:
             raise UserError(u'税率不能输入超过100的数')
         if self.tax_rate < 0:
@@ -537,6 +538,7 @@ class BuyOrderLine(models.Model):
             self.amount = self.subtotal - self.tax_amount  # 本位币金额
             self.currency_amount = currency_amount  # 外币金额
 
+
     @api.onchange('price', 'tax_rate')
     def onchange_price(self):
         '''当订单明细的不含税单价改变时，改变含税单价'''
@@ -555,6 +557,11 @@ class BuyOrderLine(models.Model):
                                u'商品',
                                ondelete='restrict',
                                help=u'商品')
+
+    goods_code = fields.Char(u'商品编号', related='goods_id.code')
+    manufacturer_name = fields.Many2one('partner', u'商品产地', related='goods_id.supplier_id')
+
+
     using_attribute = fields.Boolean(u'使用属性',
                                      compute=_compute_using_attribute,
                                      help=u'商品是否使用属性')
@@ -564,20 +571,24 @@ class BuyOrderLine(models.Model):
                                    domain="[('goods_id', '=', goods_id)]",
                                    help=u'商品的属性，当商品有属性时，该字段必输')
     uom_id = fields.Many2one('uom',
-                             u'单位',
+                             u'包装单位',
                              compute=_compute_product_uom, store=True,
                              ondelete='restrict',
-                             help=u'商品计量单位')
+                             help=u'商品包装单位')
     quantity = fields.Float(u'数量',
                             default=1,
                             required=True,
                             digits=dp.get_precision('Quantity'),
                             help=u'下单数量')
+
+    goods_conversion = fields.Float(u'计量规格', related='goods_id.conversion')
+    uos_quantity = fields.Float(u'包装数量', digits=(16, 1), store=False)
+
     quantity_in = fields.Float(u'已入库数量',
                                copy=False,
                                digits=dp.get_precision('Quantity'),
                                help=u'采购订单产生的入库单/退货单已执行数量')
-    price = fields.Float(u'购货单价',
+    price = fields.Float(u'单价',
                          store=True,
                          digits=dp.get_precision('Price'),
                          help=u'不含税单价，由含税单价计算得出')
@@ -627,8 +638,6 @@ class BuyOrderLine(models.Model):
     def onchange_goods_id(self):
         '''当订单明细的商品变化时，带出商品上的单位、成本价。
         在采购订单上选择供应商，自动带出供货价格，没有设置供货价的取成本价格。'''
-        if not self.order_id.partner_id:
-            raise UserError(u'请先选择一个供应商！')
         if self.goods_id:
             self.uom_id = self.goods_id.uom_id
             self.price_taxed = self.goods_id.cost
