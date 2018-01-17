@@ -48,4 +48,7 @@
     'demo': [
         'data/buy_demo.xml',
     ],
+    'qweb': [
+        'static/src/xml/*.xml',
+    ]
 }

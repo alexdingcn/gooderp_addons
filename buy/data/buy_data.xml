@@ -8,7 +8,7 @@
             <field name="prefix">BO%(y)s%(month)s%(day)s</field>
             <field name="padding">5</field>
         </record>
-		<!-- 采购入库单序列号 -->
+        <!-- 采购入库单序列号 -->
         <record id="seq_buy_receipt" model="ir.sequence">
             <field name="name">入库单</field>
             <field name="code">buy.receipt</field>
@@ -50,6 +50,20 @@
         </record>
         <record id="remove_payment" model="business.data.table">
             <field name="name">payment.plan</field>
+        </record>
+
+        <record id="ir_cron_vendor_goods_stats_scheduler" model="ir.cron">
+            <field eval="&quot;&quot;&quot;_calc_stats&quot;&quot;&quot;" name="function"/>
+            <field eval="&quot;&quot;&quot;work_days&quot;&quot;&quot;" name="interval_type"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field eval="&quot;&quot;&quot;统计供应商数据&quot;&quot;&quot;" name="name"/>
+            <field eval="-1" name="numbercall"/>
+            <field eval="&quot;&quot;&quot;1970-01-01 00:00:00&quot;&quot;&quot;" name="nextcall"/>
+            <field eval="5" name="priority"/>
+            <field eval="0" name="doall"/>
+            <field eval="1" name="active"/>
+            <field eval="1" name="interval_number"/>
+            <field eval="&quot;&quot;&quot;vendor.goods&quot;&quot;&quot;" name="model"/>
         </record>
     </data>
 </openerp>

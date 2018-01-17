@@ -2,6 +2,11 @@
 <openerp>
     <data>
         <!-- 采购订单视图 -->
+        <template id="assets_backend" name="buy_order_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/buy/static/src/js/buy_order_view.js"/>
+            </xpath>
+        </template>
 
         <record id="buy_order_tree" model="ir.ui.view">
             <field name="name">buy.order.tree</field>
@@ -123,10 +128,31 @@
                             </tree>
                         </field>
 
-                        <group>
+                        <div id="goods_detail" class="mt8 hidden">
+                            <ul role="tablist" class="nav nav-tabs">
+                                <li class="active">
+                                    <a data-toggle="tab" role="tab" href="#goods_info_tab">
+                                        <span class="fa fa-info-circle"></span>
+                                        商品明细
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" role="tab" href="#goods_buy_history_tab">
+                                        <span class="fa fa-cart-plus"></span>
+                                        采购历史
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content nav nav-tabs">
+                                <div role="tabpanel" id="goods_info_tab" class="tab-pane active"/>
+                                <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane"/>
+                            </div>
+                        </div>
+
+                        <group string="合计">
                             <group>
                                 <field name="discount_amount" groups='buy.buy_discount_groups'/>
-                                <field name="amount"/>
+                                <field name="amount" class="red"/>
                                 <field name="paid_amount"/>
                             </group>
                             <group>

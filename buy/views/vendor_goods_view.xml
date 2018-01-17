@@ -90,14 +90,18 @@
                     <page name="supplier_info" string='供应商' icon="fa-users">
                         <group>
                             <field name="vendor_ids" colspan="2" nolabel="1" groups='goods.view_cost_groups'>
-                                <tree string="goods" editable="bottom">
+                                <tree string="goods" editable="bottom" delete="false">
                                     <field name="vendor_id"
                                            domain="[('type', '=', 'SUP'),('state','=','done')]"
                                            context="{'form_view_ref': 'core.partner_sup_form'}"/>
-                                    <field name="price"/>
-                                    <field name="code"/>
-                                    <field name="name"/>
                                     <field name="min_qty"/>
+                                    <field name="price"/>
+                                    <field name="min_price" readonly="1"/>
+                                    <field name="max_price" readonly="1"/>
+                                    <field name="last_price" readonly="1"/>
+                                    <field name="last_buy_time" readonly="1"/>
+                                    <field name="total_qty" readonly="1"/>
+                                    <field name="subtotal" readonly="1"/>
                                 </tree>
                             </field>
                         </group>

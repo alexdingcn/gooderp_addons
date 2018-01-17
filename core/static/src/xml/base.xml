@@ -47,7 +47,11 @@
                             <t t-esc="column.string"/>
                         </th>
                     </t>
-					<th t-if="options.deletable" class='oe_list_record_copy' width="13px" rowspan="2" />
+                    <th t-if="options.show_index" class="oe_list_record_index" width="10px">
+                        <span>#</span>
+                    </th>
+                    <th t-if="!options.show_index and options.deletable" class='oe_list_record_copy' width="13px" rowspan="2"/>
+
                     <th t-if="options.selectable" class="o_list_record_selector" rowspan="2" colspan="1">
                         <div class="o_checkbox" >
                             <input type="checkbox"/><span/>
@@ -76,7 +80,8 @@
            </thead>
         </t>
 		<t t-jquery="tfoot > tr:first > td:first" t-operation="before">
-			<td t-if="options.deletable" class='oe_list_record_copy' width="13px"/>
+            <td t-if="options.show_index" class="oe_list_record_index" width="10px"/>
+			<td t-if="!options.show_index and options.deletable" class='oe_list_record_copy' width="13px"/>
 		</t>
     </t>
 	<t t-name="FieldPdfViewer">

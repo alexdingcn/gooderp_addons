@@ -80,7 +80,7 @@ class Goods(models.Model):
                                   )
     uom_id = fields.Many2one('uom', ondelete='restrict', string=u'包装单位', required=True)
     uos_id = fields.Many2one('uom', ondelete='restrict', string=u'计量单位')
-    conversion = fields.Float(string=u'计量规格', default=1, digits=(16, 3),
+    conversion = fields.Float(string=u'计量规格', default=1, digits=(16, 2),
                               help=u'1个计量单位等于多少包装单位，如1箱30盒药品，这里就输入30')
 
     cost = fields.Float(u'成本', digits=dp.get_precision('Amount'))

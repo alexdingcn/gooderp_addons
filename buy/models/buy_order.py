@@ -604,7 +604,7 @@ class BuyOrderLine(models.Model):
                           compute=_compute_all_amount,
                           store=True,
                           digits=dp.get_precision('Amount'),
-                          help=u'金额  = 价税合计  - 税额')
+                          help=u'金额 = 价税合计 - 税额')
     currency_amount = fields.Float(u'外币金额',
                                    compute=_compute_all_amount,
                                    store=True,
@@ -622,7 +622,7 @@ class BuyOrderLine(models.Model):
                             compute=_compute_all_amount,
                             store=True,
                             digits=dp.get_precision('Amount'),
-                            help=u'含税单价 乘以 数量')
+                            help=u'含税单价x数量')
     note = fields.Char(u'备注',
                        help=u'本行备注')
     # TODO:放到单独模块中 sell_to_buy many2one 到sell.order
