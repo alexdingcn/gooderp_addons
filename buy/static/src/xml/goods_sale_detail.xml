@@ -55,13 +55,16 @@
             <t t-foreach="vendors" t-as="vendor">
                 <tr>
                     <td><t t-esc="vendor.vendor_id[1]"/></td>
-                    <td><t t-if="vendor.price > 0" t-raw="vendor.price"/></td>
-                    <td><t t-if="vendor.min_price > 0" t-raw="vendor.min_price"/></td>
-                    <td><t t-if="vendor.max_price > 0" t-raw="vendor.max_price"/></td>
-                    <td><t t-if="vendor.last_price > 0" t-raw="vendor.last_price"/></td>
-                    <td><t t-if="vendor.total_qty > 0" t-raw="vendor.total_qty"/></td>
-                    <td><t t-if="vendor.subtotal > 0" t-raw="vendor.subtotal"/></td>
-                    <td><t t-if="vendor.last_buy_time" t-esc="vendor.last_buy_time"/></td>
+                    <td>
+                        <t t-if="vendor.price > 0" t-raw="vendor.price"/>
+                        <t t-else="">-</t>
+                    </td>
+                    <td><t t-if="vendor.min_price > 0" t-raw="vendor.min_price"/><t t-else="">-</t></td>
+                    <td><t t-if="vendor.max_price > 0" t-raw="vendor.max_price"/><t t-else="">-</t></td>
+                    <td><t t-if="vendor.last_price > 0" t-raw="vendor.last_price"/><t t-else="">-</t></td>
+                    <td><t t-if="vendor.total_qty > 0" t-raw="vendor.total_qty"/><t t-else="">-</t></td>
+                    <td><t t-if="vendor.subtotal > 0" t-raw="vendor.subtotal"/><t t-else="">-</t></td>
+                    <td><t t-if="vendor.last_buy_time" t-esc="vendor.last_buy_time"/><t t-else="">-</t></td>
                 </tr>
             </t>
         </table>
