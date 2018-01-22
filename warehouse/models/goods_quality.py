@@ -81,8 +81,7 @@ class GoodsQuality(models.Model):
                              required=True,
                              help=u'商品的数量')
 
-    lot = fields.Char(u'批号',
-                      help=u'该单据行对应的商品的批号，一般是入库单明细')
+    lot = fields.Char(u'批号', help=u'该单据行对应的商品的批号')
     location_id = fields.Many2one('location', string='库位', track_visibility='onchange')
 
     accept_qty = fields.Float(u'收货数量',

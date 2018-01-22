@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, timedelta, date
+from pypinyin import pinyin, Style
 
 import odoo.addons.decimal_precision as dp
 from odoo import api, fields, models
@@ -30,11 +31,33 @@ class Partner(models.Model):
 
     code = fields.Char(u'编号')
     name = fields.Char(u'名称', required=True, copy=False)
+    pinyin_abbr = fields.Char(u'拼音简码')
 
-    main_mobile = fields.Char(u'联系电话', required=True, size=20)
+    contract_number = fields.Char(u'合同编号')
+    area = fields.Char(u'区域分类')
+
+    distribute_code = fields.Char(u'线路编号')
+    distribute_route = fields.Char(u'配送线路')
+    distribute_distance = fields.Integer(u'配送里程')
+    distribute_sequence = fields.Char(u'线路排序号')
+
+    main_contact = fields.Char(u'主联系人')
     main_address = fields.Char(u'详细地址')
+    main_mobile = fields.Char(u'联系电话', size=20)
+
+    post_company = fields.Char(u'托运公司')
+    pickup_contact = fields.Char(u'收货人')
+    pickup_address = fields.Char(u'收货地址')
+    pickup_mobile = fields.Char(u'收货联系电话', size=20)
+    pickup_note = fields.Char(u'交货备注')
+
     fax = fields.Char(u'传真')
     postcode = fields.Char(u'邮编')
+
+    business_scope = fields.Many2many('core.value',
+                                      string=u'经营范围',
+                                      domain=[('type', '=', 'goods_scope')],
+                                      context={'type': 'goods_scope'})
 
     c_category_id = fields.Many2one('core.category', u'客户类别',
                                     ondelete='restrict',
@@ -55,10 +78,12 @@ class Partner(models.Model):
     payable = fields.Float(u'应付余额', readonly=True,
                            digits=dp.get_precision('Amount'))
     tax_num = fields.Char(u'税务登记号')
-    tax_rate = fields.Float(u'税率(%)',
-                            help=u'业务伙伴税率')
+    tax_rate = fields.Float(u'税率(%)', help=u'业务伙伴税率')
     bank_name = fields.Char(u'开户行')
     bank_num = fields.Char(u'银行账号')
+    pay_method = fields.Many2one('settle.mode', string=u'付款方式',
+                                 ondelete='restrict', track_visibility='onchange',
+                                 help=u'付款方式：支票、信用卡、现金、月付等')
 
     credit_limit = fields.Float(u'信用额度', track_visibility='onchange',
                                 help=u'客户购买商品时，本次发货金额+客户应收余额要小于客户信用额度')
@@ -74,7 +99,7 @@ class Partner(models.Model):
                                context={'type': 'partner_tag'})
     source = fields.Char(u'来源')
     note = fields.Text(u'备注')
-    main_contact = fields.Char(u'主联系人')
+
     responsible_id = fields.Many2one('res.users', u'负责人员', default=lambda self: self.env.user)
 
     onsite_check = fields.Boolean(u'需要实地考察')
@@ -84,6 +109,16 @@ class Partner(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(name)', '业务伙伴不能重名')
     ]
+
+    @api.onchange('name')
+    def onchange_name(self):
+        """
+        :return: 修改名称时候，生成拼音简码
+        """
+        if self.name:
+            # 只获取首字母拼音 [['z'], ['x']]
+            abbrs = pinyin(self.name, style=Style.FIRST_LETTER)
+            self.pinyin_abbr = ''.join([item[0].upper() for item in abbrs])
 
     @api.multi
     def partner_done(self):
@@ -161,56 +196,3 @@ class Partner(models.Model):
         if self.type == 'SUP' and vals.get('type') == False and self.payable != 0:
             raise UserError(u'该供应商应付余额不为0，不能取消供应商类型')
         return super(Partner, self).write(vals)
-
-
-class PartnerCertInfo(models.Model):
-    _name = "partner.cert.info"
-    _description = u"合作伙伴认证信息"
-    _sort = "id desc"
-
-    @api.multi
-    def name_get(self):
-        return [(record.id, "%s[%s]" % (record.partner_id.name, record.cert_name.name)) for record in self]
-
-    @api.one
-    @api.depends('cert_expire')
-    def _get_expire_status(self):
-        res = 0
-        if self.cert_expire:
-            exp_date = datetime.strptime(self.cert_expire, '%Y-%m-%d')
-            res = (date.today() - exp_date.date()).days
-        self.days_to_expire = res
-
-    partner_id = fields.Many2one('partner', u'合作伙伴', ondelete='cascade')
-    partner_type = fields.Selection(
-        related='partner_id.type',
-        string='合作伙伴类型',
-        readonly=True,
-        store=False,
-    )
-
-    cert_name = fields.Many2one('core.value', u'证书名称',
-                                ondelete='restrict',
-                                domain=[('type', '=', 'cert_name')],
-                                context={'type': 'cert_name'})
-    cert_number = fields.Char(u'证书编号', required=True)
-    cert_company_name = fields.Char(u'证书企业名称', required=True)
-    cert_company_address = fields.Char(u'证书企业地址')
-    cert_issue_date = fields.Date(u'证书发证日期', required=True)
-    cert_expire = fields.Date(u'证书有效期', default=fields.Date.context_today, required=True,
-                              help=u'证书有效期, 默认为当前天')
-    cert_scope = fields.Char(u'许可范围')
-    cert_count = fields.Integer(u'张数', default='1')
-
-    economics_type = fields.Char(u'经济性质')
-    business_type = fields.Char(u'经营方式')
-    registration_amount = fields.Integer(u'注册资金')
-    legal_person = fields.Char(u'法人')
-
-    note = fields.Text(u'备注')
-
-    days_to_expire = fields.Integer(u'过期天数', compute=_get_expire_status, readonly=True)
-
-    _sql_constraints = [
-        ('cert_number_uniq', 'unique(cert_number)', u'证书编号不能重复'),
-    ]

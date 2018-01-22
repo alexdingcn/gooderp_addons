@@ -7,10 +7,8 @@
 			<field name="model">partner</field>
             <field name='inherit_id' ref='core.partner_cus_form'/>
             <field name="arch" type="xml">
-                <xpath expr='//sheet' position='before'>
-                    <header>
-                        <button name="partner_create_user" string="创建对应用户" type="object" class="oe_highlight"/>
-                    </header>
+                <xpath expr='//header' position='inside'>
+					<button name="partner_create_user" string="创建网站账号" type="object" class="oe_highlight"/>
                 </xpath>
 			</field>
 		</record>

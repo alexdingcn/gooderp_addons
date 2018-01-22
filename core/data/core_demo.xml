@@ -49,6 +49,18 @@
          <record id="credit_card" model="settle.mode">
             <field name="name">信用卡</field>
         </record>
+        <record id="monthly_pay" model="settle.mode">
+            <field name="name">月结</field>
+        </record>
+        <record id="immediate_pay" model="settle.mode">
+            <field name="name">现付</field>
+        </record>
+        <record id="receive_pay" model="settle.mode">
+            <field name="name">到付</field>
+        </record>
+        <record id="pickup_pay" model="settle.mode">
+            <field name="name">提付</field>
+        </record>
         <!-- 测试数据用到的客户 -->
         <record id="jd" model="partner">
             <field name="name">京东</field>

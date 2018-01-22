@@ -8,7 +8,8 @@
                 <tree string='商品' colors='blue:state == "draft";lightgray:state == "cancel"'>
                     <field name='code'/>
                     <field name='name'/>
-                    <field name="supplier_id"/>
+                    <!--<field name="supplier_id"/>-->
+                    <field name="origin"/>
                     <field name='brand'/>
                     <field name='category_id'/>
                     <field name='uom_id'/>
@@ -16,7 +17,6 @@
                     <field name='conversion' digits='(5,0)' groups='goods.auxiliary_unit_groups'/>
                     <field name='cost' groups='goods.view_cost_groups'/>
                     <field name='price'/>
-                    <field name="is_superiority"/>
                     <field name='state'/>
                     <field name='active' invisible='1'/>
                 </tree>
@@ -170,8 +170,7 @@
                 <search string='商品'>
                     <field name='pinyin_abbr'/>
                     <field name='name'/>
-                    <field name="supplier_id"/>
-                    <field name='brand'/>
+                    <field name='origin'/>
                     <field name='code'/>
                 </search>
             </field>

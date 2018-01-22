@@ -80,7 +80,6 @@ class WhMove(models.Model):
                                         ondelete='restrict',
                                         required=True,
                                         readonly=False,
-                                        domain="['|',('user_ids','=',False),('user_ids','in',uid)]",
                                         states={'done': [('readonly', True)]},
                                         default=_get_default_warehouse_dest,
                                         help=u'移库单的目的仓库')
@@ -92,14 +91,14 @@ class WhMove(models.Model):
                                    domain=[
                                        ('type', 'in', ['out', 'internal'])],
                                    copy=True,
-                                   help=u'出库类型的移库单对应的出库明细')
+                                   help=u'出库单对应的明细')
     line_in_ids = fields.One2many('wh.move.line', 'move_id', u'入库明细',
                                   domain=[('type', '=', 'in')],
                                   context={'type': 'in'}, copy=True,
-                                  help=u'入库类型的移库单对应的入库明细')
+                                  help=u'入库单明细')
 
     quality_ids = fields.One2many('goods.quality', 'move_id', u'质检单明细',
-                                  help=u'入库类型的移库单对应的质检单明细')
+                                  help=u'入库单对应的质检单明细')
 
     note = fields.Text(u'备注',
                        copy=False,

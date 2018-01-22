@@ -14,7 +14,7 @@
                     <t t-else="" t-esc="order_line.uom_id[1]"/>
                 </td>
                 <td class="col-sm-1"><b>数量</b></td>
-                <td class="col-sm-1"><t t-esc="order_line.quantity"/></td>
+                <td class="col-sm-1 red"><t t-esc="order_line.quantity"/></td>
                 <td class="col-sm-1"><b>税额</b></td>
                 <td class="col-sm-1"><t t-esc="order_line.tax_amount"/></td>
                 <td class="col-sm-1"><b>商品编码</b></td>
@@ -22,19 +22,40 @@
             </tr>
             <tr>
                 <td><b>零售价</b></td>
-                <td><t t-esc="order_line.specs"/></td>
+                <td><t t-if='goods_info' t-esc="goods_info.price"/></td>
                 <td><b>单价</b></td>
                 <td><t t-esc="order_line.price"/></td>
                 <td><b>金额</b></td>
                 <td><t t-esc="order_line.amount"/></td>
                 <td><b>含税金额</b></td>
-                <td><t t-esc="order_line.subtotal"/></td>
+                <td class="red"><t t-esc="order_line.subtotal"/></td>
                 <td><b>产地</b></td>
                 <td>
                     <t t-if='goods_info' t-esc="goods_info.supplier_id[1]"/>
                     <t t-else="" t-esc="order_line.manufacturer_name[1]"/>
                 </td>
             </tr>
+        </table>
+    </t>
+
+    <t t-name="GoodsWarehouseBalance">
+        <table class="table table-condensed table-striped table-responsive col-sm-12">
+            <thead>
+                <tr>
+                    <th>产品</th>
+                    <th>仓库</th>
+                    <th>库存</th>
+                    <th>库存金额</th>
+                </tr>
+            </thead>
+            <t t-foreach="balance" t-as="record">
+                <tr>
+                    <td><t t-esc="record.goods"/></td>
+                    <td><t t-esc="record.warehouse"/></td>
+                    <td><t t-if="record.goods_qty > 0" t-raw="record.goods_qty"/><t t-else="">-</t></td>
+                    <td><t t-if="record.cost > 0" t-raw="record.cost"/><t t-else="">-</t></td>
+                </tr>
+            </t>
         </table>
     </t>
 

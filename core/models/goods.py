@@ -29,8 +29,10 @@ class Goods(models.Model):
         for Goods in self:
             # name = Goods.code and (Goods.code + '_' + Goods.name) or Goods.name
             name = Goods.name
-            name += Goods.specs and ('[' + Goods.specs + ']')
-            name += Goods.supplier_id and (' - ' + Goods.supplier_id.name)
+            if Goods.specs:
+                name += '[%s]' % Goods.specs
+            if Goods.supplier_id.name:
+                name += ' - %s' % Goods.supplier_id.name
             res.append((Goods.id, name))
         return res
 
@@ -76,9 +78,8 @@ class Goods(models.Model):
                                   ondelete='restrict',
                                   domain=[('type', '=', 'goods')],
                                   context={'type': 'goods'}, required=True,
-                                  help=u'从会计科目角度划分的类别',
-                                  )
-    uom_id = fields.Many2one('uom', ondelete='restrict', string=u'包装单位', required=True)
+                                  help=u'从会计科目角度划分的类别')
+    uom_id = fields.Many2one('uom', ondelete='restrict', string=u'包装单位')
     uos_id = fields.Many2one('uom', ondelete='restrict', string=u'计量单位')
     conversion = fields.Float(string=u'计量规格', default=1, digits=(16, 2),
                               help=u'1个计量单位等于多少包装单位，如1箱30盒药品，这里就输入30')
@@ -106,6 +107,27 @@ class Goods(models.Model):
     origin = fields.Char(u'产地', help=u'商品产地')
 
     _sql_constraints = [
-        ('name_uniq', 'unique(name)', '商品不能重名'),
+        ('name_uniq', 'unique(name, code)', '商品不能重名'),
         ('conversion_no_zero', 'check(conversion != 0)', '商品的转化率不能为0')
     ]
+
+    @api.model
+    def get_warehouse_balance(self, goods_id):
+        # get warehouse
+        query = """ SELECT goods.name as goods,
+                       goods.id as goods_id,
+                       wh.id as warehouse_id,
+                       wh.name as warehouse,
+                       sum(line.qty_remaining) as goods_qty,
+                       sum(line.qty_remaining * line.cost_unit) as cost
+                FROM wh_move_line line
+                    LEFT JOIN warehouse wh ON line.warehouse_dest_id = wh.id
+                    LEFT JOIN goods goods ON line.goods_id = goods.id
+                WHERE wh.type = 'stock'
+                  AND line.state = 'done'
+                  AND (goods.no_stock is null or goods.no_stock = FALSE)
+                  AND goods_id=%s and line.qty_remaining > 0
+                GROUP BY wh.id, goods.id """ % goods_id
+        self.env.cr.execute(query)
+
+        return self.env.cr.dictfetchall()

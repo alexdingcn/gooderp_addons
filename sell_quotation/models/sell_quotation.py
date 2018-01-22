@@ -82,9 +82,9 @@ class SellQuotation(models.Model):
             self.mobile = self.partner_id.mobile
 
             for child in self.partner_id.child_ids:
-                if child.is_default_add:
+                if child.is_default:
                     self.partner_address_id = child.id
-            if self.partner_id.child_ids and not any([child.is_default_add for child in self.partner_id.child_ids]):
+            if self.partner_id.child_ids and not any([child.is_default for child in self.partner_id.child_ids]):
                 partners_add = self.env['partner.address'].search(
                     [('partner_id', '=', self.partner_id.id)], order='id')
                 self.partner_address_id = partners_add[0].id

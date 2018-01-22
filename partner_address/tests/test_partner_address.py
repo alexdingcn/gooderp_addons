@@ -194,7 +194,7 @@ class TestPartner(TransactionCase):
             child.mobile = '1385559999'
             child.phone = '55558888'
             child.qq = '11116666'
-            child.is_default_add = True
+            child.is_default = True
 
         partner._compute_partner_address()
         self.assertEqual(partner.contact, u'小东')

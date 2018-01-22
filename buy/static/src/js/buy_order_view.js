@@ -19,9 +19,12 @@ odoo.define('buy.buy_order_view', function (require) {
             this._super(event);
             if (this.view.editable() && this.view.is_action_enabled('edit')) {
                 if (this.view && this.view.model === 'buy.order.line') {
+                    // var tabButtons = $('#goods_detail a[data-toggle="tab"]');
+                    // tabButtons.unbind('shown.bs.tab');
+
                     var record_id = $(event.currentTarget).data('id');
-                    $('.oe_list_record_index span').removeClass("badge");
-                    $(event.currentTarget).closest('.oe_list_record_index span').addClass('badge');
+                    $('.oe_list_record_index').removeClass("selected");
+                    $(event.currentTarget).find('.oe_list_record_index').addClass('selected');
                     var cached_goods = _.filter(this.dataset.cache, function (item) {
                         return record_id === item.id && !_.isEmpty(item.values) && !item.to_delete;
                     });
@@ -30,6 +33,7 @@ odoo.define('buy.buy_order_view', function (require) {
                         if (goods_id instanceof Array) {
                             goods_id = goods_id[0];
                         }
+
                         new Model('goods').call('search_read', [[['id', '=', goods_id]], []]).then(function (records) {
                             if (records && records.length > 0) {
                                 $('#goods_info_tab').html(QWeb.render('GoodsInfoDetail', {
@@ -38,9 +42,14 @@ odoo.define('buy.buy_order_view', function (require) {
                                 }));
                             }
                         });
+                        new Model('goods').call('get_warehouse_balance', [goods_id]).then(function (records) {
+                            $('#goods_warehouse_tab').html(QWeb.render('GoodsWarehouseBalance', {
+                                balance: records
+                            }));
+                        });
                         new Model('vendor.goods').call('search_read', [[['goods_id', '=', goods_id]], []]).then(function (records) {
                             $('#goods_buy_history_tab').html(QWeb.render('GoodsBuyHistory', {
-                                    vendors: records
+                                vendors: records
                             }));
                             $('#goods_detail').removeClass('hidden');
                         });

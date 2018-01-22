@@ -1,32 +1,50 @@
 hr {
-    margin-top: 3px;
-    margin-bottom: 3px;
-    border: 0;
-    border-top: 1px solid #eeeeee;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  border: 0;
+  border-top: 1px solid #eeeeee;
+}
+
+.mw80 {
+  min-width: 80px;
+}
+
+.mw100 {
+  min-width: 100px;
 }
 
 .red {
   color: red;
 }
+
 .orange {
   color: orange;
 }
+
 .blue {
   color: blue;
 }
+
 .green {
   color: green;
 }
+
 .lightgreen {
   color: lightgreen;
 }
 
 ::-moz-placeholder {
-    color: #ccc;
-    opacity: 1;
-  }
-:-ms-input-placeholder { color: #ccc; }
-::-webkit-input-placeholder  { color: #ccc; }
+  color: #ccc;
+  opacity: 1;
+}
+
+:-ms-input-placeholder {
+  color: #ccc;
+}
+
+::-webkit-input-placeholder {
+  color: #ccc;
+}
 
 .modal-title {
   .small {
@@ -43,11 +61,18 @@ hr {
 
 .modal {
   .modal-header {
-        background-color: #428bca;
-        color: #ffffff;
+    background-color: #428bca;
+    color: #ffffff;
+  }
+  .modal-body {
+    .o_form_view.o_form_readonly {
+      header {
+        display: none;
+      }
+    }
   }
   .modal-footer {
-        background-color: #ebebeb;
+    background-color: #ebebeb;
   }
 }
 
@@ -67,14 +92,24 @@ hr {
   min-width: 150px;
   width: 20%;
 }
+
 th[data-id="lot"] > div,
 th[data-id="location_id"] > div,
 th[data-id="expiration_date"] > div {
   width: 100px;
 }
+
 [data-id="location_id"] {
   width: 5%;
 }
+
 [data-id="expiration_date"] {
   width: 8%;
+}
+
+.o_list_view {
+  .oe_list_record_index.selected {
+    background-color: #0D6759;
+    color: white;
+  }
 }

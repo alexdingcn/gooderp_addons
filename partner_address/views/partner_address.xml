@@ -1,32 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
     <data>
-        <!--继承客户tree,添加地址信息-->
-        <record id="customer_tree_inherit" model="ir.ui.view">
-            <field name="name">customer.tree.inherit</field>
-            <field name="model">partner</field>
-            <field name='inherit_id' ref='core.partner_cus_tree'/>
-            <field name="arch" type="xml">
-                <field name="main_mobile" position="after">
-                    <field name="contact"/>
-                    <field name="mobile"/>
-                    <field name="phone"/>
-                    <field name="qq"/>
-                    <field name="address"/>
-                </field>
-            </field>
-        </record>
-
         <!--继承客户form,添加地址信息-->
         <record id="customer_address_form_inherit" model="ir.ui.view">
             <field name="name">customer_address_form_inherit</field>
             <field name="model">partner</field>
             <field name='inherit_id' ref='core.partner_cus_form'/>
             <field name="arch" type="xml">
-                <field name="main_address" position="after">
-                    <field name="address"/>
-                </field>
-                <xpath expr="//group" position="after">
+                <xpath expr="//sheet" position="inside">
                     <notebook>
                         <page string="首营认证资料" groups="goods.cert_info_groups">
                             <field name="cert_ids">
@@ -50,41 +31,25 @@
                                 </tree>
                             </field>
                         </page>
-                        <page string="联系人">
+                        <page string="收货地址">
                             <field name="child_ids">
                                 <tree string="联系人地址" editable="bottom">
                                     <field name="contact"/>
                                     <field name="mobile"/>
                                     <field name="phone"/>
                                     <field name="qq"/>
-                                    <field name="email" widget="email"/>
                                     <field name="province_id" required="1"/>
                                     <field name="city_id" required="1"/>
                                     <field name="county_id"/>
                                     <field name="town"/>
                                     <field name="detail_address" required='1'/>
-                                    <field name="is_default_add"/>
+                                    <field name="note"/>
+                                    <field name="is_default"/>
                                 </tree>
                             </field>
                         </page>
                     </notebook>
                 </xpath>
-            </field>
-        </record>
-
-        <!--继承供应商tree,添加地址信息-->
-        <record id="vendor_tree_address_inherit" model="ir.ui.view">
-            <field name="name">vendor.tree.address.inherit</field>
-            <field name="model">partner</field>
-            <field name='inherit_id' ref='core.partner_sup_tree'/>
-            <field name="arch" type="xml">
-                <field name="main_mobile" position="after">
-                    <field name="contact"/>
-                    <field name="mobile"/>
-                    <field name="phone"/>
-                    <field name="qq"/>
-                    <field name="address"/>
-                </field>
             </field>
         </record>
 
@@ -101,13 +66,12 @@
                             <field name="mobile" required="1"/>
                             <field name="phone"/>
                             <field name="qq"/>
-                            <field name="email" widget="email"/>
                             <field name="province_id"/>
                             <field name="city_id"/>
                             <field name="county_id"/>
                             <field name="town"/>
                             <field name="detail_address"/>
-                            <field name="is_default_add"/>
+                            <field name="is_default"/>
                         </tree>
                     </field>
                 </xpath>

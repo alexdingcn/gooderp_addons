@@ -180,12 +180,10 @@ class SellOrder(models.Model):
         'sell.delivery', 'order_id', string='发货单', copy=False)
     delivery_count = fields.Integer(
         compute='_compute_delivery', string='发货单数量', default=0)
-    pay_method = fields.Many2one('core.value',
+    pay_method = fields.Many2one('settle.mode',
                                  string=u'付款方式',
                                  ondelete='restrict',
-                                 track_visibility='onchange',
-                                 domain=[('type', '=', 'pay_method')],
-                                 context={'type': 'pay_method'})
+                                 track_visibility='onchange')
 
     @api.onchange('address_id')
     def onchange_partner_address(self):
@@ -198,13 +196,13 @@ class SellOrder(models.Model):
     def onchange_partner_id(self):
         ''' 选择客户带出其默认地址信息 '''
         if self.partner_id:
-            self.contact = self.partner_id.contact
-            self.mobile = self.partner_id.mobile
+            self.contact = self.partner_id.pickup_contact
+            self.mobile = self.partner_id.pickup_mobile
 
             for child in self.partner_id.child_ids:
-                if child.is_default_add:
+                if child.is_default:
                     self.address_id = child.id
-            if self.partner_id.child_ids and not any([child.is_default_add for child in self.partner_id.child_ids]):
+            if self.partner_id.child_ids and not any([child.is_default for child in self.partner_id.child_ids]):
                 partners_add = self.env['partner.address'].search(
                     [('partner_id', '=', self.partner_id.id)], order='id')
                 self.address_id = partners_add[0].id
@@ -222,8 +220,7 @@ class SellOrder(models.Model):
                 else:
                     line.tax_rate = self.env.user.company_id.output_tax_rate
 
-            address_list = [
-                child_list.id for child_list in self.partner_id.child_ids]
+            address_list = [child_list.id for child_list in self.partner_id.child_ids]
             if address_list:
                 return {'domain': {'address_id': [('id', 'in', address_list)]}}
             else:

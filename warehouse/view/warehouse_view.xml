@@ -57,6 +57,18 @@
         </record>
 
         <!-- 商品的库位设置 -->
+        <record model="ir.ui.view" id="gooderp_location_form">
+            <field name="name">location.form</field>
+            <field name="model">location</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="warehouse_id" options="{'no_open': True, 'no_create': True}"/>
+                    </group>
+                </form>
+            </field>
+        </record>
         <record model="ir.ui.view" id="gooderp_location_tree">
             <field name="name">库位设置</field>
             <field name="model">location</field>

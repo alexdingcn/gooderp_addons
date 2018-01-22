@@ -57,7 +57,7 @@ class TestSellQuotation(TransactionCase):
             child.mobile = '1385559999'
             child.phone = '55558888'
             child.qq = '11116666'
-            child.is_default_add = True
+            child.is_default = True
         self.sell_quotation.onchange_partner_id()
 
     def test_onchange_partner_address_id(self):

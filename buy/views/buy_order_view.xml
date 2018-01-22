@@ -73,6 +73,8 @@
                                        context="{'form_view_ref': 'core.partner_sup_form'}"
                                        options="{'no_create': True}"/>
                                 <field name="deduction_rate" required="1"/>
+                                <field name="warehouse_dest_id"
+                                       options="{'no_open': True, 'no_create': True}" invisible="1"/>
                                 <field name="planned_date" required="1"/>
                                 <field name="invoice_by_receipt" invisible="1"/>
                             </group>
@@ -91,7 +93,8 @@
                             <tree string="购货单明细" editable="bottom" show_index="true" deletable="false">
                                 <field name="goods_id" required='1'
                                        domain="[('state','=','done')]"
-                                       options="{'no_create': True}"/>
+                                       can_write="false"
+                                       options="{'no_create': True, 'no_edit': True}"/>
                                 <!--<field name="attribute_id"-->
                                 <!--groups='goods.multi_attrs_groups'-->
                                 <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
@@ -137,6 +140,12 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a data-toggle="tab" role="tab" href="#goods_warehouse_tab">
+                                        <span class="fa fa-bars"></span>
+                                        库存信息
+                                    </a>
+                                </li>
+                                <li>
                                     <a data-toggle="tab" role="tab" href="#goods_buy_history_tab">
                                         <span class="fa fa-cart-plus"></span>
                                         采购历史
@@ -145,6 +154,7 @@
                             </ul>
                             <div class="tab-content nav nav-tabs">
                                 <div role="tabpanel" id="goods_info_tab" class="tab-pane active"/>
+                                <div role="tabpanel" id="goods_warehouse_tab" class="tab-pane"/>
                                 <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane"/>
                             </div>
                         </div>

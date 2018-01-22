@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<!--
-    Copyright 2016 LasLabs Inc.
-    License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
--->
-
 <odoo>
     <template id="left_menu">
         <t t-set="debug_param" t-value="'?debug=%s'%debug if debug else ''"/>
@@ -32,8 +26,7 @@
 
     <template id="webclient_bootstrap"
               inherit_id="web.webclient_bootstrap"
-              name="App Drawer - Web Client"
-    >
+              name="App Drawer - Web Client">
 
         <xpath expr="//div[@class='o_sub_menu']" position="replace"/>
 
@@ -57,8 +50,7 @@
 
                 <nav class="navbar navbar-default main-nav"
                      role="navigation"
-                     groups="base.group_user,base.group_portal"
-                >
+                     groups="base.group_user,base.group_portal">
                     <div class="container-fluid">
                         <a class="o_sub_menu_logo">
                             <img src="/web/static/src/img/logo.png"/>
@@ -74,8 +66,7 @@
                             </a>
                             -->
                             <button type="button"
-                                    class="app-drawer-toggle drawer-toggle pull-left navbar-toggle collapsed"
-                            >
+                                    class="app-drawer-toggle drawer-toggle pull-left navbar-toggle collapsed">
                                 <span class="sr-only">Toggle App Drawer</span>
                                 <div class="fa fa-th fa-lg app-drawer-icon-open"/>
                             </button>
@@ -84,8 +75,7 @@
                                     id="odooMenuBarToggle"
                                     class="navbar-toggle collapsed pull-right"
                                     data-toggle="collapse"
-                                    data-target="#odooMenuBarNav"
-                            >
+                                    data-target="#odooMenuBarNav">
                                 <span class="sr-only">Toggle Navigation</span>
                                 <i class="fa fa-bars fa-lg"/>
                             </button>
@@ -95,27 +85,20 @@
                         <div class="collapse navbar-collapse text-center"
                              id="odooMenuBarNav"
                              data-parent="#odooMenuBarToggle"
-                             aria-expanded="false"
-                        >
-                            <div class="o_sub_menu"
-                                 groups="base.group_user,base.group_portal"
-                            >
+                             aria-expanded="false">
+                            <div class="o_sub_menu" groups="base.group_user,base.group_portal">
                                 <t t-call="web.menu_secondary"/>
                             </div>
                             <div class="nav navbar-nav navbar-right">
                                 <ul class="nav navbar-nav navbar-right oe_user_menu_placeholder"
-                                    style="display: none;"
-                                />
+                                    style="display: none;"/>
                                 <ul class="nav navbar-nav navbar-right oe_systray"
-                                    style="display: none;"
-                                />
+                                    style="display: none;"/>
                             </div>
                         </div>
                     </div>
                 </nav>
-
             </header>
-
         </xpath>
         <xpath expr="//div[@class='o_main_content']" position="before">
             <t t-call="backend_theme.left_menu"/>
@@ -152,8 +135,7 @@
 
     <template id="menu_secondary_submenu"
               inherit_id="web.menu_secondary_submenu"
-              name="App Drawer - Secondary Submenu"
-    >
+              name="App Drawer - Secondary Submenu">
 
         <xpath expr="//ul" position="replace">
 

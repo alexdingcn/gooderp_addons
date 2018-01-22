@@ -212,7 +212,7 @@
             <field name="name">partner.cus.form</field>
             <field name="model">partner</field>
             <field name="arch" type="xml">
-                <form string="业务伙伴">
+                <form string="业务伙伴" create="false">
                     <field name="id" invisible="1"/>
                     <header attrs="{'invisible':[('id', '=', False)]}">
                         <button name="partner_done" states="draft" string="首营审核通过" type="object" class="oe_highlight"/>
@@ -222,9 +222,8 @@
                     </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for='name' string='名称'/>
                             <h2>
-                                <field name="name" required="1"/>
+                                <field name="name" placeholder="客户名称" required="1"/>
                             </h2>
                         </div>
                         <group>
@@ -234,26 +233,37 @@
                                 <field name="main_mobile" required="1"/>
                                 <field name="fax"/>
                                 <field name="main_address"/>
+                                <field name="area" placeholder="客户所在区域，如上海黄浦区、莲湖区等"/>
                                 <field name="postcode"/>
-                                <field name="tax_num"/>
-
-                                <field name="responsible_id"/>
-                                <field name="note" placeholder="暂无备注信息"/>
                             </group>
                             <group>
                                 <field name="type" required="1" invisible="1"/>
-                                <field name="s_category_id" attrs="{'invisible':[('type', '!=', 'SUP')]}"/>
                                 <field name="c_category_id" attrs="{'invisible':[('type', '!=', 'CUS')]}"/>
                                 <field name="onsite_check"/>
+                                <field name="responsible_id"/>
+                                <field name="source"/>
+                                <field name="business_scope" required="1" widget="many2many_tags"/>
+                                <field name="tag_ids" widget="many2many_tags"/>
+                                <field name="note" placeholder="暂无备注信息"/>
+                            </group>
+                        </group>
+                        <group string="财务">
+                            <group>
                                 <field name="bank_name"/>
                                 <field name="bank_num"/>
-                                <field name="credit_limit"/>
-                                <field name="receivable"/>
+                                <field name="tax_num"/>
                                 <field name="tax_rate"/>
-                                <field name="tag_ids" widget="many2many_tags"/>
-                                <field name="source"/>
                             </group>
-
+                            <group>
+                                <field name="pay_method" options="{'no_create':True}" string="默认付款方式"/>
+                                <field name="credit_limit"/>
+                                <field name="receivable" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="配送">
+                            <group>
+                                <field name="post_company"/>
+                            </group>
                         </group>
                     </sheet>
                     <div class="oe_chatter">
@@ -271,10 +281,13 @@
                     <field name="name"/>
                     <field name="c_category_id" required="1"/>
                     <field name="code"/>
-                    <field name="main_mobile"/>
+                    <field name="pickup_contact"/>
+                    <field name="pickup_mobile"/>
+                    <field name="pickup_address"/>
+                    <field name="pay_method"/>
                     <field name="state"/>
-                    <field name='active' invisible='1'/>
                     <field name="receivable" sum='sum'/>
+                    <field name='active' invisible='1'/>
                 </tree>
             </field>
         </record>
@@ -286,7 +299,6 @@
                     <field name="name"/>
                     <field name="code"/>
                     <field name="c_category_id"/>
-                    <field name="main_mobile"/>
                     <field name="state"/>
                     <field name="receivable"/>
                     <group expand="0" string="分组">
@@ -333,30 +345,38 @@
                     </header>
                     <sheet>
                         <div class="oe_title">
-                            <label for='name' string='名称'/>
                             <h1>
-                                <field name="name" required="1"/>
+                                <field name="name" required="1" placeholder="供应商名称"/>
                             </h1>
                         </div>
                         <group>
                             <group>
                                 <field name="code"/>
-                                <field name="main_mobile"/>
+                                <field name="pinyin_abbr"/>
+                                <field name="main_contact" required="1"/>
+                                <field name="main_mobile" required="1"/>
                                 <field name="fax"/>
                                 <field name="main_address"/>
                                 <field name="postcode"/>
-                                <field name="tax_rate"/>
+                                <field name="active"/>
                             </group>
                             <group>
                                 <field name="type" required="1" invisible="1"/>
                                 <field name="s_category_id" attrs="{'invisible':[('type', '!=', 'SUP')]}"/>
                                 <field name="c_category_id" attrs="{'invisible':[('type', '!=', 'CUS')]}"/>
+                                <field name="responsible_id"/>
+                                <field name="onsite_check"/>
+                                <field name="business_scope" widget="many2many_tags"/>
+                                <field name="tag_ids" widget="many2many_tags"/>
+                                <field name="note" placeholder="暂无备注信息"/>
+                            </group>
+                            <group string="财务">
+                                <field name="tax_rate"/>
+                                <field name="tax_num"/>
                                 <field name="bank_name"/>
                                 <field name="bank_num"/>
                                 <field name="payable" attrs="{'invisible':[('name', '=', False)]}"/>
-                                <field name="tag_ids" widget="many2many_tags"/>
                             </group>
-                            <field name="note" placeholder="暂无备注信息"/>
                         </group>
                     </sheet>
                     <div class="oe_chatter">

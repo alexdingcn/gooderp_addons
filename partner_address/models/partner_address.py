@@ -148,10 +148,10 @@ class PartnerAddress(models.Model):
     mobile = fields.Char(u'手机')
     phone = fields.Char(u'座机')
     qq = fields.Char(u'QQ')
-    email = fields.Char(u'邮箱')
     town = fields.Char(u'乡镇')
     detail_address = fields.Char(u'详细地址')
-    is_default_add = fields.Boolean(u'是否默认地址')
+    is_default = fields.Boolean(u'是否默认地址')
+    note = fields.Char('备注')
 
     @api.multi
     def name_get(self):
@@ -171,39 +171,4 @@ class PartnerAddress(models.Model):
 class Partner(models.Model):
     _inherit = 'partner'
 
-    def _put_info_to_partner(self, child):
-        self.contact = child.contact
-        self.mobile = child.mobile
-        self.phone = child.phone
-        self.qq = child.qq
-        address = '%s%s%s%s%s' % (child.province_id and child.province_id.name or '',
-                                  child.city_id and child.city_id.city_name or '',
-                                  child.county_id and child.county_id.county_name or '',
-                                  child.town or '',
-                                  child.detail_address or '')
-        self.address = address
-
-    @api.one
-    @api.depends('child_ids.is_default_add', 'child_ids.province_id', 'child_ids.city_id', 'child_ids.county_id', 'child_ids.town', 'child_ids.detail_address')
-    def _compute_partner_address(self):
-        '''如果业务伙伴地址中有默认地址，则显示在业务伙伴列表上'''
-        if not self.child_ids:
-            return {}
-        for child in self.child_ids:
-            if child.is_default_add:  # 如果有默认地址取默认地址
-                self._put_info_to_partner(child)
-
-        # 如果没有默认地址取第一个联系人的
-        if not any([child.is_default_add for child in self.child_ids]):
-            partners_add = self.env['partner.address'].search(
-                [('partner_id', '=', self.id)], order='id')
-            child = partners_add and partners_add[0] or False
-            if child:
-                self._put_info_to_partner(child)
-
     child_ids = fields.One2many('partner.address', 'partner_id', u'业务伙伴地址')
-    contact = fields.Char(u'联系人', compute='_compute_partner_address', store=True)
-    mobile = fields.Char(u'手机', compute='_compute_partner_address', store=True)
-    phone = fields.Char(u'座机', compute='_compute_partner_address', store=True)
-    qq = fields.Char(u'QQ', compute='_compute_partner_address', store=True)
-    address = fields.Char(u'送货地址', compute='_compute_partner_address', store=True)

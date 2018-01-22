@@ -12,7 +12,7 @@ odoo.define('web.stock_query', function(require) {
 
         show_stock_query: function() {
             var self = this,
-                $query = $('<ul class="nav navbar-nav navbar-right nav-stock-query"><li><input type="text" placeholder="库存查询"/><a class="query"></a><a class="destroy"></a><div class="stock-query-search-list"/></li></ul>'),
+                $query = $('<ul class="nav navbar-nav navbar-right nav-stock-query"><li><input type="text" placeholder="库存快速查询"/><a class="query"></a><a class="destroy"></a><div class="stock-query-search-list"/></li></ul>'),
                 $input = $query.find('input'),
                 $destroy = $query.find('.destroy');
 

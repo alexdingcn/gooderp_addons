@@ -61,6 +61,7 @@
                             <group>
                                 <field name='partner_id' required='1'
                                        domain="[('type', '=', 'CUS'),('state', '=', 'done')]"
+                                       options="{'no_create': True, 'no_edit': True}"
                                        context="{'form_view_ref': 'core.partner_cus_form'}"/>
                                 <field name='contact'/>
                                 <field name='address_id'

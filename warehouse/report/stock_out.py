@@ -13,8 +13,8 @@ class ReportStockOut(models.TransientModel):
     goods_qty = fields.Integer(u'库存余额')
     last_update_date = fields.Date(u'最后更新时间')
     warning_days = fields.Integer(u'预警天数')
-    goods_warehouse_min = fields.Integer(u'最小库存预警')
-    goods_warehouse_max = fields.Integer(u'最大库存预警')
+    goods_warehouse_min = fields.Integer(u'库存下限')
+    goods_warehouse_max = fields.Integer(u'库存上限')
     uom = fields.Char(u'单位')
     warehouse = fields.Char(u'仓库')
 

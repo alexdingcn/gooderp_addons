@@ -38,9 +38,9 @@ class Goods(models.Model):
                               help=u'药品有效期, 默认为当前天')
     incoming_tax_rate = fields.Float(u'进项税率')
     outgoing_tax_rate = fields.Float(u'销项税率')
-    licence_number = fields.Char(u'批准文号/进口注册证号', required=True)
+    licence_number = fields.Char(u'批准文号/进口注册证号')
 
-    storage_condition = fields.Many2one('core.value', u'储藏条件', required=True,
+    storage_condition = fields.Many2one('core.value', u'储藏条件',
                                         ondelete='restrict',
                                         domain=[('type', '=', 'storage_type')],
                                         context={'type': 'storage_type'})
@@ -86,6 +86,7 @@ class Goods(models.Model):
                                   ondelete='restrict',
                                   domain=[('type', '=', 'MNF')])
     price = fields.Float(u'零售价')
+    distribute_price = fields.Float(u'配送价')
     barcode = fields.Char(u'条形码')
     note = fields.Text(u'备注')
     goods_class_id = fields.Many2one(
