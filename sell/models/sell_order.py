@@ -2,6 +2,7 @@
 
 import logging
 
+from datetime import datetime, timedelta
 from odoo import fields, models, api
 import odoo.addons.decimal_precision as dp
 from odoo.exceptions import UserError
@@ -110,7 +111,7 @@ class SellOrder(models.Model):
         u'预到货日期',
         required=True,
         states=READONLY_STATES,
-        default=lambda self: fields.Date.context_today(self),
+        default=lambda self: (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d'),
         index=True,
         copy=False,
         help=u"订单的预到货日期")
@@ -198,6 +199,7 @@ class SellOrder(models.Model):
         if self.partner_id:
             self.contact = self.partner_id.pickup_contact
             self.mobile = self.partner_id.pickup_mobile
+            self.pay_method = self.partner_id.pay_method
 
             for child in self.partner_id.child_ids:
                 if child.is_default:
@@ -463,6 +465,9 @@ class SellOrderLine(models.Model):
     @api.depends('quantity', 'price_taxed', 'discount_amount', 'tax_rate')
     def _compute_all_amount(self):
         '''当订单明细的数量、含税单价、折扣额、税率改变时，改变销售金额、税额、价税合计'''
+        # 计算包装数量
+        if self.goods_id and self.quantity and self.goods_id.conversion > 0:
+            self.uos_quantity = self.quantity / self.goods_id.conversion
         if self.tax_rate > 100:
             raise UserError(u'税率不能输入超过100的数!\n输入税率:%s' % self.tax_rate)
         if self.tax_rate < 0:
@@ -523,6 +528,11 @@ class SellOrderLine(models.Model):
     quantity_out = fields.Float(u'已执行数量', copy=False,
                                 digits=dp.get_precision('Quantity'),
                                 help=u'销售订单产生的发货单/退货单已执行数量')
+    uos_quantity = fields.Float(u'包装数量', digits=(16, 1), store=False)
+    goods_code = fields.Char(u'商品编号', related='goods_id.code')
+    manufacturer_name = fields.Many2one('partner', u'商品产地', related='goods_id.supplier_id')
+    goods_conversion = fields.Float(u'计量规格', related='goods_id.conversion')
+
     price = fields.Float(u'销售单价',
                          store=True,
                          digits=dp.get_precision('Price'),

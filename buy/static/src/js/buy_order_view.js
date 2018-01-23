@@ -8,7 +8,7 @@ odoo.define('buy.buy_order_view', function (require) {
     ListView.include({
         set_groups: function (groups) {
             this._super(groups);
-            if (this.model === 'buy.order.line') {
+            if (this.model === 'buy.order.line' || this.model === 'sell.order.line') {
                 $(this.groups).off('row_link');
             }
         }
@@ -18,7 +18,7 @@ odoo.define('buy.buy_order_view', function (require) {
         row_clicked: function (event) {
             this._super(event);
             if (this.view.editable() && this.view.is_action_enabled('edit')) {
-                if (this.view && this.view.model === 'buy.order.line') {
+                if (this.view && (this.view.model === 'buy.order.line' || this.view.model === 'sell.order.line')) {
                     // var tabButtons = $('#goods_detail a[data-toggle="tab"]');
                     // tabButtons.unbind('shown.bs.tab');
 

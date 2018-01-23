@@ -561,7 +561,6 @@ class BuyOrderLine(models.Model):
     goods_code = fields.Char(u'商品编号', related='goods_id.code')
     manufacturer_name = fields.Many2one('partner', u'商品产地', related='goods_id.supplier_id')
 
-
     using_attribute = fields.Boolean(u'使用属性',
                                      compute=_compute_using_attribute,
                                      help=u'商品是否使用属性')

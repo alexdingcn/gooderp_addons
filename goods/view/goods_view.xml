@@ -68,6 +68,7 @@
                                         <field name='pinyin_abbr'/>
                                         <field name='licence_number' required="1"/>
                                         <field name='expire_date'/>
+
                                         <field name='incoming_tax_rate'/>
                                         <field name='outgoing_tax_rate'/>
                                         <field name='is_superiority'/>
@@ -112,7 +113,7 @@
                                         <field name="traditional_medicine"/>
                                         <field name="maintenance_prop"/>
                                         <field name='formulation' required="1"/>
-                                        <field name="business_scope" required="1" widget="many2many_tags"/>
+                                        <field name="business_scope" widget="many2many_tags"/>
                                         <field name="abc_category"/>
                                         <field name="essential_medicine"/>
                                         <field name='gmp_certified'/>
@@ -138,6 +139,7 @@
                                     <group name="price_info">
                                         <field name='price'/>
                                         <field name='cost' groups='goods.view_cost_groups'/>
+                                        <field name="tax_rate"/>
                                         <field name='cost_method' groups='goods.view_cost_groups'/>
                                     </group>
                                 </group>

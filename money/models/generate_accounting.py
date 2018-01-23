@@ -76,6 +76,7 @@ class MoneyInvoice(models.Model):
                 invoice.write({'voucher_id': vouch_obj.id})
             if not invoice.category_id.account_id:
                 raise UserError(u'请配置%s的会计科目' % (invoice.category_id.name))
+
             partner_cat = invoice.category_id.type == 'income' and invoice.partner_id.c_category_id or invoice.partner_id.s_category_id
             partner_account_id = partner_cat.account_id.id
             if not partner_account_id:

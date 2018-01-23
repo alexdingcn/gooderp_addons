@@ -242,7 +242,7 @@
                                 <field name="onsite_check"/>
                                 <field name="responsible_id"/>
                                 <field name="source"/>
-                                <field name="business_scope" required="1" widget="many2many_tags"/>
+                                <field name="business_scope" widget="many2many_tags"/>
                                 <field name="tag_ids" widget="many2many_tags"/>
                                 <field name="note" placeholder="暂无备注信息"/>
                             </group>

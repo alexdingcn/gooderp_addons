@@ -170,7 +170,6 @@
                                 <field name="bank_account_id" required="1"
                                        options="{'no_open': True, 'no_create': True}"
                                        attrs="{'invisible': [('invoice_by_receipt','=',False)]}"/>
-
                             </group>
                         </group>
                         <hr/>
