@@ -68,9 +68,7 @@
         'security/ir.model.access.csv',
         'data/home_page_data.xml',
     ],
-    'demo': [
-        'data/warehouse_demo.xml',
-    ],
+    # 'demo': ['data/warehouse_demo.xml'],
     'installable': True,
     "active": False,
 }
