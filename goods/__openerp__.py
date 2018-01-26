@@ -40,7 +40,7 @@
         'menu/goods_menu.xml',
         'security/ir.model.access.csv',
     ],
-    'demo': ['demo/goods_demo.xml'],
+    # 'demo': ['demo/goods_demo.xml'],
     'installable': True,
     "active": False,
 }
