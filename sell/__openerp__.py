@@ -67,9 +67,9 @@
             'report/report_data.xml',
             'data/home_page_data.xml'
     ],
-    'demo': [
-        'data/sell_demo.xml',
-    ],
+    # 'demo': [
+    #     'data/sell_demo.xml',
+    # ],
     'installable': True,
     'auto_install': False,
 }
