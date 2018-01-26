@@ -14,3 +14,4 @@ access_pricing,access_pricing,model_pricing,,1,1,1,1
 access_service,access_service,model_service,,1,1,1,1
 access_business_data_table,access_business_data_table,model_business_data_table,,1,1,1,1
 access_clean_business_data,access_clean_business_data,model_clean_business_data,,1,1,1,1
+access_partner_cert_info,access_partner_cert_info,model_partner_cert_info,,1,1,1,1
