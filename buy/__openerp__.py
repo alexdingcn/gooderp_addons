@@ -45,9 +45,9 @@
         'security/ir.model.access.csv',
         'data/home_page_data.xml'
     ],
-    'demo': [
-        'data/buy_demo.xml',
-    ],
+    # 'demo': [
+    #     'data/buy_demo.xml',
+    # ],
     'qweb': [
         'static/src/xml/*.xml',
     ]
