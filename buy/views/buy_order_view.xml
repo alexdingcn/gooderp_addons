@@ -155,7 +155,7 @@
                             <div class="tab-content nav nav-tabs">
                                 <div role="tabpanel" id="goods_info_tab" class="tab-pane"/>
                                 <div role="tabpanel" id="goods_warehouse_tab" class="tab-pane"/>
-                                <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane"/>
+                                <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane active"/>
                             </div>
                         </div>
 

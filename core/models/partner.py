@@ -45,7 +45,7 @@ class Partner(models.Model):
     main_address = fields.Char(u'详细地址')
     main_mobile = fields.Char(u'联系电话', size=20)
 
-    post_company = fields.Char(u'托运公司')
+    post_company = fields.Char(u'承运单位')
     pickup_contact = fields.Char(u'收货人')
     pickup_address = fields.Char(u'收货地址')
     pickup_mobile = fields.Char(u'收货联系电话', size=20)

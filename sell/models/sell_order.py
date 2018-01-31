@@ -88,18 +88,19 @@ class SellOrder(models.Model):
                                  help=u'签约合同的客户')
     contact = fields.Char(u'联系人', states=READONLY_STATES,
                           help=u'客户方的联系人')
+    pickup_person = fields.Char(u'提货人', help=u'客户方的提货人')
     address_id = fields.Many2one('partner.address', u'地址', states=READONLY_STATES,
                                  help=u'联系地址')
-    mobile = fields.Char(u'手机', states=READONLY_STATES,
-                         help=u'联系手机')
+    mobile = fields.Char(u'手机', states=READONLY_STATES, help=u'联系手机')
+    post_company = fields.Char(u'承运单位', related='partner_id.post_company')
+
     user_id = fields.Many2one(
         'res.users',
         u'销售员',
         ondelete='restrict',
         states=READONLY_STATES,
         default=lambda self: self.env.user,
-        help=u'单据经办人',
-    )
+        help=u'单据经办人')
     date = fields.Date(u'单据日期',
                        required=True,
                        states=READONLY_STATES,
@@ -118,7 +119,8 @@ class SellOrder(models.Model):
     type = fields.Selection([('sell', u'销售'), ('return', u'退货')], u'类型',
                             default='sell', states=READONLY_STATES,
                             help=u'销售订单的类型，分为销售或退货')
-    ref = fields.Char(u'客户订单号')
+    ref = fields.Char(u'自定单号')
+
     warehouse_id = fields.Many2one('warehouse',
                                    u'调出仓库',
                                    required=True,
@@ -131,9 +133,8 @@ class SellOrder(models.Model):
     line_ids = fields.One2many('sell.order.line', 'order_id', u'销售订单明细',
                                states=READONLY_STATES, copy=True,
                                help=u'销售订单的明细行，不能为空')
-    note = fields.Text(u'备注', help=u'单据备注')
-    discount_rate = fields.Float(u'优惠率(%)', states=READONLY_STATES,
-                                 help=u'整单优惠率')
+    note = fields.Char(u'备注', help=u'单据备注')
+    discount_rate = fields.Float(u'整单优惠率', states=READONLY_STATES)
     discount_amount = fields.Float(u'抹零', states=READONLY_STATES,
                                    track_visibility='onchange',
                                    digits=dp.get_precision('Amount'),
@@ -162,8 +163,7 @@ class SellOrder(models.Model):
                               store=True,
                               track_visibility='onchange',
                               help=u"销售订单的发货状态", index=True, copy=False)
-    cancelled = fields.Boolean(u'已终止',
-                               help=u'该单据是否已终止')
+    cancelled = fields.Boolean(u'已终止', help=u'该单据是否已终止')
     currency_id = fields.Many2one('res.currency',
                                   u'外币币别',
                                   compute='_compute_currency_id',
@@ -186,6 +186,11 @@ class SellOrder(models.Model):
                                  ondelete='restrict',
                                  track_visibility='onchange')
 
+    temp_control = fields.Many2one('core.value', u'温控',
+                                   ondelete='restrict',
+                                   domain=[('type', '=', 'temperature_control')],
+                                   context={'type': 'temperature_control'})
+
     @api.onchange('address_id')
     def onchange_partner_address(self):
         ''' 选择地址填充 联系人、电话 '''
@@ -197,7 +202,8 @@ class SellOrder(models.Model):
     def onchange_partner_id(self):
         ''' 选择客户带出其默认地址信息 '''
         if self.partner_id:
-            self.contact = self.partner_id.pickup_contact
+            self.contact = self.partner_id.main_contact
+            self.pickup_person = self.partner_id.pickup_contact
             self.mobile = self.partner_id.pickup_mobile
             self.pay_method = self.partner_id.pay_method
 
@@ -537,20 +543,17 @@ class SellOrderLine(models.Model):
                          store=True,
                          digits=dp.get_precision('Price'),
                          help=u'不含税单价，由含税单价计算得出')
-    price_taxed = fields.Float(u'含税单价',
+    price_taxed = fields.Float(u'含税单价', required=True,
                                digits=dp.get_precision('Price'),
                                help=u'含税单价，取商品零售价')
-    discount_rate = fields.Float(u'折扣率%',
-                                 help=u'折扣率')
-    discount_amount = fields.Float(u'折扣额',
-                                   help=u'输入折扣率后自动计算得出，也可手动输入折扣额')
+    discount_rate = fields.Float(u'折扣率%', required=True, help=u'折扣率')
+    discount_amount = fields.Float(u'折扣额', help=u'输入折扣率后自动计算得出，也可手动输入折扣额')
     amount = fields.Float(u'金额',
                           compute=_compute_all_amount,
                           store=True,
                           digits=dp.get_precision('Amount'),
                           help=u'金额 = 价税合计 - 税额')
-    tax_rate = fields.Float(u'税率(%)',
-                            help=u'税率')
+    tax_rate = fields.Float(u'税率(%)', help=u'税率')
     tax_amount = fields.Float(u'税额',
                               compute=_compute_all_amount,
                               store=True,
@@ -561,8 +564,7 @@ class SellOrderLine(models.Model):
                             store=True,
                             digits=dp.get_precision('Amount'),
                             help=u'含税单价 x 数量')
-    note = fields.Char(u'备注',
-                       help=u'本行备注')
+    note = fields.Char(u'备注', help=u'本行备注')
     company_id = fields.Many2one(
         'res.company',
         string=u'公司',

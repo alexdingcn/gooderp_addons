@@ -57,8 +57,8 @@
                             </button>
                         </div>
 
-                        <group>
-                            <group>
+                        <group col="12">
+                            <group colspan="4">
                                 <field name='partner_id' required='1'
                                        domain="[('type', '=', 'CUS'),('state', '=', 'done')]"
                                        options="{'no_create': True, 'no_edit': True}"
@@ -66,110 +66,113 @@
                                 <field name='contact'/>
                                 <field name='address_id'/>
                                 <field name='mobile'/>
-                                <field name='user_id' required="1"
-                                       options="{'no_open': True, 'no_create': True}"/>
-                                <!--<field name='date'/>-->
-                                <field name='warehouse_id' invisible="1"/>
+                                <field name='user_id' required="1" options="{'no_open': True, 'no_create': True}"/>
                             </group>
-                            <group>
+                            <group colspan="4">
                                 <field name="ref"/>
+                                <field name='date'/>
                                 <field name='delivery_date'/>
                                 <!--<field name='type' widget='radio'/>-->
                                 <field name='goods_state' readonly='1' attrs="{'invisible': [('state','=','draft')]}"/>
                                 <field name='currency_id' readonly='1' groups='finance.group_multi_currency'/>
+                                <field name="discount_rate"/>
+                                <!--<field name="discount_amount"/>-->
                                 <field name='pay_method' required="1" options="{'no_create': True, 'no_open': True}"/>
+
+                            </group>
+                            <group colspan="4">
+                                <field name='warehouse_id' options="{'no_open': True, 'no_create': True}"/>
+                                <field name="pickup_person"/>
+                                <field name="temp_control" options="{'size': 'small'}"/>
+                                <field name="post_company"/>
                                 <field name="note" placeholder="暂无备注信息"/>
                             </group>
                         </group>
-                        <notebook>
-                            <page string="商品明细" icon="fa-bars">
-                                <field name='line_ids'>
-                                    <tree string='销售订单明细' editable='bottom' show_index="true">
-                                        <field name='goods_id'
-                                               domain="[('not_saleable','=',False), ('state', '=', 'done')]"
-                                               options="{'no_create': True, 'no_edit': True}"/>
-                                        <!--<field name='attribute_id'-->
-                                        <!--groups='goods.multi_attrs_groups'-->
-                                        <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
-                                        <!--<field name="quantity_out" readonly="1" string="已发货数量"-->
-                                               <!--sum="合计已发货数量"/>-->
 
-                                        <field name="goods_code" readonly="1"/>
-                                        <field name="manufacturer_name" readonly="1"/>
-                                        <field name="uom_id" readonly="1"/>
-                                        <field name="goods_conversion" readonly="1"/>
-                                        <field name="quantity"/>
-                                        <field name="uos_quantity" readonly="1"/>
+                        <field name='line_ids'>
+                            <tree string='销售订单明细' editable='bottom' show_index="true">
+                                <field name='goods_id'
+                                       domain="[('not_saleable','=',False), ('state', '=', 'done')]"
+                                       options="{'no_create': True, 'no_edit': True}"/>
+                                <!--<field name='attribute_id'-->
+                                <!--groups='goods.multi_attrs_groups'-->
+                                <!--attrs="{'required': [('using_attribute','=', True)], 'readonly': [('using_attribute','!=', True)]}"/>-->
+                                <!--<field name="quantity_out" readonly="1" string="已发货数量"-->
+                                       <!--sum="合计已发货数量"/>-->
 
-                                        <field name='price'/>
-                                        <field name="price_taxed" groups='sell.out_tax_groups'/>
-                                        <field name='discount_rate' groups='sell.sell_line_discount_groups'/>
-                                        <field name='discount_amount' sum='折扣额合计'
-                                               groups='sell.sell_line_discount_groups'/>
-                                        <field name='currency_amount' sum='外币合计'
-                                               groups='finance.group_multi_currency'/>
-                                        <field name='amount' sum='金额合计'/>
-                                        <field name='tax_rate' groups='sell.out_tax_groups'/>
-                                        <field name='tax_amount' sum='税额合计' groups='sell.out_tax_groups'/>
-                                        <field name='subtotal' sum='价税合计' groups='sell.out_tax_groups'/>
-                                        <field name='note'/>
-                                        <field name='using_attribute' invisible='1'/>
-                                    </tree>
-                                </field>
+                                <field name="goods_code" readonly="1"/>
+                                <field name="manufacturer_name" readonly="1"/>
+                                <field name="uom_id" readonly="1"/>
+                                <field name="goods_conversion" readonly="1"/>
+                                <field name="quantity"/>
+                                <field name="uos_quantity" readonly="1"/>
 
-                                <div id="goods_detail" class="mt8 hidden">
-                                    <ul role="tablist" class="nav nav-tabs">
-                                        <li class="active">
-                                            <a data-toggle="tab" role="tab" href="#goods_info_tab">
-                                                <span class="fa fa-info-circle"></span>
-                                                商品明细
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-toggle="tab" role="tab" href="#goods_warehouse_tab">
-                                                <span class="fa fa-bars"></span>
-                                                库存信息
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a data-toggle="tab" role="tab" href="#goods_buy_history_tab">
-                                                <span class="fa fa-cart-plus"></span>
-                                                采购历史
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    <div class="tab-content nav nav-tabs">
-                                        <div role="tabpanel" id="goods_info_tab" class="tab-pane active"/>
-                                        <div role="tabpanel" id="goods_warehouse_tab" class="tab-pane"/>
-                                        <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane"/>
-                                    </div>
-                                </div>
+                                <field name='price'/>
+                                <field name="price_taxed" groups='sell.out_tax_groups'/>
+                                <field name='discount_rate' groups='sell.sell_line_discount_groups'/>
+                                <field name='discount_amount' sum='折扣额合计'
+                                       groups='sell.sell_line_discount_groups'/>
+                                <field name='currency_amount' sum='外币合计'
+                                       groups='finance.group_multi_currency'/>
+                                <field name='amount' sum='金额合计'/>
+                                <field name='tax_rate' groups='sell.out_tax_groups'/>
+                                <field name='tax_amount' sum='税额合计' groups='sell.out_tax_groups'/>
+                                <field name='subtotal' sum='价税合计' groups='sell.out_tax_groups'/>
+                                <field name='using_attribute' invisible='1'/>
+                            </tree>
+                        </field>
 
-                                <group string="合计">
-                                    <group>
-                                        <field name="discount_amount" groups='sell.sell_discount_groups'/>
-                                        <field name="amount" class="red"/>
-                                        <field name="received_amount"/>
-                                    </group>
-                                    <group>
-                                        <field name="pre_receipt"/>
-                                        <field name="bank_account_id" required="1"
-                                               options="{'no_open': True, 'no_create': True}"/>
-                                    </group>
-                                </group>
-                                <hr/>
-                                <group attrs="{'invisible': [('create_uid','=',False)]}">
-                                    <group>
-                                        <field name="create_uid" readonly="1" string="填表人"/>
-                                        <field name="approve_uid" readonly="1"/>
-                                    </group>
-                                    <group>
-                                        <field name="create_date" readonly="1" string="填报日期"/>
-                                        <field name="write_date" readonly="1" string="最后修改时间"/>
-                                    </group>
-                                </group>
-                            </page>
-                        </notebook>
+                        <div id="goods_detail" class="mt8 hidden">
+                            <ul role="tablist" class="nav nav-tabs">
+                                <li>
+                                    <a data-toggle="tab" role="tab" href="#goods_info_tab">
+                                        <span class="fa fa-info-circle"></span>
+                                        商品明细
+                                    </a>
+                                </li>
+                                <li>
+                                    <a data-toggle="tab" role="tab" href="#goods_warehouse_tab">
+                                        <span class="fa fa-bars"></span>
+                                        库存信息
+                                    </a>
+                                </li>
+                                <li class="active">
+                                    <a data-toggle="tab" role="tab" href="#goods_buy_history_tab">
+                                        <span class="fa fa-cart-plus"></span>
+                                        采购历史
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content nav nav-tabs">
+                                <div role="tabpanel" id="goods_info_tab" class="tab-pane"/>
+                                <div role="tabpanel" id="goods_warehouse_tab" class="tab-pane"/>
+                                <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane active"/>
+                            </div>
+                        </div>
+
+                        <group string="合计">
+                            <group>
+                                <field name="discount_amount" groups='sell.sell_discount_groups'/>
+                                <field name="amount" class="red"/>
+                                <field name="received_amount"/>
+                            </group>
+                            <group>
+                                <field name="pre_receipt"/>
+                                <field name="bank_account_id" required="1"
+                                       options="{'no_open': True, 'no_create': True}"/>
+                            </group>
+                        </group>
+                        <hr/>
+                        <group attrs="{'invisible': [('create_uid','=',False)]}">
+                            <group>
+                                <field name="create_uid" readonly="1" string="填表人"/>
+                                <field name="approve_uid" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="create_date" readonly="1" string="填报日期"/>
+                                <field name="write_date" readonly="1" string="最后修改时间"/>
+                            </group>
+                        </group>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
@@ -241,7 +244,7 @@
             <field name='name'>sell.delivery.form</field>
             <field name='model'>sell.delivery</field>
             <field name='arch' type='xml'>
-                <form string='销售发货单'>
+                <form string='销售发货单' create="false">
                     <header>
                         <button name='sell_to_return' type='object' states="done" string='生成退货单' class="oe_highlight"/>
                         <button name='sell_delivery_done' states='draft' type='object' string='审核'
@@ -277,8 +280,8 @@
                                 <field name='date_due' required='1' attrs="{'readonly': [('state','!=','draft')]}"/>
                                 <field name='order_id' readonly='1' groups='sell.sell_groups'/>
                                 <field name='finance_category_id'/>
-                                <field name='invoice_id' readonly='1' groups='base.group_no_one'/>
-                                <field name='voucher_id' readonly='1' groups='base.group_no_one'/>
+                                <field name='invoice_id' readonly='1'/>
+                                <field name='voucher_id' readonly='1'/>
                                 <field name="money_state" readonly="1" groups='base.group_no_one'/>
                                 <field name="currency_id" readonly="1"
                                        groups='finance.group_multi_currency'/>
@@ -339,21 +342,21 @@
                                     </tree>
                                 </field>
                             </page>
-                            <page string="销售费用行">
-                                <field name="cost_line_ids" attrs="{'readonly': [('state','!=','draft')]}">
-                                    <tree string="Cost Lines" editable="bottom">
-                                        <field name="partner_id"
-                                               domain="[('type', '=', 'SUP')]"
-                                               context="{'form_view_ref': 'core.partner_sup_form'}"/>
-                                        <field name="category_id"/>
-                                        <field name="amount"/>
-                                        <field name='tax_rate' groups="sell.out_tax_groups"/>
-                                        <field name="tax" groups="sell.out_tax_groups"/>
-                                        <field name="note" placeholder="暂无备注信息"/>
-                                    </tree>
-                                </field>
-                            </page>
-                            <page string="质量验收" attrs="{'invisible': [('need_quality_control','=',False)]}"
+                            <!--<page string="销售费用行">-->
+                                <!--<field name="cost_line_ids" attrs="{'readonly': [('state','!=','draft')]}">-->
+                                    <!--<tree string="Cost Lines" editable="bottom">-->
+                                        <!--<field name="partner_id"-->
+                                               <!--domain="[('type', '=', 'SUP')]"-->
+                                               <!--context="{'form_view_ref': 'core.partner_sup_form'}"/>-->
+                                        <!--<field name="category_id"/>-->
+                                        <!--<field name="amount"/>-->
+                                        <!--<field name='tax_rate' groups="sell.out_tax_groups"/>-->
+                                        <!--<field name="tax" groups="sell.out_tax_groups"/>-->
+                                        <!--<field name="note" placeholder="暂无备注信息"/>-->
+                                    <!--</tree>-->
+                                <!--</field>-->
+                            <!--</page>-->
+                            <page string="质量检验" attrs="{'invisible': [('need_quality_control','=',False)]}"
                                   icon="fa-check green"
                                   groups='goods.quality_groups'>
                                 <div attrs="{'invisible': [('state','=','done')]}">
