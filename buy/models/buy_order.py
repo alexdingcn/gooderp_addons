@@ -592,6 +592,7 @@ class BuyOrderLine(models.Model):
                          digits=dp.get_precision('Price'),
                          help=u'不含税单价，由含税单价计算得出')
     price_taxed = fields.Float(u'含税单价',
+                               required=True,
                                digits=dp.get_precision('Price'),
                                help=u'含税单价，取自商品成本或对应供应商的购货价')
     discount_rate = fields.Float(u'折扣率%',

@@ -1,38 +1,38 @@
 <?xml version='1.0' encoding='utf-8'?>
 <template>
     <t t-name="GoodsInfoDetail">
-         <table class="table table-condensed table-responsive col-sm-12">
+         <table class="table table-condensed table-responsive col-sm-12" data-id="">
             <tr>
                 <td class="col-sm-1"><b>商品名称</b></td>
                 <td class="col-sm-2">
                     <t t-if='goods_info' t-esc="goods_info.display_name"/>
-                    <t t-else="" t-esc="order_line.goods_id[1]"/>
+                    <t t-else="order_line" t-esc="order_line.goods_id[1]"/>
                 </td>
                 <td class="col-sm-1"><b>单位</b></td>
                 <td class="col-sm-1">
                     <t t-if='goods_info' t-esc="goods_info.uom_id[1]"/>
-                    <t t-else="" t-esc="order_line.uom_id[1]"/>
+                    <t t-else="order_line" t-esc="order_line.uom_id[1]"/>
                 </td>
                 <td class="col-sm-1"><b>数量</b></td>
-                <td class="col-sm-1 red"><t t-esc="order_line.quantity"/></td>
+                <td class="col-sm-1 red"><t t-if="order_line" t-esc="order_line.quantity"/></td>
                 <td class="col-sm-1"><b>税额</b></td>
-                <td class="col-sm-1"><t t-esc="order_line.tax_amount"/></td>
+                <td class="col-sm-1"><t t-if="order_line" t-esc="order_line.tax_amount"/></td>
                 <td class="col-sm-1"><b>商品编码</b></td>
-                <td class="col-sm-2"><t t-esc="order_line.goods_code"/></td>
+                <td class="col-sm-2"><t t-if="order_line" t-esc="order_line.goods_code"/></td>
             </tr>
             <tr>
                 <td><b>零售价</b></td>
                 <td><t t-if='goods_info' t-esc="goods_info.price"/></td>
                 <td><b>单价</b></td>
-                <td><t t-esc="order_line.price"/></td>
+                <td><t t-if="order_line" t-esc="order_line.price"/></td>
                 <td><b>金额</b></td>
-                <td><t t-esc="order_line.amount"/></td>
+                <td><t t-if="order_line" t-esc="order_line.amount"/></td>
                 <td><b>含税金额</b></td>
-                <td class="red"><t t-esc="order_line.subtotal"/></td>
+                <td class="red"><t t-if="order_line" t-esc="order_line.subtotal"/></td>
                 <td><b>产地</b></td>
                 <td>
                     <t t-if='goods_info' t-esc="goods_info.supplier_id[1]"/>
-                    <t t-else="" t-esc="order_line.manufacturer_name[1]"/>
+                    <t t-else="order_line" t-esc="order_line.manufacturer_name[1]"/>
                 </td>
             </tr>
         </table>

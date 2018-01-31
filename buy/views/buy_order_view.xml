@@ -133,7 +133,7 @@
 
                         <div id="goods_detail" class="mt8 hidden">
                             <ul role="tablist" class="nav nav-tabs">
-                                <li class="active">
+                                <li>
                                     <a data-toggle="tab" role="tab" href="#goods_info_tab">
                                         <span class="fa fa-info-circle"></span>
                                         商品明细
@@ -145,7 +145,7 @@
                                         库存信息
                                     </a>
                                 </li>
-                                <li>
+                                <li class="active">
                                     <a data-toggle="tab" role="tab" href="#goods_buy_history_tab">
                                         <span class="fa fa-cart-plus"></span>
                                         采购历史
@@ -153,7 +153,7 @@
                                 </li>
                             </ul>
                             <div class="tab-content nav nav-tabs">
-                                <div role="tabpanel" id="goods_info_tab" class="tab-pane active"/>
+                                <div role="tabpanel" id="goods_info_tab" class="tab-pane"/>
                                 <div role="tabpanel" id="goods_warehouse_tab" class="tab-pane"/>
                                 <div role="tabpanel" id="goods_buy_history_tab" class="tab-pane"/>
                             </div>

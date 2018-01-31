@@ -15,6 +15,19 @@ odoo.define('buy.buy_order_view', function (require) {
     });
 
     ListView.List.include({
+        init: function (parent, options) {
+            this._super.apply(this, arguments);
+            if (this.view && (this.view.model === 'buy.order.line' || this.view.model === 'sell.order.line')) {
+                var self = this;
+                $('#goods_detail').addClass('hidden');
+                core.bus.on('dropdown_selected', null, function(field_name, value) {
+                    if (field_name === 'goods_id') {
+                        self.show_good_detail(null, value);
+                    }
+
+                });
+            }
+        },
         row_clicked: function (event) {
             this._super(event);
             if (this.view.editable() && this.view.is_action_enabled('edit')) {
@@ -30,32 +43,36 @@ odoo.define('buy.buy_order_view', function (require) {
                     });
                     if (cached_goods && cached_goods.length === 1) {
                         var goods_id = cached_goods[0].values['goods_id'];
-                        if (goods_id instanceof Array) {
-                            goods_id = goods_id[0];
-                        }
 
-                        new Model('goods').call('search_read', [[['id', '=', goods_id]], []]).then(function (records) {
-                            if (records && records.length > 0) {
-                                $('#goods_info_tab').html(QWeb.render('GoodsInfoDetail', {
-                                    goods_info: records[0],
-                                    order_line: cached_goods[0].values
-                                }));
-                            }
-                        });
-                        new Model('goods').call('get_warehouse_balance', [goods_id]).then(function (records) {
-                            $('#goods_warehouse_tab').html(QWeb.render('GoodsWarehouseBalance', {
-                                balance: records
-                            }));
-                        });
-                        new Model('vendor.goods').call('search_read', [[['goods_id', '=', goods_id]], []]).then(function (records) {
-                            $('#goods_buy_history_tab').html(QWeb.render('GoodsBuyHistory', {
-                                vendors: records
-                            }));
-                            $('#goods_detail').removeClass('hidden');
-                        });
+                        this.show_good_detail(cached_goods[0].values, goods_id);
                     }
                 }
             }
+        },
+        show_good_detail: function (cached_goods, goods_id) {
+            if (goods_id instanceof Array) {
+                goods_id = goods_id[0];
+            }
+
+            new Model('goods').call('search_read', [[['id', '=', goods_id]], []]).then(function (records) {
+                if (records && records.length > 0) {
+                    $('#goods_info_tab').html(QWeb.render('GoodsInfoDetail', {
+                        goods_info: records[0],
+                        order_line: cached_goods
+                    }));
+                }
+            });
+            new Model('goods').call('get_warehouse_balance', [goods_id]).then(function (records) {
+                $('#goods_warehouse_tab').html(QWeb.render('GoodsWarehouseBalance', {
+                    balance: records
+                }));
+            });
+            new Model('vendor.goods').call('search_read', [[['goods_id', '=', goods_id]], []]).then(function (records) {
+                $('#goods_buy_history_tab').html(QWeb.render('GoodsBuyHistory', {
+                    vendors: records
+                }));
+                $('#goods_detail').removeClass('hidden');
+            });
         }
     });
 });

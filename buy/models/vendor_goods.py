@@ -12,6 +12,7 @@ _logger = logging.getLogger(__name__)
 class VendorGoods(models.Model):
     _name = 'vendor.goods'
     _description = u'供应商供货价格表'
+    _order = 'last_buy_time desc'
 
     goods_id = fields.Many2one(
         string=u'商品',
